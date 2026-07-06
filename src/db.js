@@ -89,28 +89,40 @@ if (isPG) {
     ];
 
 } else {
-    // SQLite (local dev — unchanged)
-    const sqlite3 = require('sqlite3').verbose();
-    const path = require('path');
-    const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'ibcb.db');
-    const db = new sqlite3.Database(DB_PATH);
+    // SQLite (local dev) — try to load; if it fails (e.g. Railway without build tools), use stubs
+    let sqlite3, db;
+    try {
+        sqlite3 = require('sqlite3').verbose();
+        const path = require('path');
+        const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'ibcb.db');
+        db = new sqlite3.Database(DB_PATH);
 
-    // WAL mode
-    db.run('PRAGMA journal_mode=WAL');
-    db.run('PRAGMA synchronous=NORMAL');
-    db.run('PRAGMA cache_size=-8000');
-    db.run('PRAGMA foreign_keys=ON');
+        db.run('PRAGMA journal_mode=WAL');
+        db.run('PRAGMA synchronous=NORMAL');
+        db.run('PRAGMA cache_size=-8000');
+        db.run('PRAGMA foreign_keys=ON');
+    } catch (e) {
+        console.error('sqlite3 unavailable — using stub (PostgreSQL mode requires DATABASE_URL)');
+    }
 
-    dbGet = (sql, params = []) => new Promise((resolve, reject) => {
-        db.get(sql, params, (err, row) => err ? reject(err) : resolve(row));
-    });
-    dbAll = (sql, params = []) => new Promise((resolve, reject) => {
-        db.all(sql, params, (err, rows) => err ? reject(err) : resolve(rows));
-    });
-    dbRun = (sql, params = []) => new Promise((resolve, reject) => {
-        db.run(sql, params, function(err) { err ? reject(err) : resolve(this); });
-    });
-    dbClose = () => new Promise((resolve) => db.close(() => resolve()));
+    if (db) {
+        dbGet = (sql, params = []) => new Promise((resolve, reject) => {
+            db.get(sql, params, (err, row) => err ? reject(err) : resolve(row));
+        });
+        dbAll = (sql, params = []) => new Promise((resolve, reject) => {
+            db.all(sql, params, (err, rows) => err ? reject(err) : resolve(rows));
+        });
+        dbRun = (sql, params = []) => new Promise((resolve, reject) => {
+            db.run(sql, params, function(err) { err ? reject(err) : resolve(this); });
+        });
+        dbClose = () => new Promise((resolve) => db.close(() => resolve()));
+    } else {
+        // Stubs — will be replaced when DATABASE_URL is set and server restarts
+        dbGet = async () => { throw new Error('Database not available'); };
+        dbAll = async () => { throw new Error('Database not available'); };
+        dbRun = async () => { throw new Error('Database not available'); };
+        dbClose = async () => {};
+    }
 }
 
 /** Initialize schema (idempotent) */
