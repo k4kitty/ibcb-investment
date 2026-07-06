@@ -125,21 +125,30 @@ if (isPG) {
     }
 }
 
-/** Initialize schema (idempotent) */
+/** Initialize schema (idempotent).
+ *  On SQLite: creates tables + seeds admin.
+ *  On Railway before PostgreSQL is added: silently skips (stubs will throw, server stays alive for healthcheck).
+ *  On Railway after PostgreSQL is added: creates tables + seeds admin.
+ */
 async function initDB() {
-    for (const stmt of schema) {
-        try { await dbRun(stmt); } catch (e) {
-            console.error('Schema error (may be harmless):', e.message.substring(0, 80));
+    try {
+        for (const stmt of schema) {
+            try { await dbRun(stmt); } catch (e) {
+                console.error('Schema warn:', e.message.substring(0, 80));
+            }
         }
-    }
-    // Seed admin if not exists
-    const bcrypt = require('bcryptjs');
-    const admin = await dbGet('SELECT COUNT(*) as c FROM admins');
-    if (!admin || admin.c == 0) {
-        const id = 'a_' + Date.now();
-        const hash = await bcrypt.hash('IBCB123!', 10);
-        await dbRun('INSERT INTO admins (id, username, password) VALUES (?, ?, ?)', [id, 'admin', hash]);
-        console.log('Admin seeded.');
+        // Seed admin if not exists
+        const bcrypt = require('bcryptjs');
+        const admin = await dbGet('SELECT COUNT(*) as c FROM admins');
+        if (!admin || admin.c == 0) {
+            const id = 'a_' + Date.now();
+            const hash = await bcrypt.hash('IBCB123!', 10);
+            await dbRun('INSERT INTO admins (id, username, password) VALUES (?, ?, ?)', [id, 'admin', hash]);
+            console.log('Admin seeded.');
+        }
+        console.log('Database initialized.');
+    } catch (e) {
+        console.error('initDB skipped (DB not available yet):', e.message.substring(0, 80));
     }
 }
 
