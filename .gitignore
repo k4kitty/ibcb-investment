@@ -1,5 +1,7 @@
 node_modules/
 data/ibcb.db
+data/ibcb.db-shm
+data/ibcb.db-wal
 .env
 *.log
 .DS_Store
