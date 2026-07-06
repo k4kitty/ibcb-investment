@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>講座報名 — IBCB Investment</title>
+    <link rel="stylesheet" href="public/css/styles.css">
+</head>
+<body class="form-page">
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">IBCB</div>
+                <div class="logo-text">
+                    <span class="logo-main">IBCB Investment</span>
+                    <span class="logo-sub">Private Equity · Investing AI +</span>
+                </div>
+            </div>
+            <nav class="main-nav" id="mainNav">
+                <a href="index.html" class="nav-link">主頁</a>
+                <a href="about.html" class="nav-link">關於我們</a>
+                <a href="lectures.html" class="nav-link active">講座報名</a>
+                <a href="events.html" class="nav-link">活動</a>
+                <a href="news.html" class="nav-link">最新消息</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <a href="register.html" class="nav-link btn-register">加入會員</a>
+            </nav>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+    </header>
+
+    <main class="form-container fade-in">
+        <section class="form-card">
+            <div class="form-header">
+                <h2>講座報名</h2>
+                <p class="form-subtitle">填寫以下資料，我們將在 1 個工作天內與您確認出席</p>
+            </div>
+            <form id="lectureForm" class="member-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>姓名 <span class="required">*</span></label>
+                        <input type="text" id="l_name" required autocomplete="name">
+                        <span class="error-message" id="l_nameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>機構 / 公司</label>
+                        <input type="text" id="l_org" autocomplete="organization">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>職位</label>
+                        <input type="text" id="l_title" autocomplete="organization-title">
+                    </div>
+                    <div class="form-group">
+                        <label>身份</label>
+                        <select id="l_role">
+                            <option value="">請選擇</option>
+                            <option value="investor">投資者</option>
+                            <option value="school">學校代表</option>
+                            <option value="teacher">教師</option>
+                            <option value="parent">家長</option>
+                            <option value="student">學生</option>
+                            <option value="partner">合作夥伴</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>電郵 <span class="required">*</span></label>
+                        <input type="email" id="l_email" required autocomplete="email">
+                        <span class="error-message" id="l_emailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>電話</label>
+                        <input type="tel" id="l_phone" autocomplete="tel">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>微信</label>
+                    <input type="text" id="l_wechat" autocomplete="off">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>國家 / 地區 <span class="required">*</span></label>
+                        <input type="text" id="l_country" required>
+                        <span class="error-message" id="l_countryError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>城市 <span class="required">*</span></label>
+                        <input type="text" id="l_city" required>
+                        <span class="error-message" id="l_cityError"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>講座日期</label>
+                        <input type="date" id="l_date">
+                    </div>
+                    <div class="form-group">
+                        <label>感興趣的主題</label>
+                        <select id="l_topic">
+                            <option value="">請選擇</option>
+                            <option value="ai_finance">AI + 金融科技</option>
+                            <option value="ipo">香港 IPO 實務</option>
+                            <option value="pe">私募股權投資策略</option>
+                            <option value="ai_education">AI 教育投資</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="l_agree" required>
+                        <span>我同意 IBCB Investment 的<a href="#" class="link">隱私政策</a>及<a href="#" class="link">會員條款</a>，並確認以上資料真實準確。</span>
+                    </label>
+                    <span class="error-message" id="l_agreeError"></span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">提交報名</button>
+                    <p class="form-note">我們將在 1 個工作天內完成確認並發送出席通知</p>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">IBCB Investment</div>
+                <p>Private Equity · Investing AI +</p>
+            </div>
+            <div class="footer-info">
+                <p>&copy; <span id="copyrightYear">2024</span> IBCB Investment. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <div class="toast" id="toast"></div>
+    <script src="public/js/app.js"></script>
+</body>
+</html>

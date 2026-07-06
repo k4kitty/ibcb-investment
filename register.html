@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員登記 — IBCB Investment</title>
+    <link rel="stylesheet" href="public/css/styles.css">
+</head>
+<body class="form-page">
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">IBCB</div>
+                <div class="logo-text">
+                    <span class="logo-main">IBCB Investment</span>
+                    <span class="logo-sub">Private Equity · Investing AI +</span>
+                </div>
+            </div>
+            <nav class="main-nav" id="mainNav">
+                <a href="index.html" class="nav-link">主頁</a>
+                <a href="about.html" class="nav-link">關於我們</a>
+                <a href="events.html" class="nav-link">活動報名</a>
+                <a href="news.html" class="nav-link">最新消息</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <a href="register.html" class="nav-link btn-register active">加入會員</a>
+            </nav>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+    </header>
+
+    <main class="form-container fade-in">
+        <section class="form-card">
+            <div class="form-header">
+                <h2>會員登記</h2>
+                <p class="form-subtitle">成為 IBCB Investment 會員，獲取投資項目與活動資訊</p>
+            </div>
+            <form id="registerForm" class="member-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>姓名 <span class="required">*</span></label>
+                        <input type="text" id="r_name" required autocomplete="name">
+                        <span class="error-message" id="r_nameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>機構 / 公司</label>
+                        <input type="text" id="r_org" autocomplete="organization">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>職位</label>
+                        <input type="text" id="r_title" autocomplete="organization-title">
+                    </div>
+                    <div class="form-group">
+                        <label>身份</label>
+                        <select id="r_role">
+                            <option value="">請選擇</option>
+                            <option value="investor">投資者</option>
+                            <option value="school">學校代表</option>
+                            <option value="teacher">教師</option>
+                            <option value="parent">家長</option>
+                            <option value="student">學生</option>
+                            <option value="partner">合作夥伴</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>電郵 <span class="required">*</span></label>
+                        <input type="email" id="r_email" required autocomplete="email">
+                        <span class="error-message" id="r_emailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>電話</label>
+                        <input type="tel" id="r_phone" autocomplete="tel">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>微信</label>
+                    <input type="text" id="r_wechat" placeholder="微信 ID 或電話號碼" autocomplete="off">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>國家 / 地區 <span class="required">*</span></label>
+                        <select id="r_country" required>
+                            <option value="">請選擇</option>
+                            <option value="中國">中國</option>
+                            <option value="其他">其他海外地區</option>
+                        </select>
+                        <input type="text" id="r_country_other" placeholder="請輸入國家/地區" style="display:none;margin-top:8px;">
+                        <span class="error-message" id="r_countryError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>城市 <span class="required">*</span></label>
+                        <select id="r_city_cn" required style="display:none;">
+                            <option value="">請選擇城市</option>
+                            <option value="香港">香港</option>
+                            <option value="上海">上海</option>
+                            <option value="北京">北京</option>
+                            <option value="深圳">深圳</option>
+                            <option value="廣州">廣州</option>
+                            <option value="杭州">杭州</option>
+                            <option value="成都">成都</option>
+                            <option value="其他">其他城市</option>
+                        </select>
+                        <select id="r_city_hk" required style="display:none;">
+                            <option value="">請選擇區域</option>
+                            <option value="香港島">香港島</option>
+                            <option value="九龍">九龍</option>
+                            <option value="新界">新界</option>
+                        </select>
+                        <input type="text" id="r_city_other" placeholder="請輸入城市" style="display:none;">
+                        <span class="error-message" id="r_cityError"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>有興趣的投資 / 活動範疇</label>
+                    <select id="r_interest">
+                        <option value="">請選擇</option>
+                        <option value="ai_tech">AI 科技領域</option>
+                        <option value="ai_plus">AI+ 應用</option>
+                        <option value="ai_education">AI 教育</option>
+                        <option value="robotics">機器人 / 具身智能</option>
+                        <option value="finance">金融</option>
+                        <option value="curriculum">課程</option>
+                        <option value="活動">活動</option>
+                        <option value="partnership">合作機會</option>
+                        <option value="other">其他（請列明）</option>
+                    </select>
+                    <input type="text" id="r_interest_other" placeholder="請輸入其他興趣範疇" style="display:none;margin-top:8px;">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="r_agree" required>
+                        <span>我同意 IBCB Investment 的<a href="#" class="link">隱私政策</a>及<a href="#" class="link">會員條款</a>，並確認以上資料真實準確。</span>
+                    </label>
+                    <span class="error-message" id="r_agreeError"></span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">提交登記</button>
+                    <p class="form-note">我們將在 1 個工作天內完成審核並發送確認通知</p>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">IBCB Investment</div>
+                <p>Private Equity · Investing AI +</p>
+            </div>
+            <div class="footer-info">
+                <p>&copy; <span id="copyrightYear">2024</span> IBCB Investment. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <div class="toast" id="toast"></div>
+    <script>
+    // Country -> City cascade
+    document.addEventListener('DOMContentLoaded', function() {
+        var country = document.getElementById('r_country');
+        var otherCountry = document.getElementById('r_country_other');
+        var cityCn = document.getElementById('r_city_cn');
+        var cityHk = document.getElementById('r_city_hk');
+        var cityOther = document.getElementById('r_city_other');
+
+        country.addEventListener('change', function() {
+            var v = this.value;
+            otherCountry.style.display = (v === '其他') ? '' : 'none';
+            cityCn.style.display = (v === '中國') ? '' : 'none';
+            // When country is not 中國, always show text input for city
+            if (v !== '中國') {
+                cityOther.style.display = '';
+            } else {
+                cityOther.style.display = 'none';
+            }
+        });
+
+        // When China city select picks "其他", show text input
+        cityCn.addEventListener('change', function() {
+            cityOther.style.display = (this.value === '其他') ? '' : 'none';
+        });
+
+        // Interest "其他" toggle
+        var interestSelect = document.getElementById('r_interest');
+        var interestOther = document.getElementById('r_interest_other');
+        if (interestSelect && interestOther) {
+            interestSelect.addEventListener('change', function() {
+                interestOther.style.display = (this.value === 'other') ? '' : 'none';
+            });
+        }
+    });
+    </script>
+    <script src="public/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+# IBCB Investment — Backend API Status
+# Last verified: 2026-07-05
+
+## Auth
+[OK] POST /api/admin/login
+[OK] POST /api/admin/logout
+[OK] GET  /api/admin/status
+[OK] GET  /api/admin/csrf
+
+## Admin Dashboard
+[OK] GET  /api/admin/dashboard
+
+## Members
+[OK] GET    /api/members
+[OK] GET    /api/members/:id
+[OK] POST   /api/members (public)
+[OK] PUT    /api/members/:id (CSRF)
+[OK] DELETE /api/members/:id (CSRF)
+
+## Event Management (NEW — 活動管理)
+[OK] GET    /api/events/list (public)
+[OK] GET    /api/events/manage (admin)
+[OK] GET    /api/events/manage/:id (admin)
+[OK] POST   /api/events/manage (admin, CSRF)
+[OK] PUT    /api/events/manage/:id (admin, CSRF)
+[OK] DELETE /api/events/manage/:id (admin, CSRF)
+
+## Event Registration (NEW — 報名)
+[OK] POST   /api/events/:id/register (public, rate-limited)
+[OK] GET    /api/events/:id/registrations (admin)
+[OK] GET    /api/event-registrations (admin)
+[OK] DELETE /api/event-registrations/:id (admin, CSRF)
+
+## Legacy Events (event_submissions — backward compat)
+[OK] GET    /api/events (admin)
+[OK] POST   /api/events (public)
+[OK] GET    /api/events/stats
+[OK] PUT    /api/events/:id (CSRF)
+[OK] DELETE /api/events/:id (CSRF)
+
+## News
+[OK] GET    /api/news
+[OK] GET    /api/news/latest (public)
+[OK] POST   /api/news (CSRF)
+[OK] PUT    /api/news/:id (CSRF)
+[OK] DELETE /api/news/:id (CSRF)
+
+## Lectures (講座 — backward compat)
+[OK] GET    /api/lectures
+[OK] POST   /api/lectures (public)
+[OK] PUT    /api/lectures/:id
+[OK] DELETE /api/lectures/:id
+
+## Contact
+[OK] GET    /api/contact
+[OK] POST   /api/contact (public)
+[OK] PUT    /api/contact/:id/read
+[OK] DELETE /api/contact/:id
+
+## Export
+[OK] GET    /api/export/members.csv
+[OK] GET    /api/export/events.csv
+[OK] GET    /api/export/lectures.csv
+
+## URL Redirects
+[OK] /lectures → /events.html
+[OK] /lectures.html → /events.html
+
+## New Database Tables
+- events: id, title, description, content, location, event_date, event_time, status, created_at, updated_at
+- event_registrations: id, event_id, name, org, title, email, phone, wechat, country, city, interest, agreed, submittedAt

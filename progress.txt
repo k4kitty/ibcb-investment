@@ -1,0 +1,61 @@
+# IBCB Investment — 開發進度記錄
+# 最後更新: 2026-07-05 02:36 UTC
+
+## Phase A: 前台響應式優化 ✅ 已完成 (2026-07-05)
+- [x] CSS 全面重構：三層響應式斷點 (Desktop/Tablet/Mobile/Small Mobile)
+- [x] 滾動動畫系統 (fade-in / fade-in-up / stagger-children)
+- [x] 修復 7 個 HTML 文件（lang 屬性、結構 bug、class 名稱）
+- [x] app.js 重構（即時表單驗證、防重複提交、滾動動畫、版權年份）
+- [x] 移動端導航（body scroll lock、outside-click close）
+- [x] 講座/聯絡表單連接後端 API
+
+## Phase B: 後端基礎架構 ✅ 已完成 (2026-07-05)
+### B1. 安全加固
+- [x] Session auth + CSRF token (雙重保護)
+- [x] bcrypt 密碼哈希（兼容舊明文，首次登入自動升級）
+- [x] helmet 11 項安全標頭
+- [x] 登入速率限制 (20次/15分) + 公開端點限制 (30次/15分)
+- [x] 輸入 sanitization（sanitizeText / sanitizeSearch / sanitizeEmail）
+- [x] LIKE 注入防護（過濾 % _ 通配符）
+- [x] SIGTERM + SIGINT graceful shutdown
+- [x] CORS credentials + sameSite lax
+
+### B2. 數據庫層
+- [x] SQLite WAL mode + 8MB cache + synchronous NORMAL
+- [x] 6 個資料表：members, event_submissions, news, admins, lectures, contact_messages
+- [x] 20+ 索引（搜尋、排序、統計）
+- [x] TTL cache (60s) for dashboard stats
+- [x] Promise-wrapped DB helpers (dbGet/dbAll/dbRun)
+- [x] Schema migration (ALTER TABLE for missing columns)
+
+### B3. API 端點 (31 個，全部驗證 200)
+- [x] Auth: login, logout, status, csrf (4)
+- [x] Dashboard: aggregated stats (1)
+- [x] Members: CRUD + search + stats (6)
+- [x] Events: CRUD + search + stats (6)
+- [x] News: CRUD + public latest (5)
+- [x] Lectures: CRUD + search (5)
+- [x] Contact: CRUD + read toggle (4)
+- [x] Export: members.csv, events.csv, lectures.csv (3)
+
+### B4. 後台面板 (admin.html + admin.js)
+- [x] 6 個管理分頁：概覽、會員、活動、講座、新聞、聯絡
+- [x] 會員 CRUD（modal 編輯，CSRF 保護）
+- [x] 活動管理（查看、刪除）
+- [x] 講座管理（查看、刪除、CSV 導出）
+- [x] 新聞發布/編輯（雙模式表單）
+- [x] 聯絡訊息（查看、標記已讀、未讀過濾）
+- [x] 儀表板統計（TTL 快取、即時更新）
+
+## Phase B Bug Fixes (2026-07-05 02:35 UTC)
+1. [fixed] GET /api/events/stats 被 /api/events/:id 遮蔽 → 移動路由順序
+2. [fixed] POST /api/news 500 → news 表缺 updated_at 欄位，添加 ALTER TABLE migration
+3. [fixed] PUT /api/events/:id 500 → event_submissions 缺 updatedAt 欄位，添加 migration
+
+## Phase C: 待處理事項
+- [ ] 會員狀態篩選（active/inactive）的前端 UI
+- [ ] 活動日曆視圖
+- [ ] 批量會員導入 (CSV upload)
+- [ ] 郵件通知（新會員/活動報名/聯絡訊息）
+- [ ] express-session 改用 Redis store（生產環境）
+- [ ] 管理員密碼修改功能

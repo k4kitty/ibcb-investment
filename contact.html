@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us — IBCB Investment</title>
+    <link rel="stylesheet" href="public/css/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">IBCB</div>
+                <div class="logo-text">
+                    <span class="logo-main">IBCB Investment</span>
+                    <span class="logo-sub">Private Equity · Investing AI +</span>
+                </div>
+            </div>
+            <nav class="main-nav" id="mainNav">
+                <a href="index.html" class="nav-link">主頁</a>
+                <a href="about.html" class="nav-link">關於我們</a>
+                <a href="events.html" class="nav-link">活動報名</a>
+                <a href="news.html" class="nav-link">最新消息</a>
+                <a href="contact.html" class="nav-link active">Contact Us</a>
+                <a href="register.html" class="nav-link btn-register">加入會員</a>
+            </nav>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+    </header>
+
+    <main class="form-container fade-in">
+        <section class="form-card">
+            <div class="form-header">
+                <h2>Contact Us</h2>
+                <p class="form-subtitle">查詢投資項目、會員申請、講座及媒體聯絡</p>
+            </div>
+            <form id="contactForm" class="member-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>姓名 <span class="required">*</span></label>
+                        <input type="text" id="c_name" required autocomplete="name">
+                        <span class="error-message" id="c_nameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>機構 / 公司</label>
+                        <input type="text" id="c_org" autocomplete="organization">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>電郵 <span class="required">*</span></label>
+                        <input type="email" id="c_email" required autocomplete="email">
+                        <span class="error-message" id="c_emailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>電話</label>
+                        <input type="tel" id="c_phone" autocomplete="tel">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>主題 <span class="required">*</span></label>
+                    <input type="text" id="c_subject" required>
+                    <span class="error-message" id="c_subjectError"></span>
+                </div>
+                <div class="form-group">
+                    <label>內容 <span class="required">*</span></label>
+                    <textarea id="c_message" rows="5" required></textarea>
+                    <span class="error-message" id="c_messageError"></span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">發送訊息</button>
+                </div>
+            </form>
+            <div style="margin-top:24px;border-top:1px solid var(--color-border);padding-top:20px">
+                <p style="font-size:14px">電郵：<a href="mailto:admin@ibcgroup.com.hk" class="link">admin@ibcgroup.com.hk</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">IBCB Investment</div>
+                <p>Private Equity · Investing AI +</p>
+            </div>
+            <div class="footer-info">
+                <p>&copy; <span id="copyrightYear">2024</span> IBCB Investment. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <div class="toast" id="toast"></div>
+    <script src="public/js/app.js"></script>
+</body>
+</html>

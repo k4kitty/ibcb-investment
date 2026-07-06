@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動報名 — IBCB Investment</title>
+    <link rel="stylesheet" href="public/css/styles.css">
+    <style>
+        /* Event card styles */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-top: 8px;
+        }
+        .event-card {
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: 2px;
+            overflow: hidden;
+            transition: box-shadow var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .event-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .event-card-header {
+            background: var(--color-primary);
+            color: var(--color-white);
+            padding: 24px;
+        }
+        .event-card-header h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.35;
+        }
+        .event-card-date {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        .event-card-body {
+            padding: 20px 24px;
+            flex: 1;
+        }
+        .event-card-body .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .event-meta-item {
+            display: flex;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--color-text-light);
+        }
+        .event-meta-item .meta-label {
+            font-weight: 500;
+            color: var(--color-text);
+            min-width: 50px;
+        }
+        .event-card-desc {
+            font-size: 14px;
+            color: var(--color-text);
+            line-height: 1.65;
+            margin-bottom: 16px;
+        }
+        .event-card-footer {
+            padding: 0 24px 20px;
+        }
+        .event-card-footer .btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Registration modal */
+        .reg-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .reg-modal.open {
+            display: flex;
+        }
+        .reg-modal-box {
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: 2px;
+            padding: 32px;
+            width: 92%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .reg-modal-box h3 {
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+        }
+        .reg-modal-box .reg-event-title {
+            color: var(--color-text-light);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .reg-modal-close {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--color-text-light);
+            padding: 0;
+            line-height: 1;
+        }
+        .reg-modal-close:hover { color: var(--color-primary); }
+
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            .event-card-header {
+                padding: 20px;
+            }
+            .event-card-body {
+                padding: 16px 20px;
+            }
+            .reg-modal-box {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">IBCB</div>
+                <div class="logo-text">
+                    <span class="logo-main">IBCB Investment</span>
+                    <span class="logo-sub">Private Equity · Investing AI +</span>
+                </div>
+            </div>
+            <nav class="main-nav" id="mainNav">
+                <a href="index.html" class="nav-link">主頁</a>
+                <a href="about.html" class="nav-link">關於我們</a>
+                <a href="events.html" class="nav-link active">活動報名</a>
+                <a href="news.html" class="nav-link">最新消息</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <a href="register.html" class="nav-link btn-register">加入會員</a>
+            </nav>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+    </header>
+
+    <main>
+        <section class="section section-light">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <h2>活動報名</h2>
+                    <p class="section-subtitle">Events &amp; Registration</p>
+                </div>
+
+                <div class="events-grid stagger-children" id="eventsGrid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div id="noEvents" style="display:none; text-align:center; padding:48px 0; color:var(--color-text-light);">
+                    <p>暫無即將舉行的活動，請稍後再查閱。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Registration Modal -->
+    <div class="reg-modal" id="regModal">
+        <div class="reg-modal-box">
+            <button class="reg-modal-close" id="regModalClose">&times;</button>
+            <h3>活動報名</h3>
+            <p class="reg-event-title" id="regEventTitle"></p>
+            <form id="regForm" class="member-form">
+                <input type="hidden" id="regEventId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>姓名 <span class="required">*</span></label>
+                        <input type="text" id="regName" required>
+                        <span class="error-message" id="regNameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>機構 / 公司</label>
+                        <input type="text" id="regOrg">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>職位</label>
+                        <input type="text" id="regTitle">
+                    </div>
+                    <div class="form-group">
+                        <label>電郵 <span class="required">*</span></label>
+                        <input type="email" id="regEmail" required>
+                        <span class="error-message" id="regEmailError"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>電話</label>
+                        <input type="tel" id="regPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>微信</label>
+                        <input type="text" id="regWechat">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>國家 / 地區</label>
+                        <input type="text" id="regCountry">
+                    </div>
+                    <div class="form-group">
+                        <label>城市</label>
+                        <input type="text" id="regCity">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>備註 / 興趣</label>
+                    <input type="text" id="regInterest" placeholder="可選">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large" id="regSubmit">確認報名</button>
+                    <p class="form-note">我們將發送確認通知至您的電郵</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">IBCB Investment</div>
+                <p>Private Equity · Investing AI +</p>
+            </div>
+            <div class="footer-info">
+                <p>&copy; <span id="copyrightYear">2024</span> IBCB Investment. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Event Detail Modal -->
+    <div class="reg-modal" id="detailModal">
+        <div class="reg-modal-box" style="max-width:680px;">
+            <button class="reg-modal-close" id="detailModalClose">&times;</button>
+            <h3 id="detailTitle" style="font-size:1.1rem;margin-bottom:4px;"></h3>
+            <p style="color:var(--color-text-light);font-size:13px;margin-bottom:16px;" id="detailMeta"></p>
+            <div id="detailContent" style="font-size:14px;line-height:1.75;color:var(--color-text);white-space:pre-wrap;word-break:break-word;"></div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="public/js/app.js"></script>
+    <script>
+    /* Event page logic */
+    document.addEventListener('DOMContentLoaded', function() {
+        loadEvents();
+
+        // Modal close
+        document.getElementById('regModalClose').addEventListener('click', function() {
+            document.getElementById('regModal').classList.remove('open');
+        });
+        document.getElementById('regModal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('open');
+        });
+
+        // Registration form
+        document.getElementById('regForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('regSubmit');
+            var name = document.getElementById('regName').value.trim();
+            var email = document.getElementById('regEmail').value.trim();
+            if (!name || !email) {
+                showToast('\u8acb\u586b\u5beb\u59d3\u540d\u548c\u96fb\u90f5', 'error');
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showToast('\u96fb\u90f5\u683c\u5f0f\u4e0d\u6b63\u78ba', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '\u63d0\u4ea4\u4e2d...';
+
+            var payload = {
+                name: name,
+                email: email.toLowerCase(),
+                org: document.getElementById('regOrg').value.trim(),
+                title: document.getElementById('regTitle').value.trim(),
+                phone: document.getElementById('regPhone').value.trim(),
+                wechat: document.getElementById('regWechat').value.trim(),
+                country: document.getElementById('regCountry').value.trim(),
+                city: document.getElementById('regCity').value.trim(),
+                interest: document.getElementById('regInterest').value.trim()
+            };
+
+            var eventId = document.getElementById('regEventId').value;
+            fetch('/api/events/' + eventId + '/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(function(r) {
+                return r.json().then(function(d) {
+                    if (!r.ok) throw new Error(d.error || '\u5831\u540d\u5931\u6557');
+                    return d;
+                });
+            })
+            .then(function() {
+                showToast('\u5831\u540d\u6210\u529f\uff01\u78ba\u8a8d\u901a\u77e5\u5c07\u767c\u9001\u81f3\u60a8\u7684\u96fb\u90f5\u3002');
+                document.getElementById('regModal').classList.remove('open');
+                document.getElementById('regForm').reset();
+            })
+            .catch(function(err) {
+                showToast(err.message, 'error');
+            })
+            .finally(function() {
+                btn.disabled = false;
+                btn.textContent = '\u78ba\u8a8d\u5831\u540d';
+            });
+        });
+    });
+
+    function loadEvents() {
+        fetch('/api/events/list')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var grid = document.getElementById('eventsGrid');
+            var noEvt = document.getElementById('noEvents');
+            grid.innerHTML = '';
+
+            if (!data.events || data.events.length === 0) {
+                noEvt.style.display = 'block';
+                return;
+            }
+            noEvt.style.display = 'none';
+
+            data.events.forEach(function(evt) {
+                var card = document.createElement('div');
+                card.className = 'event-card';
+
+                // Show only short summary on card
+                var summary = evt.description || '';
+                var hasDetail = !!(evt.content && evt.content.trim());
+                if (summary.length > 150) summary = summary.substring(0, 150) + '...';
+
+                card.innerHTML =
+                    '<div class="event-card-header">' +
+                        '<h3>' + escapeHtml(evt.title) + '</h3>' +
+                        '<div class="event-card-date">' + formatEventDate(evt.event_date) + (evt.event_time ? ' &middot; ' + escapeHtml(evt.event_time) : '') + '</div>' +
+                    '</div>' +
+                    '<div class="event-card-body">' +
+                        '<div class="event-meta">' +
+                            (evt.location ? '<div class="event-meta-item"><span class="meta-label">地點</span><span>' + escapeHtml(evt.location) + '</span></div>' : '') +
+                        '</div>' +
+                        (summary ? '<div class="event-card-desc">' + escapeHtml(summary) + '</div>' : '') +
+                    '</div>' +
+                    '<div class="event-card-footer">' +
+                        (hasDetail ? '<button class="btn btn-dark detail-btn" data-detail-id="' + evt.id + '" style="margin-bottom:8px;width:100%;">活動詳細</button>' : '') +
+                        '<button class="btn btn-dark reg-btn" data-event-id="' + evt.id + '" data-event-title="' + escapeHtml(evt.title).replace(/"/g, '&quot;') + '" style="width:100%;">立即報名</button>' +
+                    '</div>';
+
+                grid.appendChild(card);
+            });
+
+            // Bind detail + registration buttons
+            var detailBtns = document.querySelectorAll('.detail-btn');
+            for (var i = 0; i < detailBtns.length; i++) {
+                detailBtns[i].addEventListener('click', function() {
+                    var evtId = this.getAttribute('data-detail-id');
+                    openDetailModal(evtId);
+                });
+            }
+
+            var regBtns = document.querySelectorAll('.reg-btn');
+            for (var j = 0; j < regBtns.length; j++) {
+                regBtns[j].addEventListener('click', function() {
+                    document.getElementById('regEventId').value = this.getAttribute('data-event-id');
+                    document.getElementById('regEventTitle').textContent = this.getAttribute('data-event-title');
+                    document.getElementById('regModal').classList.add('open');
+                });
+            }
+        })
+        .catch(function(err) {
+            console.error('Load events error:', err);
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[<>\"'&]/g, function(c) {
+            return {'<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '&': '&amp;'}[c];
+        });
+    }
+
+    function formatEventDate(iso) {
+        if (!iso) return '';
+        var d = new Date(iso);
+        var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    // Detail modal
+    document.getElementById('detailModalClose').addEventListener('click', function() {
+        document.getElementById('detailModal').classList.remove('open');
+    });
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+
+    function openDetailModal(evtId) {
+        fetch('/api/events/detail/' + evtId)
+        .then(function(r) { return r.json(); })
+        .then(function(evt) {
+            document.getElementById('detailTitle').textContent = evt.title || '';
+            var meta = formatEventDate(evt.event_date);
+            if (evt.event_time) meta += ' · ' + escapeHtml(evt.event_time);
+            if (evt.location) meta += ' · ' + escapeHtml(evt.location);
+            document.getElementById('detailMeta').textContent = meta;
+
+            var content = evt.content || evt.description || '';
+            // Convert URLs to clickable links, then render as HTML
+            document.getElementById('detailContent').innerHTML = linkifyHtml(content);
+
+            document.getElementById('detailModal').classList.add('open');
+        })
+        .catch(function(err) {
+            console.error('Load detail error:', err);
+        });
+    }
+
+    // Convert plain text to formatted HTML with links and line breaks
+        function linkifyHtml(text) {
+            // Escape HTML first for safety
+            var escaped = escapeHtml(text);
+            // Convert URLs to clickable links
+            var urlRe = /(https?:\/\/[^\s<>"']+)/gi;
+            escaped = escaped.replace(urlRe, function(url) {
+                var clean = url.replace(/[.,;:!?)」]+$/, '');
+                return '<a href="' + clean + '" target="_blank" rel="noopener noreferrer" style="color:var(--color-primary);text-decoration:underline;">' + clean + '</a>';
+            });
+            // Convert line breaks to <br> tags
+            escaped = escaped.replace(/\n/g, '<br>');
+            // Bold **text** patterns
+            escaped = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            return escaped;
+        }
+    </script>
+</body>
+</html>
