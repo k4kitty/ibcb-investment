@@ -95,7 +95,9 @@ if (isPG) {
         sqlite3 = require('sqlite3').verbose();
         const path = require('path');
         const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'ibcb.db');
-        db = new sqlite3.Database(DB_PATH);
+        db = new sqlite3.Database(DB_PATH, (err) => {
+            if (err) console.error('SQLite open error:', err.message);
+        });
 
         db.run('PRAGMA journal_mode=WAL');
         db.run('PRAGMA synchronous=NORMAL');
