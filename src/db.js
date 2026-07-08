@@ -10,7 +10,17 @@ let schema = [];
 
 if (isPG) {
     const { Pool } = require('pg');
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+    const pool = new Pool({ 
+        connectionString: process.env.DATABASE_URL, 
+        ssl: { rejectUnauthorized: false },
+        connectionTimeoutMillis: 8000,
+        query_timeout: 8000,
+    });
+    
+    // Fail-fast connection test on startup
+    pool.query('SELECT 1')
+        .then(() => console.log('✅ PostgreSQL connected'))
+        .catch(e => console.error('❌ PostgreSQL connection failed:', e.message));
 
     // PostgreSQL parameter placeholders: $1, $2, ... (not ?)
     function pgSql(sql, params = []) {
