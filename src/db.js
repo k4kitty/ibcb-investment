@@ -122,13 +122,16 @@ if (isPG) {
 
     if (db) {
         dbGet = (sql, params = []) => new Promise((resolve, reject) => {
-            db.get(sql, params, (err, row) => err ? reject(err) : resolve(row));
+            const t = setTimeout(() => reject(new Error('SQLite query timeout')), 5000);
+            db.get(sql, params, (err, row) => { clearTimeout(t); err ? reject(err) : resolve(row); });
         });
         dbAll = (sql, params = []) => new Promise((resolve, reject) => {
-            db.all(sql, params, (err, rows) => err ? reject(err) : resolve(rows));
+            const t = setTimeout(() => reject(new Error('SQLite query timeout')), 5000);
+            db.all(sql, params, (err, rows) => { clearTimeout(t); err ? reject(err) : resolve(rows); });
         });
         dbRun = (sql, params = []) => new Promise((resolve, reject) => {
-            db.run(sql, params, function(err) { err ? reject(err) : resolve(this); });
+            const t = setTimeout(() => reject(new Error('SQLite query timeout')), 5000);
+            db.run(sql, params, function(err) { clearTimeout(t); err ? reject(err) : resolve(this); });
         });
         dbClose = () => new Promise((resolve) => db.close(() => resolve()));
     } else {
@@ -171,7 +174,19 @@ module.exports = { dbGet, dbAll, dbRun, dbClose, initDB, isPG, getDBStatus };
 
 let dbStatus = { ready: false, error: null, type: isPG ? 'postgres' : 'sqlite' };
 async function getDBStatus() {
-    if (!isPG) return dbStatus;
+    if (!isPG) {
+        // SQLite: check if db handle exists and responds
+        try {
+            await Promise.race([
+                dbGet('SELECT 1'),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('timeout 5s')), 5000))
+            ]);
+            dbStatus.ready = true;
+        } catch (e) {
+            dbStatus.error = e.message;
+        }
+        return dbStatus;
+    }
     try {
         await Promise.race([
             pool.query('SELECT 1'),
