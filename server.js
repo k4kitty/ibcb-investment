@@ -9,7 +9,7 @@ const crypto = require('crypto');
 const path = require('path');
 
 // Database adapter: auto-detects SQLite (dev) or PostgreSQL (DATABASE_URL)
-const { dbGet, dbAll, dbRun, dbClose, initDB } = require('./src/db');
+const { dbGet, dbAll, dbRun, dbClose, initDB, isPG, getDBStatus } = require('./src/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -169,11 +169,12 @@ app.post('/api/admin/logout', (req, res) => {
 });
 
 // Auth status
-app.get('/api/admin/status', (req, res) => {
+app.get('/api/admin/status', async (req, res) => {
+    const dbStatus = await getDBStatus();
     if (req.session && req.session.admin) {
-        res.json({ authenticated: true, admin: req.session.admin, csrf: req.session.csrf });
+        res.json({ authenticated: true, admin: req.session.admin, csrf: req.session.csrf, db: dbStatus });
     } else {
-        res.json({ authenticated: false });
+        res.json({ authenticated: false, db: dbStatus });
     }
 });
 

@@ -30,8 +30,11 @@ if (isPG) {
 
     dbGet = async (sql, params = []) => {
         const { text, values } = pgSql(sql, params);
-        const { rows } = await pool.query(text, values);
-        return rows[0] || null;
+        const result = await Promise.race([
+            pool.query(text, values),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('DB query timeout')), 5000))
+        ]);
+        return result.rows[0] || null;
     };
 
     dbAll = async (sql, params = []) => {
@@ -164,4 +167,20 @@ async function initDB() {
     }
 }
 
-module.exports = { dbGet, dbAll, dbRun, dbClose, initDB, isPG };
+module.exports = { dbGet, dbAll, dbRun, dbClose, initDB, isPG, getDBStatus };
+
+let dbStatus = { ready: false, error: null, type: isPG ? 'postgres' : 'sqlite' };
+async function getDBStatus() {
+    if (!isPG) return dbStatus;
+    try {
+        await Promise.race([
+            pool.query('SELECT 1'),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('timeout 5s')), 5000))
+        ]);
+        dbStatus.ready = true;
+        return dbStatus;
+    } catch (e) {
+        dbStatus.error = e.message;
+        return dbStatus;
+    }
+}
