@@ -273,7 +273,7 @@ function initRegisterForm() {
             if (!city) { valid = false; showFieldError($('#r_city_other'), '請輸入城市'); }
         }
 
-        if (!valid) return;
+        if (!valid) { showToast('請檢查必填欄位（姓名、電郵、國家/地區、城市）', 'error'); return; }
 
         var submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '提交中...'; }

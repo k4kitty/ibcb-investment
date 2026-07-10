@@ -282,7 +282,7 @@
     <div id="memberModal" class="modal" style="display:none;">
         <div class="modal-box">
             <h3 id="memberModalTitle">編輯會員</h3>
-            <form id="memberForm">
+            <form id="memberForm" novalidate>
                 <input type="hidden" id="m_id">
                 <div class="form-row">
                     <div class="form-group">
@@ -384,9 +384,18 @@
         country.addEventListener('change', function() {
             var v = this.value;
             if (otherCountry) otherCountry.style.display = (v === '其他') ? '' : 'none';
-            if (cityCn) cityCn.style.display = (v === '中國') ? '' : 'none';
-            if (cityHk) cityHk.style.display = (v === '香港') ? '' : 'none';
-            if (cityOther) cityOther.style.display = (v === '其他' || !v) ? '' : 'none';
+            if (cityCn) {
+                cityCn.style.display = (v === '中國') ? '' : 'none';
+                if (v === '中國') cityCn.setAttribute('required', ''); else cityCn.removeAttribute('required');
+            }
+            if (cityHk) {
+                cityHk.style.display = (v === '香港') ? '' : 'none';
+                if (v === '香港') cityHk.setAttribute('required', ''); else cityHk.removeAttribute('required');
+            }
+            if (cityOther) {
+                cityOther.style.display = (v === '其他' || !v) ? '' : 'none';
+                if (v === '其他' || !v) cityOther.setAttribute('required', ''); else cityOther.removeAttribute('required');
+            }
         });
 
         // Interest "其他" toggle

@@ -169,12 +169,22 @@
         country.addEventListener('change', function() {
             var v = this.value;
             otherCountry.style.display = (v === '其他') ? '' : 'none';
-            cityCn.style.display = (v === '中國') ? '' : 'none';
+            if (v === '其他') otherCountry.setAttribute('required', ''); else otherCountry.removeAttribute('required');
+            if (cityCn) {
+                cityCn.style.display = (v === '中國') ? '' : 'none';
+                if (v === '中國') cityCn.setAttribute('required', ''); else cityCn.removeAttribute('required');
+            }
+            if (cityHk) {
+                cityHk.style.display = (v === '香港') ? '' : 'none';
+                if (v === '香港') cityHk.setAttribute('required', ''); else cityHk.removeAttribute('required');
+            }
             // When country is not 中國, always show text input for city
             if (v !== '中國') {
                 cityOther.style.display = '';
+                cityOther.setAttribute('required', '');
             } else {
                 cityOther.style.display = 'none';
+                cityOther.removeAttribute('required');
             }
         });
 
