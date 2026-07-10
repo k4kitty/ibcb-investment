@@ -324,7 +324,8 @@ app.post('/api/members', publicLimiter, async (req, res) => {
         cacheClear('members');
         res.json({ success: true, id, name, email });
     } catch (err) {
-        res.status(500).json({ error: '儲存失敗' });
+        console.error('Member save error:', err.message);
+        res.status(500).json({ error: '儲存失敗', detail: err.message });
     }
 });
 
