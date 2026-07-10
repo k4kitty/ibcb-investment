@@ -171,10 +171,17 @@ app.post('/api/admin/logout', (req, res) => {
 // Auth status
 app.get('/api/admin/status', async (req, res) => {
     const dbStatus = await getDBStatus();
+    let cols = null;
+    try {
+        if (isPG) {
+            const r = await dbAll("SELECT column_name FROM information_schema.columns WHERE table_name='members'");
+            cols = r.map(x => x.column_name);
+        }
+    } catch (e) { cols = 'ERR ' + e.message; }
     if (req.session && req.session.admin) {
-        res.json({ authenticated: true, admin: req.session.admin, csrf: req.session.csrf, db: dbStatus });
+        res.json({ authenticated: true, admin: req.session.admin, csrf: req.session.csrf, db: dbStatus, membersCols: cols });
     } else {
-        res.json({ authenticated: false, db: dbStatus });
+        res.json({ authenticated: false, db: dbStatus, membersCols: cols });
     }
 });
 
