@@ -165,13 +165,13 @@ async function initDB() {
         // (folded to lowercase), causing "column does not exist" errors.
         if (isPG) {
             const renames = [
-                ['members', 'RegisteredAt', 'registeredat'],
-                ['members', 'UpdatedAt', 'updatedat'],
-                ['event_submissions', 'SubmittedAt', 'submittedat'],
-                ['event_submissions', 'UpdatedAt', 'updatedat'],
-                ['event_registrations', 'SubmittedAt', 'submittedat'],
-                ['lectures', 'SubmittedAt', 'submittedat'],
-                ['contact_messages', 'SubmittedAt', 'submittedat'],
+                ['members', 'registeredAt', 'registeredat'],
+                ['members', 'updatedAt', 'updatedat'],
+                ['event_submissions', 'submittedAt', 'submittedat'],
+                ['event_submissions', 'updatedAt', 'updatedat'],
+                ['event_registrations', 'submittedAt', 'submittedat'],
+                ['lectures', 'submittedAt', 'submittedat'],
+                ['contact_messages', 'submittedAt', 'submittedat'],
             ];
             for (const [tbl, oldCol, newCol] of renames) {
                 try {
