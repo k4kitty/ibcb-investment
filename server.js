@@ -11,6 +11,23 @@ const path = require('path');
 // Database adapter: auto-detects SQLite (dev) or PostgreSQL (DATABASE_URL)
 const { dbGet, dbAll, dbRun, dbClose, initDB, isPG, getDBStatus } = require('./src/db');
 
+// ================== IN-MEMORY CACHE ==================
+// Simple TTL cache to avoid repeated DB aggregation queries.
+const _cache = new Map();
+function cacheGet(key) {
+    const v = _cache.get(key);
+    if (!v) return null;
+    if (v.expire && Date.now() > v.expire) { _cache.delete(key); return null; }
+    return v.data;
+}
+function cacheSet(key, data, ttlMs = 30000) {
+    _cache.set(key, { data, expire: Date.now() + ttlMs });
+}
+function cacheClear(key) {
+    if (key) _cache.delete(key);
+    else _cache.clear();
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const IS_PROD = process.env.NODE_ENV === 'production';
@@ -171,17 +188,10 @@ app.post('/api/admin/logout', (req, res) => {
 // Auth status
 app.get('/api/admin/status', async (req, res) => {
     const dbStatus = await getDBStatus();
-    let cols = null;
-    try {
-        if (isPG) {
-            const r = await dbAll("SELECT column_name FROM information_schema.columns WHERE table_name='members'");
-            cols = r.map(x => x.column_name);
-        }
-    } catch (e) { cols = 'ERR ' + e.message; }
     if (req.session && req.session.admin) {
-        res.json({ authenticated: true, admin: req.session.admin, csrf: req.session.csrf, db: dbStatus, membersCols: cols });
+        res.json({ authenticated: true, admin: req.session.admin, csrf: req.session.csrf, db: dbStatus });
     } else {
-        res.json({ authenticated: false, db: dbStatus, membersCols: cols });
+        res.json({ authenticated: false, db: dbStatus });
     }
 });
 
@@ -325,7 +335,7 @@ app.post('/api/members', publicLimiter, async (req, res) => {
         res.json({ success: true, id, name, email });
     } catch (err) {
         console.error('Member save error:', err.message);
-        res.status(500).json({ error: '儲存失敗', detail: err.message });
+        res.status(500).json({ error: '儲存失敗' });
     }
 });
 
