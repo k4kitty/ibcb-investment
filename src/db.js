@@ -53,12 +53,15 @@ if (isPG) {
     dbClose = async () => { await pool.end(); };
 
     // PostgreSQL schema (IF NOT EXISTS for idempotency)
+    // NOTE: column names are kept LOWERCASE (no quotes) so they match the
+    // unquoted identifiers used in server.js queries. PostgreSQL folds
+    // unquoted identifiers to lowercase, but quoted ones keep their case.
     schema = [
         `CREATE TABLE IF NOT EXISTS members (
             id TEXT PRIMARY KEY, name TEXT NOT NULL, org TEXT, title TEXT, role TEXT,
             email TEXT UNIQUE NOT NULL, phone TEXT, wechat TEXT,
             country TEXT NOT NULL, city TEXT NOT NULL, interest TEXT,
-            status TEXT DEFAULT 'active', "registeredAt" TEXT, "updatedAt" TEXT
+            status TEXT DEFAULT 'active', registeredat TEXT, updatedat TEXT
         )`,
         `CREATE TABLE IF NOT EXISTS events (
             id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT, content TEXT,
@@ -69,12 +72,12 @@ if (isPG) {
         `CREATE TABLE IF NOT EXISTS event_submissions (
             id TEXT PRIMARY KEY, name TEXT NOT NULL, org TEXT, email TEXT NOT NULL,
             phone TEXT, wechat TEXT, date TEXT NOT NULL, slot TEXT NOT NULL,
-            interest TEXT, agreed INTEGER DEFAULT 0, "submittedAt" TEXT, "updatedAt" TEXT
+            interest TEXT, agreed INTEGER DEFAULT 0, submittedat TEXT, updatedat TEXT
         )`,
         `CREATE TABLE IF NOT EXISTS event_registrations (
             id TEXT PRIMARY KEY, event_id TEXT NOT NULL, name TEXT NOT NULL, org TEXT,
             title TEXT, email TEXT NOT NULL, phone TEXT, wechat TEXT,
-            country TEXT, city TEXT, interest TEXT, agreed INTEGER DEFAULT 0, "submittedAt" TEXT,
+            country TEXT, city TEXT, interest TEXT, agreed INTEGER DEFAULT 0, submittedat TEXT,
             FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE
         )`,
         `CREATE TABLE IF NOT EXISTS news (
@@ -85,19 +88,19 @@ if (isPG) {
             id TEXT PRIMARY KEY, name TEXT NOT NULL, org TEXT, title TEXT, role TEXT,
             email TEXT NOT NULL, phone TEXT, wechat TEXT,
             country TEXT NOT NULL, city TEXT NOT NULL, date TEXT, topic TEXT,
-            agreed INTEGER DEFAULT 0, "submittedAt" TEXT
+            agreed INTEGER DEFAULT 0, submittedat TEXT
         )`,
         `CREATE TABLE IF NOT EXISTS contact_messages (
             id TEXT PRIMARY KEY, name TEXT NOT NULL, org TEXT, email TEXT NOT NULL,
             phone TEXT, subject TEXT NOT NULL, message TEXT NOT NULL,
-            read INTEGER DEFAULT 0, "submittedAt" TEXT
+            read INTEGER DEFAULT 0, submittedat TEXT
         )`,
         `CREATE TABLE IF NOT EXISTS admins (
             id TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL
         )`,
         // Indexes
         `CREATE INDEX IF NOT EXISTS idx_members_email ON members(email)`,
-        `CREATE INDEX IF NOT EXISTS idx_members_registered ON members("registeredAt" DESC)`,
+        `CREATE INDEX IF NOT EXISTS idx_members_registered ON members(registeredat DESC)`,
         `CREATE INDEX IF NOT EXISTS idx_events_date ON events(event_date DESC)`,
         `CREATE INDEX IF NOT EXISTS idx_news_date ON news(date DESC)`,
     ];
@@ -154,6 +157,29 @@ async function initDB() {
         for (const stmt of schema) {
             try { await dbRun(stmt); } catch (e) {
                 console.error('Schema warn:', e.message.substring(0, 80));
+            }
+        }
+        // ---- Migration: rename mixed-case columns to lowercase (PostgreSQL) ----
+        // Earlier schema used quoted "registeredAt"/"updatedAt"/"submittedAt" which
+        // PostgreSQL stores as case-sensitive. server.js queries them unquoted
+        // (folded to lowercase), causing "column does not exist" errors.
+        if (isPG) {
+            const renames = [
+                ['members', 'RegisteredAt', 'registeredat'],
+                ['members', 'UpdatedAt', 'updatedat'],
+                ['event_submissions', 'SubmittedAt', 'submittedat'],
+                ['event_submissions', 'UpdatedAt', 'updatedat'],
+                ['event_registrations', 'SubmittedAt', 'submittedat'],
+                ['lectures', 'SubmittedAt', 'submittedat'],
+                ['contact_messages', 'SubmittedAt', 'submittedat'],
+            ];
+            for (const [tbl, oldCol, newCol] of renames) {
+                try {
+                    await dbRun(`ALTER TABLE "${tbl}" RENAME COLUMN "${oldCol}" TO "${newCol}"`);
+                    console.log(`Renamed ${tbl}.${oldCol} -> ${newCol}`);
+                } catch (e) {
+                    // column already lowercase or doesn't exist — safe to ignore
+                }
             }
         }
         // Seed admin if not exists
