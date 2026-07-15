@@ -102,6 +102,7 @@ main { max-width:900px; margin:0 auto; padding:24px 20px 60px; }
 </header>
 
 <main id="app">
+<div style="max-width:900px;margin:0 auto;padding:8px 20px 0;"><a href="mtl-english.html" style="color:var(--blue);text-decoration:none;font-size:0.9rem;font-weight:600;">← Back to MTL English</a></div>
 <section id="view-levels">
 <div class="hero"><h1>🔤 Spelling & Phonics</h1><p>A complete, systematic phonics curriculum. Master spelling from short vowels to advanced patterns.</p></div>
 <div class="level-grid" id="levelGrid"></div>
@@ -416,5 +417,6 @@ renderLevels();
 // ─── TTS Read-Aloud ────────────────────────────────────
 (function(){function spk(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function addSB(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();spk(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.passage,.rule,.practice-box h3,.word-display,.ex,.pbox .rule,.mtl-passage,.practice-box .rule').forEach(addSB);},600);var obs2=new MutationObserver(function(){document.querySelectorAll('.passage:not(:has(.spk-btn)),.rule:not(:has(.spk-btn)),.word-display:not(:has(.spk-btn)),.ex:not(:has(.spk-btn)),.practice-box h3:not(:has(.spk-btn)),.pbox .rule:not(:has(.spk-btn))').forEach(addSB);});obs2.observe(document.getElementById('app')||document.body,{childList:true,subtree:true});})();
 </script>
+<script>document.addEventListener('DOMContentLoaded',function(){var l=document.querySelector('.logo');if(!l||l.querySelector('a'))return;var a=document.createElement('a');a.href='index.html';a.style.cssText='text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';a.innerHTML=l.innerHTML;l.innerHTML='';l.appendChild(a);});</script>
 </body>
 </html>

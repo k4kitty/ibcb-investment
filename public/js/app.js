@@ -474,4 +474,17 @@ document.addEventListener('DOMContentLoaded', function () {
     normalizeLinks();
     softRedirect();
     updateCopyright();
+    makeLogoClickable();
 });
+
+// Make IBCB logo clickable → links to homepage
+function makeLogoClickable() {
+    const logo = document.querySelector('.logo');
+    if (!logo || logo.querySelector('a')) return;
+    const link = document.createElement('a');
+    link.href = 'index.html';
+    link.style.cssText = 'text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';
+    link.innerHTML = logo.innerHTML;
+    logo.innerHTML = '';
+    logo.appendChild(link);
+}

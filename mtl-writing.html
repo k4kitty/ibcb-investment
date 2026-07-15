@@ -147,5 +147,6 @@ function showComplete(){
 (function(){function s(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function a(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();s(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.rule,.ex,.pbox h3').forEach(a);},600);var o=new MutationObserver(function(){document.querySelectorAll('.rule:not(:has(.spk-btn)),.ex:not(:has(.spk-btn)),.pbox h3:not(:has(.spk-btn))').forEach(a);});o.observe(document.body,{childList:true,subtree:true});})();
 renderLevels();
 </script>
+<script>document.addEventListener('DOMContentLoaded',function(){var l=document.querySelector('.logo');if(!l||l.querySelector('a'))return;var a=document.createElement('a');a.href='index.html';a.style.cssText='text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';a.innerHTML=l.innerHTML;l.innerHTML='';l.appendChild(a);});</script>
 </body>
 </html>
