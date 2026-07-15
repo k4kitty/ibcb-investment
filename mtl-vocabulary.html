@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move To Learn — Vocabulary Skills</title>
+<link rel="stylesheet" href="public/css/styles.css">
+<style>
+:root { --gold:#d4a843; --blue:#2c3e50; --green:#2d8a4e; --red:#c0392b; --r:12px; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:Inter,system-ui,-apple-system,sans-serif; color:#1a1a1a; }
+header { border-bottom:1px solid #eee; padding:12px 0; background:#fff; }
+header .hc { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
+.logo { display:flex; align-items:center; gap:12px; }
+.logo-icon { font-size:0.85rem; font-weight:800; letter-spacing:1px; }
+.logo-text { font-size:0.8rem; color:#888; }
+.back-link { color:var(--blue); text-decoration:none; font-size:0.9rem; font-weight:600; cursor:pointer; }
+.back-link:hover { text-decoration:underline; }
+.mtl-back { display:inline-block; margin-bottom:12px; color:var(--blue); text-decoration:none; font-weight:600; font-size:0.9rem; }
+.mtl-back:hover { text-decoration:underline; }
+main { max-width:900px; margin:0 auto; padding:24px 20px 60px; }
+.hero { text-align:center; padding:40px 0 20px; }
+.hero h1 { font-size:2rem; margin-bottom:6px; }
+.hero p { color:#666; font-size:1rem; max-width:520px; margin:0 auto; }
+.level-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin:24px 0; }
+.level-card { background:#fff; border:2px solid #eee; border-radius:var(--r); padding:20px; cursor:pointer; transition:all .2s; }
+.level-card:hover { border-color:var(--gold); box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+.level-card .num { font-size:2rem; font-weight:800; color:var(--blue); line-height:1; }
+.level-card .name { font-weight:600; margin:4px 0; }
+.level-card .desc { font-size:0.82rem; color:#888; }
+.lesson-list { margin:20px 0; }
+.lesson-card { background:#fff; border:1px solid #eee; border-radius:var(--r); padding:20px 24px; margin-bottom:12px; cursor:pointer; transition:all .2s; }
+.lesson-card:hover { border-color:var(--blue); }
+.lesson-card .ln { font-size:0.75rem; color:var(--blue); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.lesson-card .lt { font-weight:600; margin:2px 0; }
+.lesson-card .ld { font-size:0.85rem; color:#666; margin:4px 0; }
+.lesson-card .tags { margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+.lesson-card .tag { background:#f0f0f0; padding:2px 10px; border-radius:20px; font-size:0.78rem; }
+.practice-box { background:#fff; border:1px solid #eee; border-radius:var(--r); padding:32px; max-width:640px; margin:20px auto; text-align:center; }
+.practice-box h3 { font-size:1.2rem; margin-bottom:4px; }
+.practice-box .rule { color:var(--blue); font-weight:600; margin-bottom:16px; font-size:0.95rem; }
+.word-display { font-size:2.5rem; font-weight:700; margin:20px 0; color:var(--blue); }
+.choices { display:flex; flex-direction:column; gap:10px; max-width:450px; margin:16px auto; }
+.choice-btn { padding:14px 18px; border:2px solid #ddd; border-radius:10px; background:#fff; font-size:0.95rem; cursor:pointer; transition:all .2s; text-align:left; }
+.choice-btn:hover:not(:disabled) { border-color:var(--blue); background:#f8faff; }
+.choice-btn.correct { border-color:var(--green); background:#e8f5e0; color:var(--green); font-weight:600; }
+.choice-btn.wrong { border-color:var(--red); background:#fdecea; color:var(--red); }
+.choice-btn:disabled { cursor:default; opacity:0.85; }
+.btn { padding:12px 32px; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; transition:all .2s; }
+.btn-primary { background:var(--blue); color:#fff; }
+.btn-primary:hover { background:#1a252f; }
+.btn-gold { background:var(--gold); color:#fff; }
+.btn-gold:hover { background:#b8942e; }
+.feedback { padding:12px; margin:12px 0; border-radius:8px; font-weight:600; display:none; }
+.feedback.show { display:block; }
+.feedback.correct { background:#e8f5e0; color:var(--green); }
+.feedback.wrong { background:#fdecea; color:var(--red); }
+.progress-bar { height:6px; background:#eee; border-radius:3px; margin:16px 0; overflow:hidden; }
+.progress-fill { height:100%; background:var(--green); border-radius:3px; transition:width .3s; }
+.score { font-size:0.85rem; color:#888; margin-bottom:8px; }
+.complete-box { text-align:center; padding:40px; }
+.complete-box .big { font-size:3rem; }
+.complete-box h2 { margin:12px 0; }
+.teach-box { background:#f9fafb; border:1px solid #eee; border-radius:var(--r); padding:24px; margin-bottom:20px; text-align:left; max-width:600px; margin-left:auto; margin-right:auto; }
+.teach-box h4 { color:var(--blue); margin-bottom:8px; }
+.passage { background:#f9fafb; border-left:4px solid var(--blue); padding:16px 20px; margin:12px auto 20px; text-align:left; font-size:0.9rem; line-height:1.6; max-width:500px; border-radius:0 8px 8px 0; }
+@media (max-width:600px) { .level-grid { grid-template-columns:1fr; } .practice-box { padding:20px; } .word-display { font-size:1.8rem; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon">IBCB</div>
+            <div class="logo-text">
+                <span class="logo-main">IBCB Investment</span>
+                <span class="logo-sub">Private Equity · Investing AI +</span>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">主頁</a>
+            <a href="about.html" class="nav-link">關於我們</a>
+            <a href="mtl-english.html" class="nav-link active">Move To Learn</a>
+        </nav>
+    </div>
+</header>
+
+<main id="app">
+<a href="mtl-english.html" class="mtl-back">← Back to MTL English</a>
+
+<section id="view-levels">
+<div class="hero">
+    <h1>📚 Vocabulary Skills</h1>
+    <p>A complete vocabulary curriculum from everyday words to SAT-level. Build your word power level by level!</p>
+</div>
+<div class="level-grid" id="levelGrid"></div>
+</section>
+
+<section id="view-lessons" style="display:none;">
+<button class="back-link" onclick="showLevels()" style="margin-bottom:16px;">← All Levels</button>
+<div id="lessonContent"></div>
+</section>
+
+<section id="view-practice" style="display:none;">
+<button class="back-link" onclick="showLessons()" style="margin-bottom:16px;">← Back to Lessons</button>
+<div id="practiceContent"></div>
+</section>
+</main>
+
+<script>
+// ========== VOCABULARY CURRICULUM ==========
+const C = [
+
+{id:1,name:'Everyday Words',emoji:'🏠',desc:'Colors, numbers, family, and common objects',
+lessons:[
+{id:1,title:'Colors & Numbers',explain:'Everyday words to describe the world.',words:[
+{w:'Red',d:'The color of apples and fire trucks'},{w:'Blue',d:'The color of the sky and ocean'},
+{w:'Green',d:'The color of grass and leaves'},{w:'Yellow',d:'The color of the sun and bananas'},
+{w:'Black',d:'The darkest color, like night'},{w:'White',d:'The color of snow and clouds'},
+{w:'Orange',d:'A mix of red and yellow — the fruit too!'},{w:'Purple',d:'The color of grapes and lavender'}
+]},
+{id:2,title:'Family Members',explain:'Words for the people closest to you.',words:[
+{w:'Mother',d:'Your female parent'},{w:'Father',d:'Your male parent'},
+{w:'Sister',d:'A female sibling'},{w:'Brother',d:'A male sibling'},
+{w:'Grandmother',d:'Your parent\'s mother'},{w:'Grandfather',d:'Your parent\'s father'},
+{w:'Aunt',d:'Your parent\'s sister'},{w:'Uncle',d:'Your parent\'s brother'}
+]},
+{id:3,title:'Common Objects',explain:'Things you see and use every day.',words:[
+{w:'Table',d:'A flat surface with legs for eating or working'},{w:'Chair',d:'Something you sit on'},
+{w:'Book',d:'Pages with words and pictures to read'},{w:'Window',d:'Glass in a wall that lets in light'},
+{w:'Clock',d:'Shows you what time it is'},{w:'Phone',d:'A device to talk to people far away'},
+{w:'Door',d:'You open this to enter or leave a room'},{w:'Bed',d:'Where you sleep at night'}
+]}
+]},
+
+{id:2,name:'Action Words',emoji:'🏃',desc:'Verbs that describe what people and things do',
+lessons:[
+{id:1,title:'Movement Actions',explain:'Words for how we move our bodies.',words:[
+{w:'Run',d:'To move very fast on your feet'},{w:'Jump',d:'To push off the ground with both feet'},
+{w:'Walk',d:'To move at a normal speed on your feet'},{w:'Swim',d:'To move through water'},
+{w:'Dance',d:'To move your body to music'},{w:'Climb',d:'To go up something using hands and feet'},
+{w:'Skip',d:'To hop lightly from one foot to the other'},{w:'Crawl',d:'To move on hands and knees'}
+]},
+{id:2,title:'Daily Actions',explain:'Things we do every day.',words:[
+{w:'Eat',d:'To put food in your mouth and swallow'},{w:'Sleep',d:'To close your eyes and rest at night'},
+{w:'Read',d:'To look at words and understand them'},{w:'Write',d:'To make letters and words with a pen'},
+{w:'Sing',d:'To make music with your voice'},{w:'Draw',d:'To make a picture with a pencil'},
+{w:'Cook',d:'To prepare food using heat'},{w:'Wash',d:'To clean with water'}
+]},
+{id:3,title:'Communication',explain:'How we share ideas and feelings.',words:[
+{w:'Speak',d:'To say words out loud'},{w:'Listen',d:'To pay attention to sounds'},
+{w:'Ask',d:'To say a question'},{w:'Answer',d:'To reply to a question'},
+{w:'Tell',d:'To give information to someone'},{w:'Shout',d:'To speak very loudly'},
+{w:'Whisper',d:'To speak very quietly'},{w:'Laugh',d:'To make a happy sound'}
+]}
+]},
+
+{id:3,name:'Describing Words',emoji:'🎨',desc:'Adjectives for people, places, and things',
+lessons:[
+{id:1,title:'Size & Shape',explain:'Words to describe how big or small something is.',words:[
+{w:'Big',d:'Large in size'},{w:'Small',d:'Little in size'},
+{w:'Tall',d:'High in height'},{w:'Short',d:'Low in height'},
+{w:'Wide',d:'Broad from side to side'},{w:'Narrow',d:'Thin from side to side'},
+{w:'Round',d:'Shaped like a circle'},{w:'Flat',d:'Smooth and level'}
+]},
+{id:2,title:'Feelings',explain:'Words to describe emotions and states.',words:[
+{w:'Happy',d:'Feeling good and joyful'},{w:'Sad',d:'Feeling unhappy'},
+{w:'Angry',d:'Feeling mad or upset'},{w:'Brave',d:'Not afraid of danger'},
+{w:'Tired',d:'Needing rest or sleep'},{w:'Excited',d:'Very happy and eager'},
+{w:'Calm',d:'Peaceful and relaxed'},{w:'Proud',d:'Feeling good about what you did'}
+]},
+{id:3,title:'Quality',explain:'Words to describe how things look and feel.',words:[
+{w:'Hot',d:'Having a high temperature'},{w:'Cold',d:'Having a low temperature'},
+{w:'Fast',d:'Moving quickly'},{w:'Slow',d:'Moving at low speed'},
+{w:'Old',d:'Having existed for a long time'},{w:'New',d:'Recently made or bought'},
+{w:'Strong',d:'Having great power'},{w:'Weak',d:'Lacking strength'}
+]}
+]},
+
+{id:4,name:'Synonyms & Antonyms',emoji:'🔁',desc:'Same meaning and opposite meaning words',
+lessons:[
+{id:1,title:'Common Synonyms',explain:'Synonyms are words that mean almost the SAME thing.',words:[
+{w:'Happy — Glad',d:'SYNONYM — both mean feeling joy'},{w:'Sad — Unhappy',d:'SYNONYM — both mean feeling down'},
+{w:'Big — Large',d:'SYNONYM — both mean great in size'},{w:'Small — Tiny',d:'SYNONYM — both mean little'},
+{w:'Fast — Quick',d:'SYNONYM — both mean moving rapidly'},{w:'Smart — Clever',d:'SYNONYM — both mean intelligent'},
+{w:'Brave — Courageous',d:'SYNONYM — both mean showing no fear'},{w:'Pretty — Beautiful',d:'SYNONYM — both mean nice to look at'}
+]},
+{id:2,title:'Common Antonyms',explain:'Antonyms are words with OPPOSITE meanings.',words:[
+{w:'Hot',d:'ANTONYM: Cold'},{w:'Big',d:'ANTONYM: Small'},
+{w:'Happy',d:'ANTONYM: Sad'},{w:'Fast',d:'ANTONYM: Slow'},
+{w:'Light',d:'ANTONYM: Dark'},{w:'Old',d:'ANTONYM: New / Young'},
+{w:'Strong',d:'ANTONYM: Weak'},{w:'Loud',d:'ANTONYM: Quiet'}
+]},
+{id:3,title:'Synonym or Antonym?',explain:'Can you tell if they are synonyms or antonyms?',words:[
+{w:'Begin — Start',d:'SYNONYM (same meaning)'},{w:'Love — Hate',d:'ANTONYM (opposite)'},
+{w:'Above — Below',d:'ANTONYM (opposite)'},{w:'Help — Assist',d:'SYNONYM (same meaning)'},
+{w:'Danger — Safety',d:'ANTONYM (opposite)'},{w:'Create — Make',d:'SYNONYM (same meaning)'},
+{w:'Simple — Easy',d:'SYNONYM (same meaning)'},{w:'Give — Receive',d:'ANTONYM (opposite)'}
+]}
+]},
+
+{id:5,name:'Word Roots',emoji:'🌳',desc:'Latin and Greek roots — building blocks of English',
+lessons:[
+{id:1,title:'PORT = Carry',explain:'"Port" means "to carry." Know this root and unlock many words!',words:[
+{w:'Transport',d:'To carry across (trans=across + port=carry)'},{w:'Export',d:'To carry out — send goods to another country'},
+{w:'Import',d:'To carry in — bring goods from another country'},{w:'Portable',d:'Able to be carried (able=can be)'},
+{w:'Report',d:'To carry back information (re=back)'},{w:'Support',d:'To carry from below (sup=under)'},
+{w:'Deport',d:'To carry away (de=away)'},{w:'Porter',d:'A person who carries things'}
+]},
+{id:2,title:'SPECT = Look',explain:'"Spect" means "to look" or "to see."',words:[
+{w:'Inspect',d:'To look into carefully (in=into)'},{w:'Respect',d:'To look again with admiration (re=again)'},
+{w:'Spectacle',d:'An amazing thing to look at'},{w:'Spectator',d:'A person who watches (looks at) something'},
+{w:'Prospect',d:'Looking forward (pro=forward)'},{w:'Suspect',d:'To look with doubt (sus=under)'},
+{w:'Retrospect',d:'Looking back (retro=back)'},{w:'Circumspect',d:'Looking around cautiously (circum=around)'}
+]},
+{id:3,title:'More Roots',explain:'DICT=say, SCRIB=write, AUD=hear.',words:[
+{w:'Dictate',d:'To say words for someone to write'},{w:'Predict',d:'To say before (pre=before + dict=say)'},
+{w:'Describe',d:'To write about (de=down + scribe=write)'},{w:'Manuscript',d:'Written by hand (manu=hand + script=write)'},
+{w:'Audience',d:'A group of people who listen'},{w:'Audible',d:'Able to be heard (ible=can be)'},
+{w:'Contradict',d:'To say against (contra=against + dict=say)'},{w:'Audio',d:'Relating to sound or hearing'}
+]}
+]},
+
+{id:6,name:'Context Clues',emoji:'🔎',desc:'Figure out word meanings from surrounding text',
+lessons:[
+{id:1,title:'Definition Clues',explain:'Sometimes the meaning is explained right in the sentence!',words:[
+{w:'Arduous',d:'Very difficult; requiring great effort',c:'The arduous climb up the mountain left everyone exhausted.'},
+{w:'Benevolent',d:'Kind and generous; wanting to help',c:'The benevolent woman donated food to the shelter every week.'},
+{w:'Frugal',d:'Careful with money; not wasteful',c:'My frugal grandmother saves every penny and always shops sales.'},
+{w:'Vivid',d:'Very bright, clear, and detailed',c:'The artist used vivid colors — bright reds and sunny yellows.'},
+{w:'Jubilant',d:'Feeling great happiness and triumph',c:'The team was jubilant after winning the championship.'},
+{w:'Perilous',d:'Full of danger; very risky',c:'The narrow cliff path was a perilous journey.'},
+{w:'Abundant',d:'More than enough; plentiful',c:'The garden gave an abundant harvest of tomatoes.'},
+{w:'Meager',d:'Very small; not enough',c:'The meager meal of a few crackers left them still hungry.'}
+]},
+{id:2,title:'Contrast Clues',explain:'Contrast words (but, however, although) show opposite meanings.',words:[
+{w:'Timid',d:'Shy and easily frightened',c:'Unlike her bold sister, Maria was timid and rarely spoke up.'},
+{w:'Verbose',d:'Using too many words',c:'The professor was verbose, while her assistant was brief and direct.'},
+{w:'Loathe',d:'To hate or strongly dislike',c:'I adore pizza but loathe the bitter taste of broccoli.'},
+{w:'Serene',d:'Calm, peaceful, and untroubled',c:'The lake was serene, unlike the noisy city nearby.'},
+{w:'Gullible',d:'Easily tricked or fooled',c:'My gullible brother believed the prank while I knew it was fake.'},
+{w:'Eloquent',d:'Fluent and persuasive in speaking',c:'MLK Jr. was an eloquent speaker who inspired millions.'},
+{w:'Innovative',d:'Introducing new ideas; creative',c:'Apple is known for being innovative, creating the iPhone.'},
+{w:'Ponder',d:'To think carefully about',c:'She sat quietly to ponder the difficult math problem.'}
+]},
+{id:3,title:'Inference Clues',explain:'Use the whole situation to guess — what must it mean?',words:[
+{w:'Scrutinize',d:'To examine very closely and carefully',c:'The detective scrutinized the crime scene for clues.'},
+{w:'Reluctant',d:'Unwilling and hesitant',c:'The child was reluctant to jump in, dipping one toe at a time.'},
+{w:'Deteriorate',d:'To become worse over time',c:'Without care the house deteriorated: paint peeled, roof leaked.'},
+{w:'Compel',d:'To force or strongly urge',c:'The evidence compelled the jury to find him guilty.'},
+{w:'Ambiguous',d:'Unclear; having more than one meaning',c:'Her "maybe" was ambiguous — nobody knew her plans.'},
+{w:'Advocate',d:'To publicly support or recommend',c:'The doctor advocated for healthier school lunches.'}
+]}
+]},
+
+{id:7,name:'Academic Vocabulary',emoji:'🏫',desc:'Essential words for school, textbooks, and exams',
+lessons:[
+{id:1,title:'Analysis Words',explain:'Words used when you study and examine something.',words:[
+{w:'Analyze',d:'To study carefully by breaking into parts'},{w:'Evaluate',d:'To judge the value or quality'},
+{w:'Demonstrate',d:'To show clearly how something works'},{w:'Identify',d:'To find and name something'},
+{w:'Compare',d:'To find similarities'},{w:'Contrast',d:'To find differences'},
+{w:'Summarize',d:'To give main points in short form'},{w:'Interpret',d:'To explain the meaning'}
+]},
+{id:2,title:'Argument Words',explain:'Words to build strong arguments and support ideas.',words:[
+{w:'Significant',d:'Important and meaningful'},{w:'Evidence',d:'Facts that prove something'},
+{w:'Contribute',d:'To give or add to help'},{w:'Establish',d:'To set up or prove'},
+{w:'Justify',d:'To give good reasons for'},{w:'Persuade',d:'To convince someone'},
+{w:'Emphasize',d:'To give special importance to'},{w:'Refute',d:'To prove something is wrong'}
+]},
+{id:3,title:'Academic Verbs',explain:'Action words common in academic writing.',words:[
+{w:'Acquire',d:'To gain or obtain'},{w:'Conduct',d:'To carry out an activity'},
+{w:'Indicate',d:'To point out or show'},{w:'Investigate',d:'To examine thoroughly'},
+{w:'Modify',d:'To change or adjust'},{w:'Obtain',d:'To get or receive'},
+{w:'Utilize',d:'To make use of'},{w:'Pursue',d:'To follow a goal'}
+]}
+]},
+
+{id:8,name:'Figurative Language',emoji:'🖼️',desc:'Similes, metaphors, and idioms — words beyond their literal meaning',
+lessons:[
+{id:1,title:'Similes',explain:'A simile compares using "like" or "as."',words:[
+{w:'As brave as a lion',d:'Very courageous'},{w:'As light as a feather',d:'Very light in weight'},
+{w:'As busy as a bee',d:'Working very hard'},{w:'As cool as a cucumber',d:'Very calm and relaxed'},
+{w:'As fast as lightning',d:'Extremely fast'},{w:'As quiet as a mouse',d:'Very silent'},
+{w:'Sleep like a log',d:'To sleep very deeply'},{w:'Eat like a horse',d:'To eat a large amount'}
+]},
+{id:2,title:'Metaphors',explain:'A metaphor says one thing IS another (no "like" or "as").',words:[
+{w:'Time is money',d:'Time is valuable — don\'t waste it'},{w:'Heart of gold',d:'A very kind and generous person'},
+{w:'She is a shining star',d:'She stands out and excels'},{w:'Life is a rollercoaster',d:'Life has many ups and downs'},
+{w:'The world is your oyster',d:'You can achieve anything'},{w:'Her voice is music',d:'Her voice is very pleasant'},
+{w:'He\'s a walking dictionary',d:'He knows many words'},{w:'The room was a zoo',d:'The room was noisy and chaotic'}
+]},
+{id:3,title:'Common Idioms',explain:'Idioms — phrases whose meaning can\'t be guessed from the words.',words:[
+{w:'Raining cats and dogs',d:'Raining very heavily'},{w:'Break a leg',d:'Good luck! (to performers)'},
+{w:'Piece of cake',d:'Something very easy'},{w:'Spill the beans',d:'To reveal a secret'},
+{w:'Hit the sack',d:'To go to bed/sleep'},{w:'Under the weather',d:'Feeling sick or unwell'},
+{w:'Cost an arm and a leg',d:'To be very expensive'},{w:'Once in a blue moon',d:'Happens very rarely'}
+]}
+]},
+
+{id:9,name:'Domain Vocabulary',emoji:'🌍',desc:'Specialized words from science, history, and business',
+lessons:[
+{id:1,title:'Science Words',explain:'Key vocabulary from biology, chemistry, and physics.',words:[
+{w:'Photosynthesis',d:'How plants turn sunlight into food'},{w:'Ecosystem',d:'A community of living things + environment'},
+{w:'Gravity',d:'The force pulling objects toward each other'},{w:'Atom',d:'The smallest unit of a chemical element'},
+{w:'Climate',d:'Average weather over a long period'},{w:'Evolution',d:'Gradual change in species over time'},
+{w:'Friction',d:'Force resisting motion between surfaces'},{w:'Velocity',d:'Speed in a particular direction'}
+]},
+{id:2,title:'History Words',explain:'Words for understanding the past and societies.',words:[
+{w:'Revolution',d:'A major sudden change, often in government'},{w:'Civilization',d:'Advanced society with culture and cities'},
+{w:'Democracy',d:'Government where people vote'},{w:'Empire',d:'Large group of territories under one power'},
+{w:'Constitution',d:'Basic laws and principles of a nation'},{w:'Migration',d:'Movement of people between places'},
+{w:'Independence',d:'Freedom from outside control'},{w:'Treaty',d:'A formal agreement between countries'}
+]},
+{id:3,title:'Business Words',explain:'Words from money, trade, and organizations.',words:[
+{w:'Revenue',d:'Money a business earns from sales'},{w:'Strategy',d:'A plan to achieve a long-term goal'},
+{w:'Investment',d:'Putting money into something for profit'},{w:'Entrepreneur',d:'Person who starts a business'},
+{w:'Budget',d:'A plan for spending and saving money'},{w:'Inflation',d:'General rise in prices over time'},
+{w:'Competition',d:'Rivalry between businesses'},{w:'Negotiate',d:'To discuss to reach an agreement'}
+]}
+]},
+
+{id:10,name:'Advanced & SAT Words',emoji:'🎓',desc:'High-level vocabulary for advanced reading and test prep',
+lessons:[
+{id:1,title:'Abstract Qualities',explain:'Words describing subtle traits and concepts.',words:[
+{w:'Ephemeral',d:'Lasting a very short time; fleeting'},{w:'Ubiquitous',d:'Found everywhere; very common'},
+{w:'Pragmatic',d:'Practical and results-focused'},{w:'Capricious',d:'Unpredictable; changing suddenly'},
+{w:'Eloquent',d:'Fluent and persuasive in speech'},{w:'Resilient',d:'Able to recover quickly from difficulty'},
+{w:'Tenacious',d:'Holding firmly; not giving up'},{w:'Candid',d:'Truthful and straightforward'}
+]},
+{id:2,title:'Powerful Verbs',explain:'Strong verbs for advanced writing.',words:[
+{w:'Elucidate',d:'To make clear; to explain'},{w:'Exacerbate',d:'To make a problem worse'},
+{w:'Mitigate',d:'To make less severe'},{w:'Propagate',d:'To spread widely'},
+{w:'Corroborate',d:'To confirm with evidence'},{w:'Facilitate',d:'To make a process easier'},
+{w:'Ameliorate',d:'To improve or make better'},{w:'Reciprocate',d:'To respond with a similar action'}
+]},
+{id:3,title:'SAT Word Challenge',explain:'High-frequency SAT vocabulary — the ultimate test!',words:[
+{w:'Benevolent',d:'Well-meaning and kindly'},{w:'Pernicious',d:'Having a harmful effect gradually'},
+{w:'Laconic',d:'Using very few words; concise'},{w:'Gregarious',d:'Fond of company; sociable'},
+{w:'Ambivalent',d:'Having mixed feelings'},{w:'Dogmatic',d:'Asserting opinions as facts'},
+{w:'Voracious',d:'Wanting great amounts'},{w:'Inevitable',d:'Certain to happen; unavoidable'},
+{w:'Aberration',d:'A departure from normal'},{w:'Enigma',d:'A mystery; hard to understand'},
+{w:'Laudable',d:'Deserving praise'},{w:'Judicious',d:'Showing good judgment; wise'}
+]}
+]}
+];
+
+// ========== APP ==========
+let curLvl=null,curLes=null,st={words:[],index:0,score:0,total:0,mode:'learn',answered:false};
+
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+function renderLevels(){
+    document.getElementById('levelGrid').innerHTML=C.map(l=>
+        `<div class="level-card" onclick="openLevel(${l.id})">
+            <div class="num">${l.emoji} ${l.id}</div>
+            <div class="name">${l.name}</div>
+            <div class="desc">${l.desc}</div>
+        </div>`).join('');
+}
+
+function sv(id){['view-levels','view-lessons','view-practice'].forEach(v=>document.getElementById(v).style.display=v===id?'':'none');}
+function showLevels(){sv('view-levels');}
+function showLessons(){if(curLvl)openLevel(curLvl.id);}
+
+function openLevel(id){
+    curLvl=C.find(l=>l.id===id);
+    sv('view-lessons');
+    document.getElementById('lessonContent').innerHTML=
+        `<h2>${curLvl.emoji} ${curLvl.name}</h2>
+        <p style="color:#666;margin-bottom:20px;">${curLvl.desc} — ${curLvl.lessons.length} lessons</p>
+        <div class="lesson-list">${curLvl.lessons.map((ls,i)=>`
+            <div class="lesson-card" onclick="openLesson(${i})">
+                <div class="ln">Lesson ${i+1}</div>
+                <div class="lt">${ls.title}</div>
+                <div class="ld">${ls.explain}</div>
+                <div class="tags">${ls.words.slice(0,5).map(w=>`<span class="tag">${w.w}</span>`).join('')}${ls.words.length>5?`<span class="tag">+${ls.words.length-5}</span>`:''}</div>
+            </div>`).join('')}</div>`;
+}
+
+function openLesson(idx){
+    curLes=curLvl.lessons[idx];
+    sv('view-practice');
+    startPractice();
+}
+
+function startPractice(){
+    st={words:shuffle([...curLes.words]),index:0,score:0,total:curLes.words.length,mode:'learn',answered:false};
+    renderPractice();
+}
+
+function renderPractice(){
+    const w=st.words[st.index];
+    if(!w){renderComplete();return;}
+    const pct=Math.round((st.index/st.total)*100);
+    let h=`<div class="practice-box">
+        <h3>${curLes.title}</h3>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="score">Word ${st.index+1} of ${st.total} · Score: ${st.score}/${st.index||1}</div>`;
+
+    if(st.mode==='learn'){
+        h+=`<div class="teach-box"><h4>📖 Learn This Word</h4>
+            <div style="font-size:2.2rem;font-weight:700;margin:8px 0;color:var(--blue);">${w.w}</div>
+            <div style="font-size:1rem;color:#555;line-height:1.5;">${w.d}</div>
+            ${w.c?`<div class="passage" style="margin-top:12px;">📝 <em>"${w.c}"</em></div>`:''}
+        </div>
+        <button class="btn btn-primary" onclick="st.mode='quiz';st.answered=false;renderPractice();">I'm Ready — Test Me!</button>`;
+    }else{
+        const all=C.flatMap(l=>l.lessons).flatMap(l=>l.words);
+        let wrong=all.filter(x=>x.w!==w.w).map(x=>x.d);
+        wrong=shuffle(wrong).slice(0,3);
+        const ch=shuffle([{d:w.d,correct:true},...wrong.map(d=>({d,correct:false}))]);
+        h+=`<div class="word-display">${w.w}</div>`;
+        if(w.c)h+=`<div class="passage">📝 <em>"${w.c}"</em></div>`;
+        h+=`<div style="color:#666;margin-bottom:8px;">What does <strong>${w.w}</strong> mean?</div><div class="choices" id="choiceList">`;
+        ch.forEach((c,i)=>h+=`<button class="choice-btn" id="c${i}" onclick="checkChoice(${i},${c.correct},'${c.d.replace(/'/g,"\\'")}')">${c.d}</button>`);
+        h+=`</div><div class="feedback" id="fb"></div><button class="btn btn-primary" id="nextBtn" onclick="nextWord()" style="display:none;">Next →</button>`;
+    }
+    h+='</div>';
+    document.getElementById('practiceContent').innerHTML=h;
+}
+
+function checkChoice(idx,correct,def){
+    if(st.answered)return; st.answered=true;
+    const w=st.words[st.index],fb=document.getElementById('fb');
+    document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+    document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===w.d)b.classList.add('correct');});
+    if(correct){st.score++;document.getElementById('c'+idx).classList.add('correct');fb.textContent='✅ Correct! Great job!';fb.className='feedback show correct';}
+    else {document.getElementById('c'+idx).classList.add('wrong');fb.textContent=`❌ Not quite. "${w.w}" means: ${w.d}`;fb.className='feedback show wrong';}
+    document.getElementById('nextBtn').style.display='';
+}
+
+function nextWord(){
+    st.index++; st.mode='learn'; st.answered=false;
+    st.index<st.total?renderPractice():renderComplete();
+}
+
+function renderComplete(){
+    const pct=Math.round((st.score/st.total)*100);
+    // Save to server
+    (function(){var p=new URLSearchParams(window.location.search);var s=p.get('sid');if(s&&curLvl&&curLes){var sts=pct>=90?3:pct>=70?2:pct>=50?1:0;fetch('/api/mtl/skill/progress',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({student_id:s,skill:'vocabulary',level_id:curLvl.id,lesson_id:curLvl.lessons.indexOf(curLes),completed:true,score:pct,stars:sts})}).catch(function(){})}})();
+    let stars=pct>=90?'🌟🌟🌟':pct>=70?'🌟🌟':pct>=50?'🌟':'📚';
+    document.getElementById('practiceContent').innerHTML=`<div class="practice-box complete-box">
+        <div class="big">${pct>=80?'🏆':'📖'}</div>
+        <h2>Lesson Complete!</h2>
+        <div style="font-size:2rem;margin:8px 0;">${stars}</div>
+        <p style="color:#666;">${st.score} of ${st.total} correct (${pct}%)</p>
+        ${pct>=90?'<p style="color:var(--green);font-weight:600;">🎉 Excellent! You\'ve mastered this!</p>':''}
+        ${pct>=70&&pct<90?'<p style="color:var(--blue);font-weight:600;">👍 Good work! Keep practicing.</p>':''}
+        ${pct<70?'<p style="color:#888;">Keep practicing to improve your score.</p>':''}
+        <div style="margin-top:24px;">
+            <button class="btn btn-primary" onclick="openLesson(${curLvl.lessons.indexOf(curLes)})" style="margin-right:8px;">Practice Again</button>
+            <button class="btn btn-gold" onclick="showLessons()">More Lessons</button>
+        </div>
+    </div>`;
+}
+
+// Init
+renderLevels();
+(function(){
+    const p=new URLSearchParams(location.search),lv=parseInt(p.get('level')),ls=parseInt(p.get('lesson'));
+    if(lv&&C[lv-1]){curLvl=C[lv-1];ls!=null&&curLvl.lessons[ls]?openLesson(ls):openLevel(lv);}
+})();
+// TTS
+(function(){function spk(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function addSB(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();spk(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.rule,.word-display,.pbox h3,.ex').forEach(addSB);},600);var o=new MutationObserver(function(){document.querySelectorAll('.rule:not(:has(.spk-btn)),.word-display:not(:has(.spk-btn)),.pbox h3:not(:has(.spk-btn)),.ex:not(:has(.spk-btn))').forEach(addSB);});o.observe(document.body,{childList:true,subtree:true});})();
+</script>
+</body>
+</html>

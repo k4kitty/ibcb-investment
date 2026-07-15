@@ -39,6 +39,7 @@
                 <a href="#" data-page="lectures">🎓 講座報名</a>
                 <a href="#" data-page="news">📰 新聞發布</a>
                 <a href="#" data-page="contacts">✉️ 聯絡訊息</a>
+                <a href="#" data-page="mtl-teacher">🎓 MTL 學生進度</a>
                 <a href="#" id="logoutBtn" style="margin-top:auto;">🚪 登出</a>
             </nav>
         </aside>
@@ -275,6 +276,22 @@
                     </table>
                 </div>
             </section>
+
+            <!-- MTL Teacher Dashboard -->
+            <section id="page-mtl-teacher" class="admin-page">
+                <h3 style="margin:0 0 16px;">MTL English — 學生進度總覽</h3>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>學生姓名</th><th>Save Code</th><th>已完成遊戲</th>
+                                <th>🏆 獎盃</th><th>⭐ 總星星</th><th>Skills ⭐</th><th>最後活動</th><th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mtlTeacherTable"></tbody>
+                    </table>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -320,7 +337,6 @@
                         <select id="m_country" required>
                             <option value="">請選擇</option>
                             <option value="中國">中國</option>
-                            <option value="香港">香港</option>
                             <option value="其他">其他海外地區</option>
                         </select>
                         <input type="text" id="m_country_other" placeholder="請輸入國家/地區" style="display:none;margin-top:8px;">
@@ -329,19 +345,14 @@
                         <label>城市 *</label>
                         <select id="m_city_cn" required style="display:none;">
                             <option value="">請選擇城市</option>
+                            <option value="香港">香港</option>
                             <option value="上海">上海</option>
                             <option value="北京">北京</option>
                             <option value="深圳">深圳</option>
                             <option value="廣州">廣州</option>
                             <option value="杭州">杭州</option>
                             <option value="成都">成都</option>
-                            <option value="其他中國城市">其他</option>
-                        </select>
-                        <select id="m_city_hk" required style="display:none;">
-                            <option value="">請選擇區域</option>
-                            <option value="香港島">香港島</option>
-                            <option value="九龍">九龍</option>
-                            <option value="新界">新界</option>
+                            <option value="其他">其他城市</option>
                         </select>
                         <input type="text" id="m_city_other" placeholder="請輸入城市" style="display:none;">
                     </div>
@@ -378,25 +389,28 @@
         if (!country) return;
         var otherCountry = document.getElementById('m_country_other');
         var cityCn = document.getElementById('m_city_cn');
-        var cityHk = document.getElementById('m_city_hk');
         var cityOther = document.getElementById('m_city_other');
 
         country.addEventListener('change', function() {
             var v = this.value;
             if (otherCountry) otherCountry.style.display = (v === '其他') ? '' : 'none';
+            if (v === '其他') otherCountry.setAttribute('required', ''); else otherCountry.removeAttribute('required');
             if (cityCn) {
                 cityCn.style.display = (v === '中國') ? '' : 'none';
                 if (v === '中國') cityCn.setAttribute('required', ''); else cityCn.removeAttribute('required');
             }
-            if (cityHk) {
-                cityHk.style.display = (v === '香港') ? '' : 'none';
-                if (v === '香港') cityHk.setAttribute('required', ''); else cityHk.removeAttribute('required');
-            }
             if (cityOther) {
-                cityOther.style.display = (v === '其他' || !v) ? '' : 'none';
-                if (v === '其他' || !v) cityOther.setAttribute('required', ''); else cityOther.removeAttribute('required');
+                cityOther.style.display = (v !== '中國') ? '' : 'none';
+                if (v !== '中國') cityOther.setAttribute('required', ''); else cityOther.removeAttribute('required');
             }
         });
+
+        // When China city select picks "其他", show text input
+        if (cityCn) {
+            cityCn.addEventListener('change', function() {
+                if (cityOther) cityOther.style.display = (this.value === '其他') ? '' : 'none';
+            });
+        }
 
         // Interest "其他" toggle
         var interestSelect = document.getElementById('m_interest');

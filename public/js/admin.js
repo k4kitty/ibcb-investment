@@ -131,7 +131,8 @@ function initAdmin() {
                 'registrations': '\u5831\u540d\u8a18\u9304',
                 lectures: '\u8b1b\u5ea7\u5831\u540d',
                 news: '\u65b0\u805e\u767c\u5e03',
-                contacts: '\u806f\u7d61\u8a0a\u606f'
+                contacts: '聯絡訊息',
+                'mtl-teacher': 'MTL 學生進度'
             };
             $('#pageTitle').textContent = titles[page] || page;
             if (page === 'members') loadMembers();
@@ -141,6 +142,7 @@ function initAdmin() {
             if (page === 'lectures') loadLectures();
             if (page === 'news') loadNews();
             if (page === 'contacts') loadContacts();
+            if (page === 'mtl-teacher') loadMTLTeacher();
         });
     });
 }
@@ -646,7 +648,12 @@ function openMemberModal(id) {
             $('#m_title').value = m.title || '';
             // Country/city select cascade
             var countryVal = m.country || '';
-            if (countryVal === '中國' || countryVal === '香港' || countryVal === '其他') {
+            // Map legacy "香港" country to 中國 + city 香港
+            if (countryVal === '香港') {
+                countryVal = '中國';
+                m.city = '香港';
+            }
+            if (countryVal === '中國' || countryVal === '其他') {
                 $('#m_country').value = countryVal;
             } else if (countryVal) {
                 $('#m_country').value = '其他';
@@ -655,10 +662,20 @@ function openMemberModal(id) {
             }
             // Show appropriate city field and set value
             $('#m_country').dispatchEvent(new Event('change'));
+            // After dispatch: if China selected, check if city matches dropdown option
             if (countryVal === '中國') {
-                $('#m_city_cn').value = m.city || '';
-            } else if (countryVal === '香港') {
-                $('#m_city_hk').value = m.city || '';
+                var cityVal = m.city || '';
+                var cnOpts = $('#m_city_cn').querySelectorAll('option');
+                var found = false;
+                for (var ci = 0; ci < cnOpts.length; ci++) {
+                    if (cnOpts[ci].value === cityVal && cnOpts[ci].value !== '') { found = true; break; }
+                }
+                if (found) {
+                    $('#m_city_cn').value = cityVal;
+                } else if (cityVal) {
+                    $('#m_city_cn').value = '其他';
+                    $('#m_city_other').value = cityVal;
+                }
             } else {
                 $('#m_city_other').value = m.city || '';
             }
@@ -687,9 +704,7 @@ function saveMember() {
     var countryVal = countrySel === '其他' ? $('#m_country_other').value.trim() : countrySel;
     var cityVal;
     if (countrySel === '中國') {
-        cityVal = $('#m_city_cn').value;
-    } else if (countrySel === '香港') {
-        cityVal = $('#m_city_hk').value;
+        cityVal = $('#m_city_cn').value === '其他' ? $('#m_city_other').value.trim() : $('#m_city_cn').value;
     } else {
         cityVal = $('#m_city_other').value.trim();
     }
@@ -795,7 +810,65 @@ function formatDate(iso) {
 }
 
 /* ============================================================
-   17. BOOTSTRAP
+   17. MTL TEACHER DASHBOARD
+   ============================================================ */
+function loadMTLTeacher() {
+    api('/api/mtl/teacher/students').then(function(data) {
+        var tbody = $('#mtlTeacherTable');
+        if (!data.students || data.students.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#888;padding:24px;">尚無學生記錄</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.students.map(function(s) {
+            var levelsDone = Math.floor((s.games_done || 0) / 20);
+            return '<tr>' +
+                '<td><strong>' + escapeHtml(s.name) + '</strong></td>' +
+                '<td><code style="background:#f5f5f5;padding:2px 8px;border-radius:4px;">' + escapeHtml(s.save_code) + '</code></td>' +
+                '<td>' + s.games_done + ' / 240</td>' +
+                '<td>' + s.trophies + '</td>' +
+                '<td>' + s.total_stars + ' ⭐</td>' +
+                '<td>' + (s.skill_stars || 0) + ' ⭐</td>' +
+                '<td>' + formatDate(s.last_active) + '</td>' +
+                '<td><button class="btn" onclick="viewMTLStudent(\'' + s.id + '\')">查看進度</button></td>' +
+                '</tr>';
+        }).join('');
+    }).catch(function(e) {
+        console.error('MTL teacher load:', e);
+        $('#mtlTeacherTable').innerHTML = '<tr><td colspan="9" style="text-align:center;color:#c0392b;padding:24px;">載入失敗</td></tr>';
+    });
+}
+
+function viewMTLStudent(studentId) {
+    api('/api/mtl/teacher/progress/' + studentId).then(function(data) {
+        var rows = '';
+        for (var i = 1; i <= 12; i++) {
+            var key = 'level_' + i;
+            var l = data.levels[key];
+            var pct = Math.round((l.gamesDone / 20) * 100);
+            var badge = l.completed ? '🏆' : (l.gamesDone > 0 ? '🟡' : '⚪');
+            rows += '<tr><td>' + badge + '</td><td>Grade ' + i + '</td><td>' + l.gamesDone + '/20</td><td style="width:200px"><div style="background:#eee;height:6px;border-radius:3px;"><div style="background:#2d8a4e;height:6px;border-radius:3px;width:' + pct + '%;"></div></div></td><td>' + pct + '%</td></tr>';
+        }
+        showMTLDetailModal(data.student.name, data.student.save_code, rows);
+    }).catch(function(e) {
+        alert('載入失敗：' + e.message);
+    });
+}
+
+function showMTLDetailModal(name, saveCode, rows) {
+    var modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;';
+    modal.innerHTML = '<div style="background:#fff;border-radius:12px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;">' +
+        '<h3 style="margin:0 0 4px;">' + escapeHtml(name) + '</h3>' +
+        '<p style="color:#888;margin:0 0 20px;">Save Code: <strong>' + escapeHtml(saveCode) + '</strong></p>' +
+        '<table style="width:100%;border-collapse:collapse;"><thead><tr><th></th><th>級別</th><th>進度</th><th></th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<button style="margin-top:20px;padding:10px 24px;background:#2c3e50;color:#fff;border:none;border-radius:8px;cursor:pointer;" onclick="this.closest(\'div[style]\').parentElement.remove()">關閉</button>' +
+        '</div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+}
+
+/* ============================================================
+   18. BOOTSTRAP
    ============================================================ */
 document.addEventListener('DOMContentLoaded', function () {
     initLogin();

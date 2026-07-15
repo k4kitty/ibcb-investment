@@ -111,6 +111,12 @@ function requireAuth(req, res, next) {
     res.status(401).json({ error: 'Unauthorized' });
 }
 
+// MTL admin auth — accepts both IBCB admin and MTL admin
+function requireMtlAuth(req, res, next) {
+    if (req.session && (req.session.admin || req.session.mtlAdmin)) return next();
+    res.status(401).json({ error: 'Unauthorized' });
+}
+
 // CSRF check for state-changing admin requests
 function csrfCheck(req, res, next) {
     if (req.method === 'GET') return next();
@@ -1411,6 +1417,297 @@ app.use((err, req, res, _next) => {
 });
 
 // ================== START SERVER ==================
+
+// ================== MTL ENGLISH API ==================
+
+// Create student profile — returns save_code
+app.post('/api/mtl/student', publicLimiter, async (req, res) => {
+    const name = sanitizeText(req.body.name);
+    if (!name) return res.status(400).json({ error: '請輸入學生姓名' });
+    try {
+        const id = 's_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+        const saveCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const now = new Date().toISOString();
+        await dbRun('INSERT INTO mtl_students (id, name, save_code, created_at, last_active) VALUES (?, ?, ?, ?, ?)',
+            [id, name, saveCode, now, now]);
+        res.json({ success: true, id, name, save_code: saveCode });
+    } catch (err) {
+        console.error('MTL student create:', err.message);
+        res.status(500).json({ error: '建立失敗' });
+    }
+});
+
+// Lookup student by save code
+app.get('/api/mtl/student/:code', async (req, res) => {
+    try {
+        const student = await dbGet('SELECT id, name, save_code, created_at, last_active FROM mtl_students WHERE save_code = ?',
+            [sanitizeText(req.params.code)]);
+        if (!student) return res.status(404).json({ error: '找不到此儲存碼' });
+        // Update last_active
+        await dbRun('UPDATE mtl_students SET last_active = ? WHERE id = ?', [new Date().toISOString(), student.id]);
+        res.json({ success: true, student });
+    } catch (err) {
+        console.error('MTL student lookup:', err.message);
+        res.status(500).json({ error: '查詢失敗' });
+    }
+});
+
+// Load progress for a student
+app.get('/api/mtl/progress/:studentId', async (req, res) => {
+    try {
+        const rows = await dbAll('SELECT level_id, game_index, completed, stars, trophy FROM mtl_progress WHERE student_id = ?',
+            [sanitizeText(req.params.studentId)]);
+        const progress = {};
+        rows.forEach(r => {
+            const key = 'level_' + r.level_id;
+            if (!progress[key]) progress[key] = { games: {}, completed: false };
+            progress[key].games[r.game_index] = {
+                completed: !!r.completed,
+                stars: r.stars || 0,
+                trophy: !!r.trophy
+            };
+        });
+        // Determine level completion
+        for (const [key, lp] of Object.entries(progress)) {
+            const completedGames = Object.values(lp.games).filter(g => g.completed).length;
+            if (completedGames >= 20) lp.completed = true;
+        }
+        res.json({ success: true, progress });
+    } catch (err) {
+        console.error('MTL progress load:', err.message);
+        res.status(500).json({ error: '載入失敗' });
+    }
+});
+
+// Save progress for a student (upsert per game)
+app.put('/api/mtl/progress/:studentId', publicLimiter, async (req, res) => {
+    const studentId = sanitizeText(req.params.studentId);
+    const { level_id, game_index, completed, stars, trophy } = req.body;
+    if (level_id == null || game_index == null) return res.status(400).json({ error: '缺少參數' });
+    try {
+        // Verify student exists
+        const student = await dbGet('SELECT id FROM mtl_students WHERE id = ?', [studentId]);
+        if (!student) return res.status(404).json({ error: '學生不存在' });
+        const now = new Date().toISOString();
+        // Upsert: check if record exists
+        const exists = await dbGet(
+            'SELECT 1 FROM mtl_progress WHERE student_id = ? AND level_id = ? AND game_index = ?',
+            [studentId, level_id, game_index]
+        );
+        if (exists) {
+            await dbRun(
+                'UPDATE mtl_progress SET completed = ?, stars = ?, trophy = ?, updated_at = ? WHERE student_id = ? AND level_id = ? AND game_index = ?',
+                [completed ? 1 : 0, stars || 0, trophy ? 1 : 0, now, studentId, level_id, game_index]
+            );
+        } else {
+            await dbRun(
+                'INSERT INTO mtl_progress (student_id, level_id, game_index, completed, stars, trophy, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [studentId, level_id, game_index, completed ? 1 : 0, stars || 0, trophy ? 1 : 0, now]
+            );
+        }
+        // Update student last_active
+        await dbRun('UPDATE mtl_students SET last_active = ? WHERE id = ?', [now, studentId]);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('MTL progress save:', err.message);
+        res.status(500).json({ error: '儲存失敗' });
+    }
+});
+
+// ─── MTL Admin Auth ────────────────────────────────────
+
+// ─── Mistake Tracking ──────────────────────────────────
+
+// ─── Skill Progress ────────────────────────────────────
+
+// Save skill lesson progress
+app.put('/api/mtl/skill/progress', publicLimiter, async (req, res) => {
+    const studentId = sanitizeText(req.body.student_id);
+    const skill = sanitizeText(req.body.skill);
+    const levelId = parseInt(req.body.level_id) || 0;
+    const lessonId = parseInt(req.body.lesson_id) || 0;
+    const completed = req.body.completed ? 1 : 0;
+    const score = parseInt(req.body.score) || 0;
+    const stars = parseInt(req.body.stars) || 0;
+    if (!studentId || !skill || !levelId) return res.status(400).json({ error: 'Missing fields' });
+    try {
+        const now = new Date().toISOString();
+        const exists = await dbGet('SELECT 1 FROM mtl_skill_progress WHERE student_id=? AND skill=? AND level_id=? AND lesson_id=?',
+            [studentId, skill, levelId, lessonId]);
+        if (exists) {
+            await dbRun('UPDATE mtl_skill_progress SET completed=?, score=?, stars=?, updated_at=? WHERE student_id=? AND skill=? AND level_id=? AND lesson_id=?',
+                [completed, score, stars, now, studentId, skill, levelId, lessonId]);
+        } else {
+            await dbRun('INSERT INTO mtl_skill_progress (student_id, skill, level_id, lesson_id, completed, score, stars, updated_at) VALUES (?,?,?,?,?,?,?,?)',
+                [studentId, skill, levelId, lessonId, completed, score, stars, now]);
+        }
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Skill progress save:', err.message);
+        res.status(500).json({ error: '儲存失敗' });
+    }
+});
+
+// Load all skill progress for a student
+app.get('/api/mtl/skill/progress/:studentId', async (req, res) => {
+    try {
+        const rows = await dbAll('SELECT skill, level_id, lesson_id, completed, score, stars FROM mtl_skill_progress WHERE student_id=?',
+            [sanitizeText(req.params.studentId)]);
+        const skills = { spelling:{}, reading:{}, grammar:{}, vocabulary:{} };
+        rows.forEach(r => {
+            if (!skills[r.skill]) skills[r.skill] = {};
+            const key = 'level_' + r.level_id;
+            if (!skills[r.skill][key]) skills[r.skill][key] = { lessons:{}, completed:false, totalStars:0, lessonsDone:0 };
+            skills[r.skill][key].lessons[r.lesson_id] = { completed:!!r.completed, score:r.score, stars:r.stars };
+            if (r.completed) skills[r.skill][key].lessonsDone++;
+            skills[r.skill][key].totalStars += r.stars;
+        });
+        // Calculate totals per skill
+        for (const sk of Object.keys(skills)) {
+            let totalStars = 0, totalLessons = 0, totalCompleted = 0;
+            for (const lk of Object.keys(skills[sk])) {
+                totalStars += skills[sk][lk].totalStars;
+                totalLessons += Object.keys(skills[sk][lk].lessons).length;
+                totalCompleted += skills[sk][lk].lessonsDone;
+            }
+            skills[sk]._total = { stars: totalStars, lessons: totalLessons, completed: totalCompleted };
+        }
+        res.json({ success: true, skills });
+    } catch (err) {
+        console.error('Skill progress load:', err.message);
+        res.status(500).json({ error: '載入失敗' });
+    }
+});
+
+// ─── Mistake Tracking ──────────────────────────────────
+
+// Save a mistake
+app.post('/api/mtl/mistake', publicLimiter, async (req, res) => {
+    const studentId = sanitizeText(req.body.student_id);
+    const levelId = parseInt(req.body.level_id) || 0;
+    const gameIdx = parseInt(req.body.game_index) || 0;
+    const qIdx = req.body.question_index != null ? parseInt(req.body.question_index) : null;
+    const word = sanitizeText(req.body.word);
+    const type = sanitizeText(req.body.mistake_type);
+    if (!studentId || !levelId) return res.status(400).json({ error: 'Missing fields' });
+    try {
+        const id = 'mx_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+        await dbRun(
+            'INSERT INTO mtl_mistakes (id, student_id, level_id, game_index, question_index, word, mistake_type, created_at) VALUES (?,?,?,?,?,?,?,?)',
+            [id, studentId, levelId, gameIdx, qIdx, word || null, type || 'general', new Date().toISOString()]
+        );
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Mistake save:', err.message);
+        res.status(500).json({ error: '儲存失敗' });
+    }
+});
+
+// Get review items for a student
+app.get('/api/mtl/review/:studentId', async (req, res) => {
+    try {
+        const mistakes = await dbAll(
+            'SELECT id, level_id, game_index, question_index, word, mistake_type, reviewed, created_at FROM mtl_mistakes WHERE student_id = ? AND reviewed = 0 ORDER BY created_at DESC LIMIT 20',
+            [sanitizeText(req.params.studentId)]
+        );
+        res.json({ success: true, mistakes });
+    } catch (err) {
+        console.error('Review load:', err.message);
+        res.status(500).json({ error: '載入失敗' });
+    }
+});
+
+// Mark a mistake as reviewed
+app.put('/api/mtl/mistake/:id/review', async (req, res) => {
+    try {
+        await dbRun('UPDATE mtl_mistakes SET reviewed = 1 WHERE id = ?', [sanitizeText(req.params.id)]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: '更新失敗' });
+    }
+});
+
+// ─── MTL Admin Auth ────────────────────────────────────
+
+app.post('/api/mtl/admin/login', async (req, res) => {
+    const username = sanitizeText(req.body.username);
+    const password = String(req.body.password || '');
+    if (!username || !password) return res.status(400).json({ error: '請輸入帳號和密碼' });
+    try {
+        const admin = await dbGet('SELECT id, username, password FROM mtl_admins WHERE username = ?', [username]);
+        if (!admin) return res.status(401).json({ error: '帳號或密碼錯誤' });
+        const match = await bcrypt.compare(password, admin.password);
+        if (!match) return res.status(401).json({ error: '帳號或密碼錯誤' });
+        req.session.mtlAdmin = { id: admin.id, username: admin.username };
+        res.json({ success: true, username: admin.username });
+    } catch (err) {
+        console.error('MTL admin login:', err.message);
+        res.status(500).json({ error: '登入失敗' });
+    }
+});
+
+app.get('/api/mtl/admin/check', (req, res) => {
+    if (req.session && req.session.mtlAdmin) {
+        res.json({ success: true, username: req.session.mtlAdmin.username });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+// ─── Teacher Dashboard (admin-only) ───────────────────
+
+// Update teacher endpoints to use requireMtlAuth (both IBCB + MTL admins)
+// List all MTL students with summary stats
+app.get('/api/mtl/teacher/students', requireMtlAuth, async (req, res) => {
+    try {
+        const students = await dbAll(
+            `SELECT s.id, s.name, s.save_code, s.created_at, s.last_active,
+                    (SELECT COUNT(*) FROM mtl_progress WHERE student_id = s.id AND completed = 1) as games_done,
+                    (SELECT COUNT(*) FROM mtl_progress WHERE student_id = s.id AND trophy = 1) as trophies,
+                    (SELECT COALESCE(SUM(stars), 0) FROM mtl_progress WHERE student_id = s.id) as total_stars,
+                    (SELECT COALESCE(SUM(stars), 0) FROM mtl_skill_progress WHERE student_id = s.id) as skill_stars
+             FROM mtl_students s ORDER BY s.last_active DESC`
+        );
+        res.json({ success: true, students });
+    } catch (err) {
+        console.error('MTL teacher students:', err.message);
+        res.status(500).json({ error: '載入失敗' });
+    }
+});
+
+// Get detailed progress for one student
+app.get('/api/mtl/teacher/progress/:studentId', requireMtlAuth, async (req, res) => {
+    try {
+        const student = await dbGet('SELECT id, name, save_code FROM mtl_students WHERE id = ?',
+            [sanitizeText(req.params.studentId)]);
+        if (!student) return res.status(404).json({ error: '學生不存在' });
+        const rows = await dbAll(
+            'SELECT level_id, game_index, completed, stars, trophy FROM mtl_progress WHERE student_id = ? ORDER BY level_id, game_index',
+            [student.id]
+        );
+        // Build level-by-level progress
+        const levels = {};
+        for (let i = 1; i <= 12; i++) {
+            levels['level_' + i] = { games: {}, completed: false, gamesDone: 0 };
+        }
+        rows.forEach(r => {
+            const key = 'level_' + r.level_id;
+            if (levels[key]) {
+                levels[key].games[r.game_index] = {
+                    completed: !!r.completed, stars: r.stars || 0, trophy: !!r.trophy
+                };
+                if (r.completed) levels[key].gamesDone++;
+            }
+        });
+        for (const [k, v] of Object.entries(levels)) {
+            if (v.gamesDone >= 20) v.completed = true;
+        }
+        res.json({ success: true, student, levels });
+    } catch (err) {
+        console.error('MTL teacher progress:', err.message);
+        res.status(500).json({ error: '載入失敗' });
+    }
+});
 
 app.listen(PORT, async () => {
     console.log(`IBCB Investment Server running at http://localhost:${PORT}`);

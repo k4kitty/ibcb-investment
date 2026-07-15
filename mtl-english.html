@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move To Learn English · IBCB Investment</title>
+    <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="public/css/mtl-english.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">IBCB</div>
+                <div class="logo-text">
+                    <span class="logo-main">IBCB Investment</span>
+                    <span class="logo-sub">Private Equity · Investing AI +</span>
+                </div>
+            </div>
+            <nav class="main-nav" id="mainNav">
+                <a href="index.html" class="nav-link">主頁</a>
+                <a href="about.html" class="nav-link">關於我們</a>
+                <a href="events.html" class="nav-link">活動報名</a>
+                <a href="news.html" class="nav-link">最新消息</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <a href="register.html" class="nav-link btn-register">加入會員</a>
+            </nav>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+    </header>
+
+    <main id="mtl-app">
+        <!-- Login / Create Student View -->
+        <section id="mtl-login" class="mtl-view active">
+            <div class="mtl-hero">
+                <div class="container">
+                    <p class="hero-eyebrow">Move To Learn · AI Educational Technology</p>
+                    <h1>Move To Learn English</h1>
+                </div>
+            </div>
+            <div class="container">
+                <div class="mtl-login-box">
+                    <h2>Welcome!</h2>
+                    <p>Create a new student profile or enter your Save Code to continue where you left off.</p>
+                    <div class="mtl-login-tabs">
+                        <button class="mtl-tab active" onclick="MTL.switchLoginTab('new')" id="tabNew">New Student</button>
+                        <button class="mtl-tab" onclick="MTL.switchLoginTab('existing')" id="tabExisting">I Have a Save Code</button>
+                    </div>
+                    <div id="loginNew" class="mtl-login-form">
+                        <input type="text" id="newStudentName" placeholder="Enter student name" maxlength="80">
+                        <button class="mtl-check-btn" onclick="MTL.createStudent(document.getElementById('newStudentName').value.trim())">Create Profile & Start Learning</button>
+                        <button class="mtl-quiz-link" onclick="MTL.startPlacementQuiz()">📝 Take Placement Quiz First (recommended)</button>
+                    </div>
+                    <div id="loginExisting" class="mtl-login-form" style="display:none;">
+                        <input type="text" id="saveCodeInput" placeholder="Enter your 6-character Save Code" maxlength="6" style="text-transform:uppercase;text-align:center;font-size:1.2rem;letter-spacing:4px;">
+                        <button class="mtl-check-btn" onclick="MTL.loginByCode(document.getElementById('saveCodeInput').value.trim().toUpperCase())">Load My Progress</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Placement Quiz View -->
+        <section id="mtl-quiz" class="mtl-view">
+            <div class="container">
+                <div class="mtl-quiz-box" id="quizBox">
+                    <h2>📝 Placement Quiz</h2>
+                    <p id="quizProgress">Question 1 of 12</p>
+                    <div class="mtl-quiz-passage" id="quizPassage"></div>
+                    <div class="mtl-quiz-question" id="quizQuestion"></div>
+                    <div class="mtl-options" id="quizOptions"></div>
+                    <div class="mtl-feedback" id="quizFeedback"></div>
+                    <button class="mtl-check-btn" id="quizNext" style="display:none;">Next →</button>
+                </div>
+                <div class="mtl-quiz-result" id="quizResult" style="display:none;">
+                    <h2>🎯 Your Recommended Level</h2>
+                    <div class="mtl-quiz-level" id="quizRecLevel"></div>
+                    <p id="quizRecText"></p>
+                    <button class="mtl-next-btn" onclick="MTL.finishPlacementQuiz()">Create Profile & Start at This Level</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard View -->
+        <section id="mtl-dashboard" class="mtl-view">
+            <div class="mtl-hero">
+                <div class="container">
+                    <p class="hero-eyebrow">Move To Learn · AI Educational Technology</p>
+                    <h1>Move To Learn English</h1>
+                    <p class="hero-lead">A complete English learning system for ages 5–17. Master reading comprehension, spelling, vocabulary, and grammar through 240 interactive games across 12 grade levels. Earn trophies and unlock new challenges!</p>
+                </div>
+            </div>
+            <div class="container">
+                <div id="mtlStudentBar" class="mtl-student-bar"></div>
+
+                <!-- Accessibility Toolbar -->
+                <div class="mtl-a11y-bar" id="mtlA11yBar">
+                    <button class="a11y-btn" onclick="MTL.toggleDyslexiaFont()" id="a11yFont" title="Dyslexia-friendly font">🔤 Font</button>
+                    <button class="a11y-btn" onclick="MTL.changeTextSize(-1)" title="Smaller text">A-</button>
+                    <button class="a11y-btn" onclick="MTL.changeTextSize(1)" title="Larger text">A+</button>
+                    <button class="a11y-btn" onclick="MTL.toggleContrast()" id="a11yContrast" title="High contrast mode">◐ Contrast</button>
+                    <span class="a11y-label">Accessibility</span>
+                </div>
+
+                <button id="mtlReviewBadge" class="mtl-review-badge" style="display:none;" onclick="MTL.startReview()">🔁 Review mistakes</button>
+
+                <!-- Skills Learning Center -->
+                <div class="mtl-skills-bar">
+                    <div class="mtl-skills-title">📚 Learning Center — Master Each Skill</div>
+                    <div class="mtl-skills-grid">
+                        <a href="mtl-spelling.html" class="mtl-skill-card" data-skill="spelling" id="skillSpelling">
+                            <span class="skill-icon">🔤</span>
+                            <span class="skill-name">Spelling & Phonics</span>
+                            <span class="skill-desc">Short vowels → advanced patterns</span>
+                            <span class="skill-badge" style="display:none;"></span>
+                        </a>
+                        <a href="mtl-reading.html" class="mtl-skill-card" data-skill="reading" id="skillReading">
+                            <span class="skill-icon">📖</span>
+                            <span class="skill-name">Reading</span>
+                            <span class="skill-desc">Letters → critical analysis</span>
+                            <span class="skill-badge" style="display:none;"></span>
+                        </a>
+                        <a href="mtl-grammar.html" class="mtl-skill-card" data-skill="grammar" id="skillGrammar">
+                            <span class="skill-icon">📝</span>
+                            <span class="skill-name">Grammar</span>
+                            <span class="skill-desc">Nouns → academic writing</span>
+                            <span class="skill-badge" style="display:none;"></span>
+                        </a>
+                        <a href="mtl-vocabulary.html" class="mtl-skill-card" data-skill="vocabulary" id="skillVocab">
+                            <span class="skill-icon">📕</span>
+                            <span class="skill-name">Vocabulary</span>
+                            <span class="skill-desc">Common words → SAT prep</span>
+                            <span class="skill-badge" style="display:none;"></span>
+                        </a>
+                        <a href="mtl-writing.html" class="mtl-skill-card" data-skill="writing" id="skillWriting">
+                            <span class="skill-icon">✍️</span>
+                            <span class="skill-name">Writing</span>
+                            <span class="skill-desc">Sentences → essays</span>
+                            <span class="skill-badge" style="display:none;"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mtl-stats" id="mtlStats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="statLevelsCompleted">0</div>
+                        <div class="stat-label">Levels Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="statTrophies">0</div>
+                        <div class="stat-label">Trophies Earned</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="statGamesCompleted">0</div>
+                        <div class="stat-label">Games Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="statTotalStars">0</div>
+                        <div class="stat-label">⭐ Stars Collected</div>
+                    </div>
+                </div>
+                <div class="mtl-levels-grid" id="mtlLevelsGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Level Detail View -->
+        <section id="mtl-level-detail" class="mtl-view">
+            <div class="container">
+                <button class="mtl-back-btn" onclick="MTL.showDashboard()">← Back to All Levels</button>
+                <div id="mtlLevelHeader">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="mtl-games-grid" id="mtlGamesGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Play View -->
+        <section id="mtl-game-play" class="mtl-view">
+            <div class="container">
+                <button class="mtl-back-btn" onclick="MTL.backToLevel()">← Back to Level</button>
+                <div id="mtlGameArea">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">IBCB Investment</div>
+                <p>Private Equity · Investing AI +</p>
+            </div>
+            <div class="footer-info">
+                <p>Move To Learn · AI Educational Technology</p>
+                <p>&copy; <span id="copyrightYear">2026</span> IBCB Investment. All rights reserved.</p>
+                <p>Email: admin@ibcgroup.com.hk</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+    <script src="public/js/mtl-english.js"></script>
+</body>
+</html>

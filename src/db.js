@@ -98,11 +98,39 @@ if (isPG) {
         `CREATE TABLE IF NOT EXISTS admins (
             id TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL
         )`,
+        // MTL English — student profiles & progress
+        `CREATE TABLE IF NOT EXISTS mtl_students (
+            id TEXT PRIMARY KEY, name TEXT NOT NULL, save_code TEXT UNIQUE NOT NULL,
+            teacher_id TEXT, created_at TEXT, last_active TEXT
+        )`,
+        `CREATE TABLE IF NOT EXISTS mtl_progress (
+            student_id TEXT NOT NULL, level_id INTEGER NOT NULL, game_index INTEGER NOT NULL,
+            completed INTEGER DEFAULT 0, stars INTEGER DEFAULT 0, trophy INTEGER DEFAULT 0,
+            updated_at TEXT, PRIMARY KEY (student_id, level_id, game_index),
+            FOREIGN KEY(student_id) REFERENCES mtl_students(id) ON DELETE CASCADE
+        )`,
+        `CREATE TABLE IF NOT EXISTS mtl_admins (
+            id TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL
+        )`,
+        `CREATE TABLE IF NOT EXISTS mtl_mistakes (
+            id TEXT PRIMARY KEY, student_id TEXT NOT NULL, level_id INTEGER NOT NULL,
+            game_index INTEGER NOT NULL, question_index INTEGER, word TEXT,
+            mistake_type TEXT, reviewed INTEGER DEFAULT 0, created_at TEXT,
+            FOREIGN KEY(student_id) REFERENCES mtl_students(id) ON DELETE CASCADE
+        )`,
+        `CREATE TABLE IF NOT EXISTS mtl_skill_progress (
+            student_id TEXT NOT NULL, skill TEXT NOT NULL, level_id INTEGER NOT NULL,
+            lesson_id INTEGER NOT NULL, completed INTEGER DEFAULT 0, score INTEGER DEFAULT 0,
+            stars INTEGER DEFAULT 0, updated_at TEXT,
+            PRIMARY KEY (student_id, skill, level_id, lesson_id),
+            FOREIGN KEY(student_id) REFERENCES mtl_students(id) ON DELETE CASCADE
+        )`,
         // Indexes
         `CREATE INDEX IF NOT EXISTS idx_members_email ON members(email)`,
         `CREATE INDEX IF NOT EXISTS idx_members_registered ON members(registeredat DESC)`,
         `CREATE INDEX IF NOT EXISTS idx_events_date ON events(event_date DESC)`,
         `CREATE INDEX IF NOT EXISTS idx_news_date ON news(date DESC)`,
+        `CREATE INDEX IF NOT EXISTS idx_mtl_progress_student ON mtl_progress(student_id)`,
     ];
 
 } else {
@@ -192,6 +220,45 @@ async function initDB() {
             console.log('Admin seeded.');
         }
         console.log('Database initialized.');
+
+        // MTL tables — create regardless of PG/SQLite mode
+        const mtlSchema = [
+            `CREATE TABLE IF NOT EXISTS mtl_students (
+                id TEXT PRIMARY KEY, name TEXT NOT NULL, save_code TEXT UNIQUE NOT NULL,
+                teacher_id TEXT, created_at TEXT, last_active TEXT
+            )`,
+            `CREATE TABLE IF NOT EXISTS mtl_progress (
+                student_id TEXT NOT NULL, level_id INTEGER NOT NULL, game_index INTEGER NOT NULL,
+                completed INTEGER DEFAULT 0, stars INTEGER DEFAULT 0, trophy INTEGER DEFAULT 0,
+                updated_at TEXT, PRIMARY KEY (student_id, level_id, game_index)
+            )`,
+            `CREATE TABLE IF NOT EXISTS mtl_admins (
+                id TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL
+            )`,
+            `CREATE TABLE IF NOT EXISTS mtl_mistakes (
+                id TEXT PRIMARY KEY, student_id TEXT NOT NULL, level_id INTEGER NOT NULL,
+                game_index INTEGER NOT NULL, question_index INTEGER, word TEXT,
+                mistake_type TEXT, reviewed INTEGER DEFAULT 0, created_at TEXT
+            )`,
+            `CREATE TABLE IF NOT EXISTS mtl_skill_progress (
+                student_id TEXT NOT NULL, skill TEXT NOT NULL, level_id INTEGER NOT NULL,
+                lesson_id INTEGER NOT NULL, completed INTEGER DEFAULT 0, score INTEGER DEFAULT 0,
+                stars INTEGER DEFAULT 0, updated_at TEXT,
+                PRIMARY KEY (student_id, skill, level_id, lesson_id)
+            )`
+        ];
+        for (const stmt of mtlSchema) {
+            try { await dbRun(stmt); } catch (e) { console.error('MTL schema warn:', e.message.substring(0, 80)); }
+        }
+
+        // Seed MTL admin
+        const mtlAdmin = await dbGet('SELECT COUNT(*) as c FROM mtl_admins');
+        if (!mtlAdmin || mtlAdmin.c == 0) {
+            const id = 'ma_' + Date.now();
+            const hash = await bcrypt.hash('MTL2025!', 10);
+            await dbRun('INSERT INTO mtl_admins (id, username, password) VALUES (?, ?, ?)', [id, 'mtladmin', hash]);
+            console.log('MTL Admin seeded (mtladmin / MTL2025!).');
+        }
     } catch (e) {
         console.error('initDB skipped (DB not available yet):', e.message.substring(0, 80));
     }

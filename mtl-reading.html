@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move To Learn — Reading Skills</title>
+<link rel="stylesheet" href="public/css/styles.css">
+<style>
+:root{--gold:#c49b45;--blue:#1a1a1a;--green:#2e7d32;--red:#c0392b;--r:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1a1a1a}
+main{max-width:960px;margin:0 auto;padding:20px 20px 60px}
+.hero{text-align:center;padding:36px 0 20px}
+.hero h1{font-size:2rem;margin-bottom:6px}
+.hero p{color:#666;font-size:1rem}
+.back-link{display:inline-block;color:var(--blue);text-decoration:none;font-size:.9rem;font-weight:600;margin-bottom:12px}
+.back-link:hover{text-decoration:underline}
+.level-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:24px 0}
+.level-card{background:#fff;border:2px solid #eee;border-radius:var(--r);padding:18px;cursor:pointer;transition:all .2s}
+.level-card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+.level-card .num{font-size:2rem;font-weight:800;color:var(--blue)}
+.level-card .name{font-weight:600;margin:4px 0}
+.level-card .desc{font-size:.82rem;color:#888}
+.lesson-list{margin:20px 0}
+.lesson-card{background:#fff;border:1px solid #eee;border-radius:var(--r);padding:14px 18px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.lesson-card:hover{border-color:var(--blue)}
+.lesson-card .ln{font-size:.75rem;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.lesson-card .lt{font-weight:600}
+.lesson-card .ld{font-size:.82rem;color:#666}
+.section-title{font-size:1.3rem;font-weight:700;margin:28px 0 14px}
+.teach-box{background:#fff;border:1px solid #eee;border-radius:var(--r);padding:22px 26px;max-width:700px;margin:0 auto}
+.teach-box h3{font-size:1.2rem;margin-bottom:8px}
+.teach-box .rule{padding:10px 14px;background:#f8f8f8;border-left:3px solid var(--gold);margin:10px 0;font-size:.9rem;color:#444}
+.practice-box{background:#fff;border:1px solid #eee;border-radius:var(--r);padding:22px 26px;max-width:700px;margin:20px auto;text-align:center}
+.practice-box h3{font-size:1.05rem;margin-bottom:4px;color:var(--blue)}
+.practice-box .passage{text-align:left;background:#fafafa;border:1px solid #eee;border-radius:var(--r);padding:14px 18px;margin:10px 0;font-size:.95rem;line-height:1.6;color:#333}
+.practice-box .passage.hl{font-size:1.2rem;text-align:center;font-weight:600}
+.practice-box .question{font-weight:600;font-size:1rem;margin:10px 0 12px;text-align:left}
+.options{display:flex;flex-direction:column;gap:6px;margin:10px 0;text-align:left}
+.opt-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:2px solid #ddd;border-radius:8px;background:#fff;font-size:.9rem;cursor:pointer;transition:all .15s}
+.opt-btn:hover{border-color:var(--blue);background:#f8f8f8}
+.opt-btn.correct{border-color:var(--green);background:#e8f5e0}
+.opt-btn.incorrect{border-color:var(--red);background:#fdecea;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.btn{padding:10px 28px;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#333}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#a8852e}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.feedback{padding:8px;margin:8px 0;border-radius:8px;font-weight:600;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#e8f5e0;color:var(--green)}
+.feedback.wrong{background:#fdecea;color:var(--red)}
+.progress-bar{height:6px;background:#eee;border-radius:3px;margin:12px 0;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+.complete-box{text-align:center;padding:28px}
+.complete-box .big{font-size:3rem}
+.complete-box h2{margin:8px 0}
+.complete-box .pct{font-size:2rem;font-weight:800;color:var(--blue)}
+.complete-box .stars{font-size:1.8rem;letter-spacing:4px;margin:8px 0}
+@media(max-width:600px){.level-grid{grid-template-columns:1fr}.practice-box,.teach-box{padding:14px}.hero h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon">IBCB</div>
+            <div class="logo-text">
+                <span class="logo-main">IBCB Investment</span>
+                <span class="logo-sub">Private Equity · Investing AI +</span>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">主頁</a>
+            <a href="about.html" class="nav-link">關於我們</a>
+            <a href="mtl-english.html" class="nav-link active">Move To Learn</a>
+        </nav>
+    </div>
+</header>
+
+<main id="app">
+<section id="view-levels">
+<a href="mtl-english.html" class="back-link">← Back to MTL English</a>
+<div class="hero"><h1>📖 Reading Skills</h1><p>A complete reading curriculum — from letter sounds to critical analysis. Ages 6–17.</p></div>
+<div class="level-grid" id="levelGrid"></div>
+</section>
+<section id="view-lessons" style="display:none;">
+<button class="back-link" onclick="sLv()" style="margin-bottom:12px;">← All Levels</button>
+<div id="lessonContent"></div>
+</section>
+<section id="view-practice" style="display:none;">
+<button class="back-link" onclick="sLs()" style="margin-bottom:12px;">← Back to Lessons</button>
+<div id="practiceContent"></div>
+</section>
+</main>
+
+<script>
+const C=[{
+id:1,e:'🔤',n:'Letter Sounds & Blending',d:'Learn letter sounds and blend CVC words. Ages 6–7.',
+ls:[
+{id:1,t:'Meet the Letters',te:'<p>Each letter makes a sound. <strong>Blend</strong> them: <em>c-a-t → cat!</em></p>',ex:'🐱 cat 🐶 dog 🪑 sit 🦊 fox 🧢 hat',qs:[
+{s:'Which word is <strong>/c-a-t/</strong>?',o:['cat','car','cut'],a:0},
+{s:'Which word is <strong>/d-o-g/</strong>?',o:['dig','dog','dot'],a:1},
+{s:'Which word is <strong>/s-u-n/</strong>?',o:['son','sin','sun'],a:2}]},
+{id:2,t:'Blending Practice',te:'<p>Say each sound, then blend fast without stopping!</p>',ex:'🐭 rat 🏃 run 🌳 big 🎁 box',qs:[
+{s:'Read: <strong>r-u-n</strong>',o:['ran','run','rain'],a:1},
+{s:'Read: <strong>b-i-g</strong>',o:['big','bag','bug'],a:0},
+{s:'Read: <strong>c-u-p</strong>',o:['cup','cap','cop'],a:0}]},
+{id:3,t:'Making Words',te:'<p>Build the word! Pick the right missing letter.</p>',ex:'🔨 cat, dog, sit, hat, bed',qs:[
+{s:'🪑 s _ t (a seat)',o:['i (sit)','a (sat)','e (set)'],a:0},
+{s:'🐱 c _ t (a pet)',o:['a (cat)','o (cot)','u (cut)'],a:0},
+{s:'🛏️ b _ d (sleep)',o:['a (bad)','e (bed)','i (bid)'],a:1}]}]},
+
+{id:2,e:'👀',n:'Sight Words',d:'Master 50 most common sight words. Read instantly. Ages 6–8.',
+ls:[
+{id:1,t:'Top Sight Words',te:'<p>Know these by heart — they make up ~25% of English text!</p>',ex:'the,and,is,you,that,it,he,was,for,on,are,as,with,his,they',qs:[
+{s:'"___ cat sat on the mat."',o:['A','The','He'],a:1},
+{s:'"She ___ happy today."',o:['is','the','for'],a:0},
+{s:'"I like cats ___ dogs."',o:['was','the','and'],a:2}]},
+{id:2,t:'Sight Word Sentences',te:'<p>Read whole sentences with sight words — reading feels fast!</p>',ex:'"The boy and his dog are at the park."',qs:[
+{s:'<em>"I have a red ball and it is big."</em><br>What does the person have?',o:['Blue book','Red ball','Big dog'],a:1},
+{s:'<em>"She was with her friends at the park."</em><br>Where was she?',o:['At school','At home','At the park'],a:2},
+{s:'<em>"They are not here this morning."</em><br>When?',o:['At night','This morning','Yesterday'],a:1}]},
+{id:3,t:'More Sight Words',te:'<p>15 more — practice until instant!</p>',ex:'from,or,one,had,by,but,not,what,all,were,we,when,your,can,said',qs:[
+{s:'"What do you want ___ lunch?"',o:['for','from','but'],a:0},
+{s:'"She ___ she was tired."',o:['when','what','said'],a:2},
+{s:'"___ were all very happy."',o:['Can','What','We'],a:2}]}]},
+
+{id:3,e:'✏️',n:'Simple Sentences',d:'Read sentences with punctuation & comprehension. Ages 7–9.',
+ls:[
+{id:1,t:'Punctuation Power',te:'<p><strong>Period (.)</strong> = stop. <strong>Question (?)</strong> = asking. <strong>Exclamation (!)</strong> = excitement!</p>',ex:'The dog is brown. → Where is the cat? → What a big tree!',qs:[
+{s:'<em>"The sun is bright today."</em><br>Punctuation?',o:['Question','Period','Exclamation'],a:1},
+{s:'<em>"Do you like ice cream?"</em><br>What is it doing?',o:['Telling','Asking','Exciting'],a:1},
+{s:'<em>"Be careful with that glass!"</em><br>Feeling?',o:['Happiness','Boredom','Warning'],a:2}]},
+{id:2,t:'Reading for Meaning',te:'<p>After reading, ask: <em>"What did I learn?"</em></p>',ex:'"The hungry bear found berries." → Who? Bear. What? Found berries.',qs:[
+{s:'<em>"Mia packed her lunch and walked to school."</em><br>What FIRST?',o:['Walked','Packed lunch','Ate lunch'],a:1},
+{s:'<em>"Tom opened his umbrella because it rained."</em><br>Why?',o:['Sunny','It rained','He was hot'],a:1},
+{s:'<em>"Under the tree, the children found a treasure box."</em><br>Where?',o:['In house','Under tree','At school'],a:1}]},
+{id:3,t:'The 5 W Questions',te:'<p>Ask <strong>Who? What? Where? When? Why?</strong></p>',ex:'"Yesterday,Dad bought apples at market for pie." → Who:Dad. What:bought. Where:market.',qs:[
+{s:'<em>"On Saturday, Grandma baked cookies."</em><br>WHEN?',o:['Kitchen','Saturday','Grandma'],a:1},
+{s:'<em>"The teacher read a story after lunch."</em><br>WHAT?',o:['Ate lunch','Read story','Went home'],a:1},
+{s:'<em>"Because it was cold, Jack wore his coat."</em><br>WHY?',o:['Liked color','It was cold','Park trip'],a:1}]}]},
+
+{id:4,e:'🚀',n:'Reading Fluency',d:'Read paragraphs with speed & expression. Ages 8–10.',
+ls:[
+{id:1,t:'Speed & Accuracy',te:'<p><strong>Fluency</strong> = reading smoothly, like talking.</p>',ex:'"Anna walked to the store. She needed milk. The store was busy. She went home."',qs:[
+{s:'<em>"Anna walked to the store. She needed milk and bread."</em><br>What did Anna need?',o:['Eggs, cheese','Milk, bread','Fruit, water'],a:1},
+{s:'<em>"The puppy ran around, chased a butterfly. It was very happy."</em><br>How did puppy feel?',o:['Sad','Very happy','Tired'],a:1},
+{s:'<em>"Rain fell all afternoon. Streets got wet. Children splashed."</em><br>Weather?',o:['Sunny','Raining','Snowing'],a:1}]},
+{id:2,t:'Expression & Voice',te:'<p>Your voice goes up and down — not flat! Change for different characters.</p>',ex:'"Help!" she shouted. vs. "Help," she whispered. — Same word, different voice!',qs:[
+{s:'How to read: <em>"I can\'t believe we won!" shouted Marco.</em>',o:['Quiet, sad','Loud, excited','Slow, bored'],a:1},
+{s:'How to read: <em>"I\'m sorry," she whispered.</em>',o:['Loud, angry','Quiet, gentle','Fast, happy'],a:1},
+{s:'How to read: <em>"Watch out!" yelled Dad.</em>',o:['Calm, slow','Loud, fast, urgent','Quiet, sleepy'],a:1}]},
+{id:3,t:'Paragraph Power',te:'<p>A paragraph has one main idea — usually the first sentence.</p>',ex:'"Dogs make great pets. They are loyal. They love to play fetch." → Topic: Dogs as pets.',qs:[
+{s:'<em>"Recycling helps our planet. We save trees. It keeps plastic out of oceans."</em><br>Topic?',o:['Plant trees','Recycling is important','Plastic types'],a:1},
+{s:'<em>"Exercise keeps you healthy. Running strengthens your heart. A walk helps."</em><br>Topic?',o:['Why sleep','Exercise benefits','Cooking tips'],a:1},
+{s:'<em>"Breakfast is most important meal. Gives energy. Brain works better."</em><br>Argues?',o:['Skip breakfast','Eat breakfast','Lunch better'],a:1}]}]},
+
+{id:5,e:'🎯',n:'Main Idea & Details',d:'Find the main idea and supporting details. Ages 9–11.',
+ls:[
+{id:1,t:'Finding the Main Idea',te:'<p>The <strong>main idea</strong> = what\'s it MOSTLY about?</p>',ex:'"Honeybees are amazing. They live in hives with thousands. Each has a job." → Honeybees are organized.',qs:[
+{s:'<em>"Turtles are ancient. Lived 200 million years. Shells protect them."</em><br>Main idea?',o:['Turtles are slow','Turtles are ancient, protected','How to catch'],a:1,x:'All details = ancient + protected.'},
+{s:'<em>"Water is essential. Bodies 60% water. We need it daily. Nothing survives without."</em><br>Main idea?',o:['How to swim','Water is necessary for life','Ocean is deep'],a:1,x:'Every sentence = water is essential.'},
+{s:'<em>"Volcanoes: destructive AND creative. Destroy towns but ash makes fertile soil."</em><br>Main idea?',o:['Only destructive','Both positive and negative','Always cold'],a:1,x:'Shows BOTH sides.'}]},
+{id:2,t:'Supporting Details',te:'<p><strong>Details</strong> back up the main idea — answer how, why, what.</p>',ex:'Main idea: "Bikes are great transport." Details: (1)no gas (2)exercise (3)no pollution.',qs:[
+{s:'<strong>Main idea:</strong> Fruits & veggies keep you healthy.<br>Which SUPPORTS?',o:['Ice cream tasty','Oranges have vitamin C','Cars need gas'],a:1,x:'Vitamin C explains WHY.'},
+{s:'<strong>Main idea:</strong> Dogs communicate many ways.<br>Which SUPPORTS?',o:['Cats purr','Dogs wag, bark, growl','Birds fly south'],a:1,x:'Wagging,barking = specific dog communication.'},
+{s:'<em>"Sleep important for kids. Need 9-11 hrs. Stores memories."</em><br>NOT from text?',o:['Need 9-11 hours','Stores memories','Some sleep late'],a:2,x:'Text never mentions sleeping late.'}]},
+{id:3,t:'Summarizing',te:'<p><strong>Summarize</strong> = main idea + key details, in fewer words.</p>',ex:'"Penguins can\'t fly. Excellent swimmers. Live cold places." → Flightless birds, swim well, cold climates.',qs:[
+{s:'<em>"Solar turns sunlight to electricity. Clean, no pollution. Countries build farms."</em><br>Best summary?',o:['Panels on rooftops','Solar creates clean electricity, helps environment','Sunny days best'],a:1,x:'Captures main idea + purpose.'},
+{s:'<em>"Leonardo: artist AND inventor. Painted Mona Lisa. Designed flying machines."</em><br>Best summary?',o:['Painted Mona Lisa','Talented artist/inventor ahead of his time','Wrote notebooks'],a:1,x:'Captures BOTH sides + forward-thinking.'},
+{s:'<em>"Composting turns scraps to soil. Put peels in bin. Worms break down."</em><br>Best summary?',o:['Worms helpful','Composting recycles waste into garden soil','Gardens need soil'],a:1,x:'Captures what, how, and result.'}]}]},
+
+{id:6,e:'🔍',n:'Making Inferences',d:'Read between the lines — implied, not stated. Ages 10–12.',
+ls:[
+{id:1,t:'Reading Between the Lines',te:'<p><strong>Inference</strong> = clues + what you know. Formula: Clues + Knowledge = Inference.</p>',ex:'"Maria grabbed her umbrella and boots." → It is raining/about to rain.',qs:[
+{s:'<em>"Tom\'s stomach growled. He looked at the clock. Two min until lunch."</em><br>Infer?',o:['Tired','Hungry','Bored'],a:1,x:'Stomach growling + waiting for lunch = hungry.'},
+{s:'<em>"Sara came inside shivering. Red cheeks. Wrapped in warm blanket."</em><br>Infer?',o:['Very cold','Excited','Angry'],a:0,x:'Shivering + red cheeks + blanket = cold.'},
+{s:'<em>"Crowd cheered. People had tears. Team ran on field waving."</em><br>Infer?',o:['Team lost','Team won','Raining'],a:1,x:'Cheering + happy tears + waving = victory.'}]},
+{id:2,t:'Character Feelings',te:'<p>Authors <strong>show</strong> feelings through actions — you infer!</p>',ex:'"He stared at the floor, voice barely a whisper." → Ashamed, shy, or sad.',qs:[
+{s:'<em>"Jasmine\'s hands trembled. Deep breath opening envelope."</em><br>Feeling?',o:['Calm','Nervous','Bored'],a:1,x:'Trembling + deep breath = anxiety.'},
+{s:'<em>"Carlos ran home. Burst through door waving paper. \'Look!\'"</em><br>Feeling?',o:['Sad','Excited, proud','Tired'],a:1,x:'Running, bursting in, waving = can\'t wait to share!'},
+{s:'<em>"Aisha walked slowly. Head down. Nodded silently when greeted."</em><br>Feeling?',o:['Happy','Upset/withdrawn','Energetic'],a:1,x:'Slow walk, silent, head down = sad/troubled.'}]},
+{id:3,t:'Predicting Outcomes',te:'<p>Use clues to <strong>predict</strong> what happens next.</p>',ex:'"Dark clouds. Thunder rumbled. First drops fell." → Storm coming.',qs:[
+{s:'<em>"Boy reached for cookie jar on high shelf. Tiptoes. Jar wobbled."</em><br>What happens?',o:['Jar falls','Boy grows','Jar flies'],a:0,x:'Reaching + tiptoes + wobbling = unstable, falls.'},
+{s:'<em>"Naomi studied 3 hrs daily. Reviewed notes. Slept well before test."</em><br>Predict?',o:['She\'ll do well','She\'ll skip','She\'ll forget'],a:0,x:'Preparation + review + sleep = success.'},
+{s:'<em>"Puppy chewed Dad\'s shoes. Muddy prints. Door opened. Dad walked in."</em><br>Predict?',o:['Dad pleased','Dad upset','Dad won\'t notice'],a:1,x:'Chewed shoes + mess + Dad = trouble!'}]}]},
+
+{id:7,e:'⛓️',n:'Cause & Effect',d:'Identify why things happen and what results. Ages 11–13.',
+ls:[
+{id:1,t:'What Makes Things Happen',te:'<p><strong>Cause</strong> = WHY. <strong>Effect</strong> = WHAT. Clue words: <em>because, so, since.</em></p>',ex:'"Because it rained, the game was cancelled." → Cause: rain. Effect: cancelled.',qs:[
+{s:'<em>"The plant died because no one watered it."</em><br>EFFECT?',o:['No one watered','The plant died','No rain'],a:1,x:'"The plant died" is the result.'},
+{s:'<em>"Since roads were icy, school was delayed."</em><br>CAUSE?',o:['School delayed','Icy roads','Two hours'],a:1,x:'"Icy roads" is the reason.'},
+{s:'<em>"They practiced daily, so they won."</em><br>CAUSE of winning?',o:['Championship','Practicing daily','Other team'],a:1,x:'"so" connects practice → winning.'}]},
+{id:2,t:'Cause & Effect Chains',te:'<p>One cause → effect → becomes new cause. <strong>Chain reaction!</strong></p>',ex:'Rain → River floods → Road closes → Detour → Late.',qs:[
+{s:'<em>"Power out. Fridge stopped. Food spoiled. Threw away."</em><br>Started it?',o:['Throwing food','Fridge stopped','Power out'],a:2,x:'Power outage was the first trigger.'},
+{s:'<em>"Lucy forgot alarm. Woke late. Missed bus. Late to school."</em><br>ROOT?',o:['Missed bus','Forgot alarm','Late school'],a:1,x:'Forgetting alarm started the chain.'},
+{s:'Complete: "Spark on leaves → ___ → Forest burned."',o:['It rained','Fire started & spread','Firefighters came'],a:1,x:'Spark ignites → fire spreads → burns.'}]},
+{id:3,t:'Multiple Causes & Effects',te:'<p>One effect can have several causes. One cause can have several effects.</p>',ex:'Why team lost? (1)star injured (2)tired (3)opponent better.',qs:[
+{s:'<em>"Beach closed. Rip currents. Shark spotted. High bacteria."</em><br>How many causes?',o:['One','Two','Three'],a:2,x:'Three: currents, shark, bacteria.'},
+{s:'<em>"Exercise: stronger heart, better sleep, better mood, more energy."</em><br>How many effects?',o:['Two','Four','One'],a:1,x:'Four effects.'},
+{s:'<em>"Jake aced test. Studied nightly. Sister helped. Good sleep."</em><br>Causes?',o:['Born lucky','Study, help, sleep','Easy test'],a:1,x:'Three causes: study, sister, sleep.'}]}]},
+
+{id:8,e:'⚖️',n:'Compare & Contrast',d:'Compare two texts — similarities & differences. Ages 12–14.',
+ls:[
+{id:1,t:'Finding Similarities',te:'<p><strong>Compare</strong> = what\'s alike? Clue: <em>similarly, both, also, like.</em></p>',ex:'A:"Dolphins ocean mammals." B:"Like dolphins, whales ocean mammals." → Both ocean mammals.',qs:[
+{s:'A:"Frogs begin as eggs in water." B:"Salamanders also start as eggs in water."<br>Similar?',o:['Have feathers','Both start as eggs in water','Are mammals'],a:1,x:'Both begin life as eggs in water.'},
+{s:'A:"Bikes: human-powered." B:"Like bikes, rowboats use human power."<br>Similar?',o:['Both use gas','Both use human power','Both have wheels'],a:1,x:'Both rely on human effort.'},
+{s:'A:"Egypt pyramids: tombs, 4000yrs." B:"Similarly, Mexico pyramids: Maya."<br>BOTH?',o:['Same builders','Both ancient pyramids','Both in Egypt'],a:1,x:'Both ancient — different builders, purposes.'}]},
+{id:2,t:'Finding Differences',te:'<p><strong>Contrast</strong> = what\'s different? Clue: <em>however, but, unlike, in contrast.</em></p>',ex:'"Cats are independent. Dogs, on the other hand, are social."',qs:[
+{s:'A:"Arctic: ocean, polar bears." B:"In contrast, Antarctica: land, penguins."<br>Diff?',o:['Both cold','Bears vs penguins','Both poles'],a:1,x:'Animals reversed! "In contrast" signals difference.'},
+{s:'A:"Public: free, open." B:"Private, however, charge tuition."<br>Key diff?',o:['Both schools','Free vs paid','Both teach'],a:1,x:'Cost: public=free, private=pay.'},
+{s:'A:"Lions: groups." B:"Unlike lions, tigers: alone."<br>Diff?',o:['Group vs solitary','Both cats','Both hunt'],a:0,x:'"Unlike" signals contrast: social vs solitary.'}]},
+{id:3,t:'Side-by-Side Analysis',te:'<p>What is similar AND what is different?</p>',ex:'Sharks vs Dolphins. Similar: ocean swimmers. Different: sharks=fish, dolphins=mammals.',qs:[
+{s:'A:"Solar: clean, quiet, sun-only." B:"Wind: clean, noisy, day+night."<br>Similar + diff?',o:['Both clean; solar=sun, wind=always','Both fossil','Both costly'],a:0,x:'Similarity: clean. Difference: solar sun-only, wind all-day.'},
+{s:'A:"City: jobs,food,crowded." B:"Country: peace,space,fewer jobs."<br>Conclusion?',o:['City always better','Country always better','Each has pros/cons'],a:2,x:'Both show positives AND negatives.'}]}]},
+
+{id:9,e:'✍️',n:'Author\'s Purpose & Tone',d:'Why written? What attitude? Ages 13–15.',
+ls:[
+{id:1,t:'Why Write? — P.I.E.',te:'<p>Three purposes: <strong>P</strong>ersuade, <strong>I</strong>nform, <strong>E</strong>ntertain.</p>',ex:'Inform: "Moon is 384,400km." Persuade: "You MUST try!" Entertain: "Wizard fell in soup."',qs:[
+{s:'<em>"Studies show breakfast improves scores 20%."</em><br>Purpose?',o:['Entertain','Inform','Persuade'],a:1,x:'Facts and data = inform.'},
+{s:'<em>"Vote Maria! Better lunches! Longer recess!"</em><br>Purpose?',o:['Inform','Persuade','Entertain'],a:1,x:'Convincing you = persuade.'},
+{s:'<em>"Once upon a time, a tiny mouse dreamed..."</em><br>Purpose?',o:['Entertain','Inform','Persuade'],a:0,x:'"Once upon a time" = entertain.'}]},
+{id:2,t:'Detecting Tone',te:'<p><strong>Tone</strong> = author\'s attitude. Serious, humorous, sarcastic, urgent, hopeful, angry.</p>',ex:'Serious: "Immediate attention." Sarcastic: "Oh great, another meeting." Urgent: "Act now!"',qs:[
+{s:'<em>"Brave firefighters saved families. These heroes deserve gratitude."</em><br>Tone?',o:['Humorous','Admiring/respectful','Angry'],a:1,x:'"brave," "heroes" = admiration.'},
+{s:'<em>"Oh great, another meeting. Could have been an email."</em><br>Tone?',o:['Serious','Sarcastic/annoyed','Joyful'],a:1,x:'"Oh great" ironic = sarcasm.'},
+{s:'<em>"Climate change accelerating. Damage may be irreversible."</em><br>Tone?',o:['Humorous','Urgent/alarming','Relaxed'],a:1,x:'"accelerating," "irreversible" = urgency.'}]},
+{id:3,t:'Purpose + Tone Together',te:'<p>Persuade=urgent tone. Inform=neutral. Entertain=humorous.</p>',ex:'"Library closes next month due to budget." → Inform. Sad, matter-of-fact.',qs:[
+{s:'<em>"CANNOT miss! Life-changing! Call now!"</em><br>Purpose & tone?',o:['Inform; neutral','Persuade; excited','Entertain; sad'],a:1,x:'Persuade + excited/exaggerated.'},
+{s:'<em>"Water cycle: evaporation, condensation, precipitation."</em><br>Purpose & tone?',o:['Persuade; urgent','Entertain; funny','Inform; objective'],a:2,x:'Textbook-style = inform, neutral.'},
+{s:'<em>"My cat thinks he\'s emperor. Glares if dinner late."</em><br>Purpose & tone?',o:['Inform; serious','Entertain; humorous','Persuade; angry'],a:1,x:'Funny pet story = entertain with warmth.'}]}]},
+
+{id:10,e:'🧠',n:'Critical Reading',d:'Analyze arguments, identify bias, evaluate evidence. Ages 15–17.',
+ls:[
+{id:1,t:'Fact vs. Opinion',te:'<p><strong>Fact</strong> = can be proven. <strong>Opinion</strong> = personal belief. Can you verify?</p>',ex:'Fact: "Water boils at 100°C." Opinion: "Summer is best season."',qs:[
+{s:'<em>"Earth orbits Sun at ~93 million miles."</em><br>Fact or opinion?',o:['Fact','Opinion','Neither'],a:0,x:'Measurable, verifiable by science.'},
+{s:'<em>"Pineapple on pizza is disgusting."</em><br>Fact or opinion?',o:['Fact','Opinion','Neither'],a:1,x:'Personal preference — some love it!'},
+{s:'<em>"WHO: smoking causes 8 million deaths/year."</em><br>Fact or opinion?',o:['Fact','Opinion','Neither'],a:0,x:'Stat from reputable org — verifiable.'}]},
+{id:2,t:'Identifying Bias',te:'<p><strong>Bias</strong> = unfair preference. Watch: one-sided, loaded language, missing info.</p>',ex:'Biased: "Our company best, others terrible." → one-sided, no evidence.',qs:[
+{s:'<em>"Video games rot your brain. Kids lazy. Never allow them."</em><br>Biased?',o:['No, neutral','Yes — extreme, one-sided','Yes, mentions games'],a:1,x:'Extreme language, no counterarguments.'},
+{s:'<em>"Some studies: games improve coordination. But excess may reduce activity."</em><br>Biased?',o:['Biased','Balanced — both sides'],a:1,x:'Presents BOTH positive and negative.'},
+{s:'<em>"Our politician honest. Opponent a liar. Only fool disagrees."</em><br>Bias?',o:['No bias','Political — insults, no facts'],a:1,x:'Praises one, attacks other with insults.'}]},
+{id:3,t:'Evaluating Evidence',te:'<p><strong>Strong:</strong> studies, experts, stats. <strong>Weak:</strong> anecdotes, opinions.</p>',ex:'Strong: "2023 study of 10,000 found..." Weak: "My cousin\'s friend said..."',qs:[
+{s:'<em>"Peer-reviewed NEJM: vaccine 95% effective."</em><br>Evidence?',o:['Very strong','Weak','Can\'t tell'],a:0,x:'Reputable journal + peer review = strong.'},
+{s:'<em>"Social media: chocolate cures cancer. Aunt swears by it."</em><br>Reliable?',o:['Very','Not — rumor, no science'],a:1,x:'Social media + anecdote = very weak.'},
+{s:'<em>"Survey of 5000: breakfast eaters score 15% higher."</em><br>Evaluate.',o:['Strong — large sample','Weak — small'],a:0,x:'Large sample + specific result = strong.'}]}]}];
+
+// ==================== APP ====================
+let cl=null,cln=null,st={qs:[],i:0,sc:0,t:0,ans:!1};
+
+function rLv(){
+  document.getElementById('levelGrid').innerHTML=C.map(l=>
+    `<div class="level-card" onclick="oLv(${l.id})"><div><span>${l.e}</span><span class="num">${l.id}</span></div><div class="name">${l.n}</div><div class="desc">${l.d}</div></div>`).join('');
+}
+function sLv(){document.getElementById('view-levels').style.display='';document.getElementById('view-lessons').style.display='none';document.getElementById('view-practice').style.display='none';cln=null}
+function oLv(id){cl=C.find(l=>l.id===id);document.getElementById('view-levels').style.display='none';document.getElementById('view-lessons').style.display='';document.getElementById('view-practice').style.display='none';
+  document.getElementById('lessonContent').innerHTML=`<h2 class="section-title">${cl.e} Level ${cl.id}: ${cl.n}</h2><p style="color:#666;margin-bottom:20px;">${cl.d} — ${cl.ls.length} lessons</p><div class="lesson-list">${cl.ls.map((ls,i)=>`<div class="lesson-card" onclick="oLn(${i})"><div class="ln">Lesson ${i+1}</div><div class="lt">${ls.t}</div><div class="ld">${ls.ex}</div></div>`).join('')}</div>`}
+function sLs(){if(cl)oLv(cl.id)}
+function oLn(i){cln=cl.ls[i];document.getElementById('view-lessons').style.display='none';document.getElementById('view-practice').style.display='';sLn()}
+function sLn(){const ls=cln;st={qs:[...ls.qs].sort(()=>Math.random()-.5),i:0,sc:0,t:ls.qs.length,ans:!1};rTch()}
+function rTch(){const ls=cln;
+  document.getElementById('practiceContent').innerHTML=`<div class="teach-box"><h3>📖 ${ls.t}</h3>${ls.te}${ls.ex?`<div class="rule"><strong>Examples:</strong> ${ls.ex}</div>`:''}<div style="margin-top:18px;text-align:center"><button class="btn btn-primary" onclick="rPr()">Start Practice →</button><p style="color:#888;font-size:.85rem;margin-top:6px;">${st.t} questions</p></div></div>`}
+function rPr(){if(st.i>=st.t){rCmp();return}const p=st.qs[st.i],pct=st.i?Math.round((st.i/st.t)*100):0;st.ans=!1;
+  document.getElementById('practiceContent').innerHTML=`<div class="practice-box"><h3>${cln.t}</h3><div style="display:flex;justify-content:space-between;font-size:.82rem;color:#888;margin-bottom:4px;"><span>Q ${st.i+1}/${st.t}</span><span>⭐ ${st.sc}/${st.i||1}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><div class="passage${cl.id<=3?' hl':''}">${p.s}</div><div class="question">${cl.id<=3?'Pick the correct word:':'Choose the best answer:'}</div><div class="options">${p.o.map((o,i)=>`<button class="opt-btn" onclick="sA(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><div class="feedback" id="fb"></div><button class="btn btn-primary" id="nb" style="display:none;" onclick="nQ()">Next →</button></div>`}
+function sA(i){if(st.ans)return;st.ans=!0;const p=st.qs[st.i],bs=document.querySelectorAll('.opt-btn'),fb=document.getElementById('fb');
+  bs.forEach((b,j)=>{b.disabled=!0;if(j===p.a)b.classList.add('correct');else if(j===i&&i!==p.a)b.classList.add('incorrect')});
+  if(i===p.a){st.sc++;fb.textContent='✅ Correct! '+(p.x||'');fb.className='feedback show correct'}else{fb.textContent='❌ '+(p.x||'Correct: '+String.fromCharCode(65+p.a));fb.className='feedback show wrong'}
+  document.getElementById('nb').style.display=''}
+function nQ(){st.i++;rPr()}
+function rCmp(){const pct=st.t?Math.round((st.sc/st.t)*100):100,stars=pct>=90?'🌟🌟🌟':pct>=70?'🌟🌟':'🌟';
+ // Save to server
+ (function(){var p=new URLSearchParams(window.location.search);var s=p.get('sid');if(s&&cl&&cln){var sts=pct>=90?3:pct>=70?2:pct>=50?1:0;fetch('/api/mtl/skill/progress',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({student_id:s,skill:'reading',level_id:cl.id,lesson_id:cl.ls.indexOf(cln),completed:true,score:pct,stars:sts})}).catch(function(){})}})();
+  document.getElementById('practiceContent').innerHTML=`<div class="practice-box complete-box"><div class="big">${pct>=80?'🏆':'📚'}</div><h2>Lesson Complete!</h2><div class="stars">${stars}</div><div class="pct">${pct}%</div><p style="color:#666;">${st.sc}/${st.t} correct</p>${pct>=80?'<p style="color:var(--green);font-weight:600;">🎉 Excellent work!</p>':pct>=50?'<p style="color:var(--gold);">👍 Good effort — try again!</p>':'<p style="color:#888;">💪 Keep practicing!</p>'}<div style="margin-top:20px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-primary" onclick="oLn(${cl.ls.indexOf(cln)})">🔄 Practice Again</button><button class="btn btn-gold" onclick="sLs()">📋 More Lessons</button><button class="btn" style="background:#eee;" onclick="sLv()">🏠 All Levels</button></div></div>`}
+
+rLv();
+(function(){const p=new URLSearchParams(window.location.search),lv=parseInt(p.get('level')),ls=parseInt(p.get('lesson'));if(lv&&C[lv-1]){cl=C[lv-1];ls!=null&&cl.ls[ls]?oLn(ls):oLv(lv)}})();
+// TTS
+(function(){function spk(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function addSB(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();spk(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.passage,.rule,.practice-box h3,.word-display,.ex,.practice-box .rule').forEach(addSB);},600);var o=new MutationObserver(function(){document.querySelectorAll('.passage:not(:has(.spk-btn)),.rule:not(:has(.spk-btn)),.practice-box h3:not(:has(.spk-btn)),.ex:not(:has(.spk-btn)),.practice-box .rule:not(:has(.spk-btn))').forEach(addSB);});o.observe(document.body,{childList:true,subtree:true});})();
+</script>
+</body>
+</html>

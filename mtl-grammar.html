@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTL Grammar Skills | Move To Learn English</title>
+<link rel="stylesheet" href="public/css/styles.css">
+<style>
+:root{--gold:#c9a84c;--dark:#1a1a1a;--light:#f5f5f5;--white:#fff;--red:#c0392b;--green:#27ae60;--blue:#2980b9}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--light);color:var(--dark);line-height:1.6}
+.mtl-container{max-width:900px;margin:0 auto;padding:1rem}
+.mtl-back{display:inline-block;margin:1rem 0;color:var(--gold);text-decoration:none;font-weight:600;font-size:.95rem}
+.mtl-back:hover{text-decoration:underline}
+.level-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.7rem;margin:1.5rem 0}
+.level-card{background:var(--white);border:2px solid #ddd;border-radius:10px;padding:1rem .7rem;text-align:center;cursor:pointer;transition:all .2s}
+.level-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.level-card.completed{border-color:var(--green);background:#f0faf4}
+.level-card .lvl-num{font-size:2rem;font-weight:800;color:var(--gold)}
+.level-card .lvl-title{font-size:.82rem;font-weight:600;margin:.3rem 0}
+.level-card .lvl-stars{color:var(--gold);font-size:.85rem}
+.lesson-view{display:none;background:var(--white);border-radius:12px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.lesson-view.active{display:block}
+.explanation{background:#faf8f2;border-left:4px solid var(--gold);padding:.8rem 1rem;border-radius:0 8px 8px 0;margin:1rem 0}
+.example{background:#f0f7ff;padding:.5rem .8rem;border-radius:6px;margin:.4rem 0;font-style:italic}
+.practice-item{background:var(--white);border:1px solid #e0e0e0;border-radius:10px;padding:1rem;margin:.7rem 0;transition:all .3s}
+.practice-item.correct{border-color:var(--green);background:#f0faf4}
+.practice-item.wrong{border-color:var(--red);background:#fef5f5}
+.quiz-question{font-weight:600;margin-bottom:.5rem;font-size:1.02rem}
+.options{display:flex;flex-wrap:wrap;gap:.4rem}
+.option-btn{padding:.55rem 1rem;border:2px solid #ddd;border-radius:8px;background:var(--white);cursor:pointer;font-size:.92rem;transition:all .15s;flex:1;min-width:90px}
+.option-btn:hover{border-color:var(--gold);background:#fdf8ee}
+.option-btn.correct-answer{border-color:var(--green);background:#d4edda;color:#155724}
+.option-btn.wrong-answer{border-color:var(--red);background:#f8d7da;color:#721c24}
+.option-btn:disabled{cursor:default;opacity:.85}
+.feedback{margin-top:.5rem;font-weight:600;font-size:.88rem;min-height:1.3em}
+.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+.progress-bar{height:7px;background:#e0e0e0;border-radius:4px;margin:.8rem 0;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .4s}
+.score-display{display:flex;justify-content:space-between;align-items:center;margin:.5rem 0;font-weight:600}
+.btn{padding:.6rem 1.4rem;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.9rem;transition:all .2s}
+.btn-primary{background:var(--gold);color:var(--white)}.btn-primary:hover{background:#b8943f}
+.btn-secondary{background:#555;color:var(--white)}.btn-secondary:hover{background:#333}
+.btn-success{background:var(--green);color:var(--white)}.btn-success:hover{background:#219a52}
+.btn-sm{padding:.35rem .9rem;font-size:.82rem}
+.nav-row{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.lesson-tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.8rem}
+.lesson-tab{padding:.4rem .8rem;border:2px solid #ddd;border-radius:20px;background:var(--white);cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
+.lesson-tab.active{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.lesson-tab.done{border-color:var(--green);color:var(--green)}
+.end-screen{text-align:center;padding:1.5rem}
+.end-screen .big-stars{font-size:2.5rem;margin:.8rem 0}
+.end-screen .score-big{font-size:2.2rem;font-weight:800;color:var(--gold)}
+@media(max-width:600px){.lesson-view{padding:1rem}.level-grid{grid-template-columns:repeat(2,1fr)}.options{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="header-content"><div class="logo"><div class="logo-icon">IBCB</div><div class="logo-text"><span class="logo-main">IBCB Investment</span><span class="logo-sub">Private Equity · Investing AI +</span></div></div><nav class="main-nav"><a href="index.html" class="nav-link">主頁</a><a href="about.html" class="nav-link">關於我們</a><a href="mtl-english.html" class="nav-link active">Move To Learn</a></nav></div></header>
+
+<div class="mtl-container">
+<a href="mtl-english.html" class="mtl-back">← Back to MTL English</a>
+<h2>Grammar Skills</h2>
+<p style="color:#666;margin-bottom:1rem">Master English grammar — 10 levels for ages 6–17</p>
+<div id="levelSelect" class="level-grid"></div>
+<div id="lessonView" class="lesson-view"></div>
+</div>
+
+<script>
+const C=[
+{id:1,title:"Nouns & Verbs",desc:"The building blocks of sentences",ls:[
+{t:"What is a Noun?",e:"A <b>noun</b> names a <b>person, place, or thing</b>. People: teacher, Maria. Places: school, London. Things: book, happiness.",
+ x:["The <b>cat</b> sat on the <b>mat</b>.","<b>Sarah</b> went to the <b>library</b>."],
+ p:[{q:"Which word is a noun? <i>The bird sings.</i>",o:["bird","sings","loudly","the"],a:0},
+ {q:"Which word is a noun? <i>London is big.</i>",o:["big","is","London","a"],a:2},
+ {q:"How many nouns? <i>Tom ate an apple.</i>",o:["1","2","3"],a:1},
+ {q:"Which is NOT a noun?",o:["happiness","run","mountain","teacher"],a:1},
+ {q:"How many nouns? <i>My sister loves pizza.</i>",o:["1","2","3"],a:1}]},
+{t:"What is a Verb?",e:"A <b>verb</b> is an <b>action</b> word or state of being. Action: run, eat, write. Being: am, is, are, was, were.",
+ x:["The boy <b>kicks</b> the ball.","I <b>am</b> happy."],
+ p:[{q:"Which word is a verb? <i>The dog barks loudly.</i>",o:["dog","barks","loudly","the"],a:1},
+ {q:"Which is NOT a verb?",o:["jump","sleep","table","think"],a:2},
+ {q:"How many verbs? <i>She runs and jumps.</i>",o:["1","2","0"],a:1},
+ {q:"Which word is a verb? <i>We completed the project.</i>",o:["We","project","completed"],a:2},
+ {q:"Which sentence has a verb?",o:["The tall building.","Running fast!","She sings beautifully."],a:2}]},
+{t:"Noun or Verb?",e:"Some words can be both! Look at how it's used: 'run' = a jog (noun) or to run (verb).",
+ x:["I love to <b>dance</b> (v). The <b>dance</b> (n) was beautiful."],
+ p:[{q:"'Paint' in: <i>I will paint the wall.</i>",o:["Noun","Verb"],a:1},
+ {q:"'Walk' in: <i>Let's go for a walk.</i>",o:["Noun","Verb"],a:0},
+ {q:"'Cook' in: <i>My dad is a great cook.</i>",o:["Noun","Verb"],a:0},
+ {q:"'Cook' in: <i>I will cook dinner.</i>",o:["Noun","Verb"],a:1}]}]},
+
+{id:2,title:"Adjectives & Adverbs",desc:"Words that describe and add detail",ls:[
+{t:"Adjectives",e:"An <b>adjective</b> describes a <b>noun</b>. It tells what kind, which one, or how many. Usually before the noun.",
+ x:["The <b>red</b> car.","She is <b>kind</b> and <b>smart</b>."],
+ p:[{q:"Find the adjective: <i>The tall building shines.</i>",o:["The","tall","building","shines"],a:1},
+ {q:"Which word is NOT an adjective?",o:["happy","blue","quickly","small"],a:2},
+ {q:"How many adjectives? <i>The big brown dog barked.</i>",o:["1","2","0"],a:1},
+ {q:"Choose the adjective: ___ flowers",o:["run","beautiful","quickly","table"],a:1},
+ {q:"Find the adjective: <i>It was a cold, rainy day.</i>",o:["was","day","cold","It"],a:2}]},
+{t:"Adverbs",e:"An <b>adverb</b> describes a <b>verb, adjective, or adverb</b>. Often tells how, when, where. Many end in <b>-ly</b>.",
+ x:["She sings <b>beautifully</b>.","He arrived <b>yesterday</b>."],
+ p:[{q:"Find the adverb: <i>She walked slowly.</i>",o:["She","walked","slowly"],a:2},
+ {q:"Which is NOT an adverb?",o:["quickly","yesterday","friendly","here"],a:2},
+ {q:"Find the adverb: <i>I always brush my teeth.</i>",o:["I","always","brush","teeth"],a:1},
+ {q:"Which word is an adverb?",o:["soft","softly","soften"],a:1},
+ {q:"Adverbs often end with:",o:["-ing","-ed","-ly"],a:2}]},
+{t:"Adjective vs Adverb",e:"<b>Adjective</b> → noun. <b>Adverb</b> → verb/adjective/adverb. Test: describes HOW = adverb; describes WHAT = adjective.",
+ x:["<b>Adj:</b> She is a <b>careful</b> driver. | <b>Adv:</b> She drives <b>carefully</b>."],
+ p:[{q:"'Quick' in: <i>She is a quick learner.</i>",o:["Adjective","Adverb"],a:0},
+ {q:"'Quickly' in: <i>She finished quickly.</i>",o:["Adjective","Adverb"],a:1},
+ {q:"'Well' in: <i>He plays piano well.</i>",o:["Adjective","Adverb"],a:1},
+ {q:"'Good' in: <i>That is a good idea.</i>",o:["Adjective","Adverb"],a:0}]}]},
+
+{id:3,title:"Sentences",desc:"Subject + Predicate — complete thoughts",ls:[
+{t:"Subject & Predicate",e:"<b>Subject</b> — who/what the sentence is about. <b>Predicate</b> — what the subject does or is.",
+ x:["<b>S:</b> The cat | <b>P:</b> chased the mouse.","<b>S:</b> My friend | <b>P:</b> lives in Tokyo."],
+ p:[{q:"Subject of: <i>The sun shines brightly.</i>",o:["The sun","shines","brightly"],a:0},
+ {q:"Predicate of: <i>Birds fly south in winter.</i>",o:["Birds","fly south in winter","in winter"],a:1},
+ {q:"Subject of: <i>My mother and I baked cookies.</i>",o:["baked cookies","My mother and I","cookies"],a:1},
+ {q:"Complete? <i>The tall man in the blue coat.</i>",o:["Yes","No — missing predicate"],a:1},
+ {q:"Complete? <i>She laughed.</i>",o:["Yes","No"],a:0}]},
+{t:"Capital Letters & Full Stops",e:"Every sentence starts with a <b>capital letter</b> and ends with <b>. ? or !</b>. Proper nouns need capitals too.",
+ x:["✅ <b>T</b>he sun is bright<b>.</b>","✅ <b>L</b>ondon is in England<b>.</b>"],
+ p:[{q:"Fix: <i>she went to paris</i>",o:["She went to Paris.","she went to Paris.","She went to paris."],a:0},
+ {q:"Fix: <i>the dog barked</i>",o:["The dog barked.","the dog barked.","The dog Barked."],a:0},
+ {q:"Fix: <i>my friend james lives in tokyo</i>",o:["My friend James lives in Tokyo.","My friend James Lives in Tokyo.","my friend James lives in tokyo."],a:0},
+ {q:"Which needs a capital?",o:["dog","running","monday","happy"],a:2},
+ {q:"Which is correct?",o:["She likes cats.","She likes cats","she likes cats."],a:0}]}]},
+
+{id:4,title:"Tenses",desc:"Past, Present, Future — when actions happen",ls:[
+{t:"Present Tense",e:"<b>Present tense</b> for now/habits. He/she/it: add <b>-s/-es</b>. I walk → He walks.",
+ x:["I <b>eat</b> breakfast daily.","She <b>plays</b> guitar."],
+ p:[{q:"She ___ to school every day.",o:["go","goes","going"],a:1},
+ {q:"They ___ football on Sundays.",o:["plays","play","playing"],a:1},
+ {q:"He ___ his homework after dinner.",o:["do","does","doing"],a:1},
+ {q:"The cat ___ on the sofa.",o:["sleep","sleeps","sleeping"],a:1},
+ {q:"I ___ coffee every morning.",o:["drinks","drink","drinking"],a:1}]},
+{t:"Past Tense",e:"<b>Past tense</b> for completed actions. Regular: add <b>-ed</b>. Irregular: go→went, eat→ate, see→saw.",
+ x:["I <b>walked</b> to school yesterday.","She <b>went</b> to the store."],
+ p:[{q:"Yesterday, I ___ a movie.",o:["watch","watched","watching"],a:1},
+ {q:"She ___ to Paris last year.",o:["go","went","gone"],a:1},
+ {q:"They ___ pizza for lunch.",o:["eat","ate","eating"],a:1},
+ {q:"He ___ his keys at home.",o:["leave","left","leaving"],a:1},
+ {q:"Past tense of 'see':",o:["seed","saw","seen"],a:1}]},
+{t:"Future Tense",e:"<b>Future tense</b> for actions that will happen. Use <b>will</b> + verb or <b>going to</b> + verb.",
+ x:["I <b>will call</b> you tomorrow.","She <b>is going to visit</b> her grandma."],
+ p:[{q:"Tomorrow, I ___ my friend.",o:["meet","will meet","meeting"],a:1},
+ {q:"She is ___ buy a new car.",o:["go to","going to","will to"],a:1},
+ {q:"They ___ the project next week.",o:["finish","will finish","finishing"],a:1},
+ {q:"He ___ a doctor when he grows up.",o:["becomes","will become","becoming"],a:1},
+ {q:"Future tense uses:",o:["-ed","will / going to","-ing"],a:1}]}]},
+
+{id:5,title:"Pronouns & Prepositions",desc:"Replace nouns and show relationships",ls:[
+{t:"Pronouns",e:"<b>Subject:</b> I, you, he, she, it, we, they. <b>Object:</b> me, him, her, us, them. <b>Possessive:</b> my, your, his, her, our, their.",
+ x:["<b>She</b> loves reading.","The teacher praised <b>him</b>.","This is <b>her</b> book."],
+ p:[{q:"___ went to the store. (Maria)",o:["Her","She","Hers"],a:1},
+ {q:"The teacher called ___. (John)",o:["he","his","him"],a:2},
+ {q:"This is ___ pen. (belongs to me)",o:["I","me","my"],a:2},
+ {q:"Give the book to ___. (Sarah & Anna)",o:["they","their","them"],a:2},
+ {q:"___ car is red. (belongs to him)",o:["He","Him","His"],a:2}]},
+{t:"Prepositions of Place",e:"Show <b>where</b>: in, on, at, under, over, between, behind, next to.",
+ x:["Cat <b>on</b> the table.","She lives <b>in</b> London.","Shoes <b>under</b> the bed."],
+ p:[{q:"The book is ___ the shelf.",o:["in","on","at"],a:1},
+ {q:"She is waiting ___ the bus stop.",o:["in","on","at"],a:2},
+ {q:"The dog hid ___ the table.",o:["on","at","under"],a:2},
+ {q:"The park is ___ the school and library.",o:["on","in","between"],a:2},
+ {q:"He lives ___ a big city.",o:["on","in","at"],a:1}]},
+{t:"Prepositions of Time",e:"<b>at</b> — specific times. <b>on</b> — days/dates. <b>in</b> — months/years/seasons.",
+ x:["Wake up <b>at</b> 7am.","Party <b>on</b> Saturday.","Born <b>in</b> 2010."],
+ p:[{q:"The meeting is ___ 2 o'clock.",o:["in","on","at"],a:2},
+ {q:"My birthday is ___ March.",o:["in","on","at"],a:0},
+ {q:"We have a test ___ Friday.",o:["in","on","at"],a:1},
+ {q:"He was born ___ 2015.",o:["in","on","at"],a:0},
+ {q:"For months, we use:",o:["at","on","in"],a:2}]}]},
+
+{id:6,title:"Conjunctions",desc:"Join ideas with and, but, or, so, because",ls:[
+{t:"and, but, or",e:"<b>and</b> — adds info. <b>but</b> — contrast. <b>or</b> — choice.",
+ x:["I like cats <b>and</b> dogs.","She is tired <b>but</b> happy.","Tea <b>or</b> coffee?"],
+ p:[{q:"I want pizza ___ pasta.",o:["but","or","so"],a:1},
+ {q:"She studied hard ___ failed.",o:["and","but","or"],a:1},
+ {q:"He is kind ___ smart.",o:["and","but","or"],a:0},
+ {q:"Would you like juice ___ water?",o:["and","but","or"],a:2},
+ {q:"The movie was long ___ interesting.",o:["or","but","so"],a:1}]},
+{t:"so & because",e:"<b>so</b> — shows result. <b>because</b> — shows reason.",
+ x:["It rained, <b>so</b> I took an umbrella.","I stayed home <b>because</b> I was sick."],
+ p:[{q:"I was hungry, ___ I ate.",o:["because","but","so"],a:2},
+ {q:"She is happy ___ she passed.",o:["so","because","but"],a:1},
+ {q:"He was late ___ traffic was bad.",o:["so","but","because"],a:2},
+ {q:"It's cold, ___ wear a jacket.",o:["but","because","so"],a:2},
+ {q:"'Because' shows:",o:["result","reason","contrast"],a:1}]},
+{t:"Combining Sentences",e:"Use a comma + conjunction to join two complete ideas into a compound sentence.",
+ x:["I like reading, <b>and</b> I like writing.","She was tired, <b>but</b> she kept working."],
+ p:[{q:"Combine: <i>It is sunny. It is cold.</i>",o:["It is sunny, but it is cold.","It is sunny so it is cold.","It is sunny or it is cold."],a:0},
+ {q:"Combine: <i>He studied hard. He passed.</i>",o:["He studied hard, but he passed.","He studied hard, so he passed.","He studied hard, or he passed."],a:1},
+ {q:"Combine: <i>Walk. Take the bus.</i>",o:["Walk, but take the bus.","Walk, so take the bus.","You can walk, or take the bus."],a:2}]}]},
+
+{id:7,title:"Active & Passive Voice",desc:"Who does vs who receives the action",ls:[
+{t:"Active Voice",e:"<b>Subject does the action.</b> Most direct. Subject → Verb → Object.",
+ x:["<b>The cat</b> ate the fish.","<b>She</b> wrote the report."],
+ p:[{q:"Active? <i>The chef cooked the meal.</i>",o:["Yes","No"],a:0},
+ {q:"Active? <i>The window was broken by the ball.</i>",o:["Yes","No"],a:1},
+ {q:"Who does action? <i>The teacher explained.</i>",o:["the lesson","the teacher"],a:1},
+ {q:"Active voice means:",o:["subject receives action","subject does action"],a:1},
+ {q:"Active? <i>I sent the email.</i>",o:["Yes","No"],a:0}]},
+{t:"Passive Voice",e:"<b>Subject receives the action.</b> Form: <b>be + past participle</b>. Use when doer is unknown/unimportant.",
+ x:["The fish <b>was eaten</b> by the cat.","The report <b>was written</b>."],
+ p:[{q:"Passive? <i>The cake was baked by Mom.</i>",o:["Yes","No"],a:0},
+ {q:"Passive? <i>Mom baked the cake.</i>",o:["Yes","No"],a:1},
+ {q:"Passive voice uses:",o:["be + -ing","be + past participle","will + verb"],a:1},
+ {q:"Passive? <i>The door was left open.</i>",o:["Yes","No"],a:0},
+ {q:"Convert: <i>They make cars here.</i>",o:["Cars are made here.","Cars make here.","Made cars here."],a:0}]},
+{t:"Choosing Active vs Passive",e:"Use <b>active</b> for clarity. Use <b>passive</b> when doer is unknown or action matters more.",
+ x:["Active (better): The scientist discovered the cure.","Passive (unknown): The window was broken."],
+ p:[{q:"Rewrite active: <i>The homework was done by students.</i>",o:["Students did the homework.","Homework did students.","Done by students."],a:0},
+ {q:"Better? <i>The mistake was made.</i>",o:["Keep passive","I made a mistake.","Both equal"],a:1},
+ {q:"Rewrite active: <i>The prize was won by Tim.</i>",o:["Tim won the prize.","The prize won Tim.","Won Tim prize."],a:0},
+ {q:"When is passive better?",o:["Always","When doer unknown","Never"],a:1}]}]},
+
+{id:8,title:"Conditionals",desc:"If this happens, then that will happen",ls:[
+{t:"Zero Conditional",e:"<b>If + present, present.</b> For facts always true.",
+ x:["<b>If</b> you heat ice, it <b>melts</b>.","<b>If</b> it rains, the ground <b>gets</b> wet."],
+ p:[{q:"If you ___ water to 100°C, it boils.",o:["heat","heated","will heat"],a:0},
+ {q:"If plants ___ no water, they die.",o:["got","get","will get"],a:1},
+ {q:"If you mix red and blue, you ___ purple.",o:["got","get","will get"],a:1},
+ {q:"Zero conditional is for:",o:["future plans","facts/always true","past events"],a:1},
+ {q:"If you ___ (not eat), you get hungry.",o:["don't eat","didn't eat","won't eat"],a:0}]},
+{t:"First Conditional",e:"<b>If + present, will + verb.</b> Real possibilities in the future.",
+ x:["<b>If</b> it rains, I <b>will stay</b> home.","If you study, you <b>will pass</b>."],
+ p:[{q:"If I ___ enough money, I will buy a car.",o:["save","saved","will save"],a:0},
+ {q:"She will come if you ___ her.",o:["will invite","invite","invited"],a:1},
+ {q:"If it ___ sunny, we will go to the beach.",o:["was","will be","is"],a:2},
+ {q:"You ___ late if you don't hurry.",o:["are","were","will be"],a:2},
+ {q:"First conditional uses:",o:["If+present, will+verb","If+past, would+verb","If+present, present"],a:0}]},
+{t:"Second Conditional",e:"<b>If + past, would + verb.</b> Imaginary/unlikely situations.",
+ x:["<b>If</b> I <b>won</b> the lottery, I <b>would travel</b>.","<b>If</b> I <b>were</b> you, I <b>would go</b>."],
+ p:[{q:"If I ___ a million dollars, I would travel.",o:["have","had","will have"],a:1},
+ {q:"If she ___ taller, she would play basketball.",o:["is","was","were"],a:2},
+ {q:"I would help if I ___ time.",o:["have","had","will have"],a:1},
+ {q:"Second conditional is for:",o:["facts","real future","imaginary/unlikely"],a:2},
+ {q:"If I ___ you, I ___ go.",o:["am/will","was/would","were/would"],a:2}]}]},
+
+{id:9,title:"Advanced Sentences",desc:"Relative clauses, subordination, complex ideas",ls:[
+{t:"Relative Clauses",e:"Give more info about a noun. Start with <b>who, which, that, whose, where, when</b>.",
+ x:["The girl <b>who won</b> is my sister.","The book <b>that I borrowed</b> was great.","House <b>where I grew up</b>."],
+ p:[{q:"The man ___ lives next door is a doctor.",o:["which","who","where"],a:1},
+ {q:"The car ___ I bought is red.",o:["who","where","that"],a:2},
+ {q:"This is the park ___ we first met.",o:["who","which","where"],a:2},
+ {q:"The student ___ bag was stolen is upset.",o:["who","whose","where"],a:1},
+ {q:"'Who' is used for:",o:["things","people","places"],a:1}]},
+{t:"Subordinate Clauses",e:"Add info but <b>cannot stand alone</b>. Starts with: although, because, while, if, when, since, unless.",
+ x:["<b>Although it rained</b>, we went out.","I stayed home <b>because I was sick</b>."],
+ p:[{q:"___ it was late, she kept working.",o:["Because","Although","Since"],a:1},
+ {q:"He failed ___ he didn't study.",o:["although","because","unless"],a:1},
+ {q:"___ you hurry, you'll miss the bus.",o:["Because","Unless","Since"],a:1},
+ {q:"A subordinate clause:",o:["can stand alone","cannot stand alone"],a:1},
+ {q:"Which is subordinate?",o:["She ran home.","Because it was raining.","The dog barked."],a:1}]},
+{t:"Complex Sentences",e:"Combine main + subordinate clauses. Vary starters: adverb clauses, participial phrases.",
+ x:["<b>Walking through the park</b>, I saw flowers.","The team won, <b>which surprised everyone</b>."],
+ p:[{q:"Combine: <i>She was tired. She finished.</i>",o:["Although tired, she finished.","She tired finished.","Tired she finished."],a:0},
+ {q:"Combine: <i>I saw a bird. It was singing.</i>",o:["I saw a singing bird.","I saw a bird that was singing.","Bird singing saw I."],a:1},
+ {q:"Complex sentences have:",o:["one clause","main + subordinate clause","no verbs"],a:1},
+ {q:"Which is complex?",o:["I like dogs.","I like dogs and cats.","Although I like dogs, I don't have one."],a:2}]}]},
+
+{id:10,title:"Academic Writing",desc:"Formal language, error avoidance, parallel structure",ls:[
+{t:"Formal vs Informal",e:"Academic writing is <b>formal</b>: no slang, no contractions, full words, objective tone.",
+ x:["❌ kinda → ✅ somewhat","❌ can't → ✅ cannot","❌ a lot of → ✅ many / numerous"],
+ p:[{q:"More formal? <i>The experiment was a total flop.</i>",o:["Keep it","The experiment did not yield expected results."],a:1},
+ {q:"Replace 'a lot of' — formal:",o:["a bunch of","many / numerous","loads of"],a:1},
+ {q:"Replace 'got' — formal:",o:["received / obtained","gotten","getted"],a:0},
+ {q:"Which avoids slang?",o:["The data was awesome.","The data demonstrated trends.","The data was super cool."],a:1},
+ {q:"Formal version of 'kids':",o:["kiddos","children","youngsters"],a:1}]},
+{t:"Common Errors",e:"Watch for: subject-verb agreement, comma splices, dangling modifiers, wordiness.",
+ x:["❌ Everyone <b>are</b> → ✅ Everyone <b>is</b>.","❌ She is smart, she works hard. → ✅ She is smart; she works hard."],
+ p:[{q:"Fix: <i>The group of students are arriving.</i>",o:["group is arriving","group are arriving","groups is arriving"],a:0},
+ {q:"Fix comma splice: <i>I love reading, it is my hobby.</i>",o:["I love reading it is my hobby.","I love reading, and it is my hobby.","I love, reading it is hobby."],a:1},
+ {q:"Fix: <i>She don't like spinach.</i>",o:["She doesn't like spinach.","She don't like spinach.","She not like spinach."],a:0},
+ {q:"Fix: <i>Each student have a book.</i>",o:["Each student have a book.","Each student has a book.","Each students have books."],a:1},
+ {q:"Which is wordy?",o:["The results show...","Due to the fact that...","Findings reveal..."],a:1}]},
+{t:"Parallel Structure",e:"Same grammatical form for items in a list. Nouns with nouns, verbs with verbs.",
+ x:["❌ I like swimming, to run, and biking. → ✅ swimming, running, biking.","❌ She is smart, kind, and has patience. → ✅ smart, kind, and patient."],
+ p:[{q:"Fix: <i>He enjoys reading, writing, and to draw.</i>",o:["reading, writing, drawing","reading, writing, to draw","read, write, draw"],a:0},
+ {q:"Fix: <i>attention to detail, being patient, creativity</i>",o:["attention, patience, creativity","detail, patient, creative","detail, being patient, creative"],a:0},
+ {q:"Which is parallel?",o:["swim, bike, running","swimming, biking, running","to swim, biking, running"],a:1},
+ {q:"Fix: <i>walked, ate, and were playing</i>",o:["walked, ate, played","walked, ate, were playing","walk, eat, play"],a:0},
+ {q:"Which is parallel? <i>She is smart, kind, and ___</i>",o:["has generosity","generous","being generous"],a:1}]}]}
+];
+
+let S={lvl:null,les:0,it:0,sc:0,tot:0,ans:0,lvls:{}};
+const sv=JSON.parse(localStorage.getItem('mtl_gram')||'{}');
+if(sv.lvls)S.lvls=sv.lvls;
+function save(){localStorage.setItem('mtl_gram',JSON.stringify({lvls:S.lvls}))}
+
+function rLvls(){
+ let h='';C.forEach(l=>{
+  let stars='',done=S.lvls[l.id]&&S.lvls[l.id].done;
+  if(done){let s=S.lvls[l.id].stars;stars=' ★'.repeat(s)+'☆'.repeat(3-s)}
+  h+=`<div class="level-card${done?' completed':''}" onclick="stLvl(${l.id})"><div class="lvl-num">${l.id}</div><div class="lvl-title">${l.title}</div><div class="lvl-stars">${done?stars:'☆ ☆ ☆'}</div>${done?'<div class="lvl-check">✔</div>':''}</div>`;
+ });
+ document.getElementById('levelSelect').innerHTML=h;
+}
+function stLvl(id){
+ S.lvl=C.find(l=>l.id===id);S.les=0;S.it=0;S.sc=0;S.tot=0;S.ans=0;
+ document.getElementById('levelSelect').style.display='none';
+ shLes();
+}
+function shLes(){
+ let lvl=S.lvl,les=lvl.ls[S.les];S.it=0;S.ans=0;S.sc=0;S.tot=les.p.length;
+ let tabs='';lvl.ls.forEach((l,i)=>{tabs+=`<span class="lesson-tab${i===S.les?' active':''}${S.lvls[lvl.id]&&S.lvls[lvl.id].ls&&S.lvls[lvl.id].ls[i]?' done':''}" onclick="swLes(${i})">${i+1}. ${l.t}</span>`});
+ let h=`<div style="margin-bottom:.5rem"><strong>Level ${lvl.id}: ${lvl.title}</strong> — ${lvl.desc}</div>
+  <div class="lesson-tabs">${tabs}</div>
+  <div class="explanation"><h4>📖 ${les.t}</h4><p>${les.e}</p>${les.x.map(e=>`<div class="example">${e}</div>`).join('')}</div>
+  <div class="score-display"><span>Score: <span id="sv">0</span>/${S.tot}</span><span id="sd">☆ ☆ ☆</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="pf" style="width:0%"></div></div>
+  <div id="pA" class="practice-area"></div>
+  <div class="nav-row">
+   <button class="btn btn-secondary btn-sm" onclick="bkLvls()">← All Levels</button>
+   ${S.les>0?`<button class="btn btn-secondary btn-sm" onclick="prLes()">← Previous</button>`:''}
+   <span style="flex:1"></span>
+   <button class="btn btn-primary btn-sm" id="nxb" style="display:none" onclick="nxLes()">Next Lesson →</button>
+  </div>`;
+ document.getElementById('lessonView').innerHTML=h;
+ document.getElementById('lessonView').classList.add('active');
+ shPr();
+}
+function shPr(){
+ let les=S.lvl.ls[S.les],items=les.p,i=S.it;
+ if(i>=items.length){shEnd();return}
+ let it=items[i];
+ document.getElementById('sv').textContent=S.sc;
+ document.getElementById('pf').style.width=((S.ans/S.tot)*100)+'%';
+ let st=S.sc/S.tot,sd='☆ ☆ ☆';if(st>=1)sd='★ ★ ★';else if(st>=.8)sd='★ ★ ☆';else if(st>=.5)sd='★ ☆ ☆';
+ document.getElementById('sd').textContent=sd;
+ let h=`<div class="practice-item" id="pi"><div class="quiz-question">${i+1}. ${it.q}</div><div class="options">${it.o.map((o,j)=>`<button class="option-btn" onclick="ans(${j})">${o}</button>`).join('')}</div><div class="feedback" id="fb"></div></div>`;
+ document.getElementById('pA').innerHTML=h;
+}
+function ans(idx){
+ if(document.getElementById('pi').classList.contains('correct')||document.getElementById('pi').classList.contains('wrong'))return;
+ let it=S.lvl.ls[S.les].p[S.it],correct=idx===it.a;
+ S.ans++;if(correct)S.sc++;
+ document.getElementById('sv').textContent=S.sc;
+ document.getElementById('pf').style.width=((S.ans/S.tot)*100)+'%';
+ let st=S.sc/S.tot,sd='☆ ☆ ☆';if(st>=1)sd='★ ★ ★';else if(st>=.8)sd='★ ★ ☆';else if(st>=.5)sd='★ ☆ ☆';
+ document.getElementById('sd').textContent=sd;
+ let pi=document.getElementById('pi'),fb=document.getElementById('fb');
+ if(correct){pi.classList.add('correct');fb.className='feedback good';fb.textContent='✅ Correct!';}
+ else{pi.classList.add('wrong');fb.className='feedback bad';fb.textContent='❌ Answer: '+it.o[it.a];}
+ let btns=pi.querySelectorAll('.option-btn');
+ btns.forEach((b,j)=>{b.disabled=true;if(j===it.a)b.classList.add('correct-answer');if(j===idx&&!correct)b.classList.add('wrong-answer')});
+ setTimeout(()=>{S.it++;shPr()},1200);
+}
+function shEnd(){
+ let st=S.sc/S.tot,sc=st>=1?3:st>=.8?2:st>=.5?1:0;
+ let starStr='★'.repeat(sc)+'☆'.repeat(3-sc);
+ if(!S.lvls[S.lvl.id])S.lvls[S.lvl.id]={ls:{}};
+ S.lvls[S.lvl.id].ls[S.les]=sc>=2;
+ let allDone=S.lvl.ls.every((_,i)=>S.lvls[S.lvl.id].ls[i]);
+ if(allDone){S.lvls[S.lvl.id].done=true;S.lvls[S.lvl.id].stars=Math.round(S.lvl.ls.reduce((s,_,i)=>(S.lvls[S.lvl.id].ls[i]?1:0),0)/S.lvl.ls.length*3)}
+ save();
+ // Save to server for teacher dashboard
+ (function(){var p=new URLSearchParams(window.location.search);var s=p.get('sid');if(s){var pct=S.tot?Math.round(S.sc/S.tot*100):100;var st=pct>=90?3:pct>=70?2:pct>=50?1:0;fetch('/api/mtl/skill/progress',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({student_id:s,skill:'grammar',level_id:S.lvl.id,lesson_id:S.les,completed:true,score:pct,stars:st})}).catch(function(){})}})();
+ let h=`<div class="end-screen"><div class="big-stars">${starStr}</div><div class="score-big">${S.sc}/${S.tot}</div>
+  <p style="margin:1rem 0">${sc===3?'🌟 Perfect! Outstanding!':sc===2?'👍 Great job!':sc===1?'📚 Good effort!':'💪 Keep trying!'}</p>
+  <button class="btn btn-success" onclick="S.it=0;shPr()">🔄 Practice Again</button>
+  <button class="btn btn-primary" style="margin-left:.5rem" onclick="nxLes()">Next →</button></div>`;
+ document.getElementById('pA').innerHTML=h;
+ document.getElementById('sv').textContent=S.sc;
+ document.getElementById('pf').style.width='100%';
+ document.getElementById('sd').textContent=starStr;
+ if(S.les+1>=S.lvl.ls.length)document.getElementById('nxb').style.display='none';else document.getElementById('nxb').style.display='inline-block';
+}
+function nxLes(){if(S.les+1<S.lvl.ls.length){S.les++;shLes()}else bkLvls()}
+function prLes(){if(S.les>0){S.les--;shLes()}}
+function swLes(i){S.les=i;shLes()}
+function bkLvls(){
+ S.lvl=null;S.les=0;S.it=0;
+ document.getElementById('lessonView').classList.remove('active');
+ document.getElementById('lessonView').innerHTML='';
+ document.getElementById('levelSelect').style.display='grid';
+ rLvls();
+}
+rLvls();
+// TTS
+(function(){function spk(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function addSB(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();spk(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.rule,.ex,.pbox h3,.word-display,.q').forEach(addSB);},600);var o=new MutationObserver(function(){document.querySelectorAll('.rule:not(:has(.spk-btn)),.ex:not(:has(.spk-btn)),.pbox h3:not(:has(.spk-btn)),.q:not(:has(.spk-btn))').forEach(addSB);});o.observe(document.body,{childList:true,subtree:true});})();
+</script>
+</body>
+</html>

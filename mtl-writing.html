@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move To Learn — Writing Skills</title>
+<link rel="stylesheet" href="public/css/styles.css">
+<style>
+:root{--gold:#d4a843;--blue:#2c3e50;--green:#2d8a4e;--red:#c0392b;--r:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;color:#1a1a1a;background:#fafafa}
+.hero{text-align:center;padding:32px 20px 16px}.hero h1{font-size:2rem;margin-bottom:6px}.hero p{color:#666;max-width:500px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;max-width:900px;margin:16px auto;padding:0 20px}
+.card{background:#fff;border:2px solid #eee;border-radius:var(--r);padding:20px;cursor:pointer;transition:all .2s}.card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(0,0,0,0.05)}.card .n{font-size:2rem;font-weight:800;color:var(--blue)}.card .t{font-weight:600;margin:4px 0}.card .d{font-size:0.82rem;color:#888}
+.back{color:var(--blue);text-decoration:none;font-size:0.9rem;font-weight:600;display:inline-block;margin:8px 20px}
+.lcard{background:#fff;border:1px solid #eee;border-radius:var(--r);padding:18px 22px;margin-bottom:10px;cursor:pointer;max-width:700px;margin-left:auto;margin-right:auto;transition:all .2s}.lcard:hover{border-color:var(--blue)}.lcard .ln{font-size:0.7rem;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:1px}.lcard .lt{font-weight:600;margin:2px 0}.lcard .ld{font-size:0.82rem;color:#666}
+.pbox{max-width:640px;margin:20px auto;background:#fff;border:1px solid #eee;border-radius:var(--r);padding:28px;text-align:center}
+.pbox h3{font-size:1.15rem;margin-bottom:4px}.pbox .rule{color:var(--blue);font-weight:600;margin-bottom:12px;font-size:0.9rem}
+.ex{background:#f8f8f8;padding:12px 18px;border-radius:8px;margin:12px 0;text-align:left;line-height:1.6}
+.word-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.word-chip{padding:10px 16px;background:#f0f0f0;border:2px solid #eee;border-radius:8px;cursor:pointer;font-weight:500;transition:all .15s;user-select:none}.word-chip:hover{border-color:var(--blue)}.word-chip.used{opacity:0.3;pointer-events:none}
+.sentence-zone{min-height:50px;border:2px dashed #ddd;border-radius:10px;padding:12px;margin:12px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.sentence-zone .placed{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn{padding:12px 28px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer}.btn-p{background:var(--blue);color:#fff}.btn-p:hover{background:#1a252f}.btn-g{background:var(--gold);color:#fff}.btn-g:hover{background:#b8942e}
+.fb{padding:10px;margin:12px 0;border-radius:8px;font-weight:600;display:none}.fb.show{display:block}.fb.correct{background:#e8f5e0;color:var(--green)}.fb.wrong{background:#fdecea;color:var(--red)}
+.prog{height:6px;background:#eee;border-radius:3px;margin:12px 0;overflow:hidden}.prog-f{height:100%;background:var(--green);transition:width .3s}
+.textarea{width:100%;min-height:100px;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:1rem;resize:vertical;font-family:inherit}.textarea:focus{border-color:var(--blue);outline:none}
+.comp{text-align:center;padding:40px}.comp .big{font-size:3rem}
+.opts{display:flex;flex-direction:column;gap:6px}.opt{padding:12px 16px;border:2px solid #eee;border-radius:8px;cursor:pointer;text-align:left;transition:all .15s;background:#fff}.opt:hover{border-color:var(--blue)}.opt.correct{border-color:var(--green);background:#e8f5e0}.opt.wrong{border-color:var(--red);background:#fdecea}
+.spk-btn{position:absolute;top:4px;right:4px;background:rgba(255,255,255,0.9);border:1px solid #ddd;border-radius:4px;padding:2px 6px;font-size:0.75rem;cursor:pointer;z-index:1;color:#555}
+.spk-btn:hover{border-color:var(--blue);color:var(--blue)}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.pbox{padding:18px}.word-tray{gap:4px}.word-chip{padding:8px 12px;font-size:0.9rem}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="header-content">
+<div class="logo"><div class="logo-icon">IBCB</div><div class="logo-text"><span class="logo-main">IBCB Investment</span><span class="logo-sub">Private Equity · Investing AI +</span></div></div>
+<nav class="main-nav"><a href="index.html" class="nav-link">主頁</a><a href="about.html" class="nav-link">關於我們</a><a href="mtl-english.html" class="nav-link active">Move To Learn</a></nav>
+</div></header>
+
+<main id="app"><section id="v-levels"><div class="hero"><h1>✍️ Writing Skills</h1><p>From sentences to essays. Systematic writing for ages 6–17.</p></div><div class="grid" id="levelGrid"></div></section>
+<section id="v-lessons" style="display:none;"><a href="#" class="back" onclick="showLevels()">← All Levels</a><div id="lessonContent"></div></section>
+<section id="v-practice" style="display:none;"><a href="#" class="back" onclick="showLessons()">← Back</a><div id="practiceContent"></div></section></main>
+
+<script>
+const C=[
+{id:1,name:'Building Sentences',desc:'Put words together to make sentences.',lessons:[
+{id:1,title:'Subject + Verb',rule:'Every sentence needs a WHO (subject) and a WHAT (verb). The cat runs. The dog barks.',type:'builder',words:['The','cat','runs','fast'],sentence:'The cat runs fast',q:'Build the sentence:'},
+{id:2,title:'Adding Details',rule:'Add describing words (adjectives) to make sentences more interesting.',type:'builder',words:['The','big','red','ball','bounces'],sentence:'The big red ball bounces',q:'Build the sentence:'},
+{id:3,title:'Capital Letter & Period',rule:'Start with a capital letter. End with a period.',type:'fix',wrong:'the dog is brown',correct:'The dog is brown.',q:'Fix this sentence:'}
+]},
+{id:2,name:'Questions & Statements',desc:'Telling vs asking sentences.',lessons:[
+{id:1,title:'Statements (.)',rule:'A statement tells something. It ends with a period.',type:'fix',wrong:'i like ice cream',correct:'I like ice cream.',q:'Fix this statement:'},
+{id:2,title:'Questions (?)',rule:'A question asks something. It ends with a question mark.',type:'fix',wrong:'where is my pencil',correct:'Where is my pencil?',q:'Fix this question:'},
+{id:3,title:'Mix: . or ?',rule:'Decide if it is a statement or a question.',type:'fix',wrong:'do you like dogs',correct:'Do you like dogs?',q:'Fix this sentence:'}
+]},
+{id:3,name:'Writing Paragraphs',desc:'Put sentences together into paragraphs.',lessons:[
+{id:1,title:'Topic Sentence',rule:'The first sentence tells what the paragraph is about.',type:'builder',words:['Dogs','are','great','pets','They','are','loyal','and','friendly'],sentence:'Dogs are great pets',q:'Build the topic sentence:'},
+{id:2,title:'Supporting Details',rule:'Add 2-3 sentences that give more information about the topic.',type:'free',prompt:'Write 2 sentences about why dogs make great pets.',q:'Example: They are loyal. They love to play.'},
+{id:3,title:'Closing Sentence',rule:'End your paragraph with a closing sentence.',type:'builder',words:['That','is','why','dogs','are','the','best','pets'],sentence:'That is why dogs are the best pets',q:'Build the closing sentence:'}
+]},
+{id:4,name:'Descriptive Writing',desc:'Use your senses to describe things.',lessons:[
+{id:1,title:'Using Adjectives',rule:'Describe how something looks, feels, sounds, smells, or tastes.',type:'free',prompt:'Describe your favorite food. Use at least 3 describing words.',q:'Example: Pizza is hot, cheesy, and delicious.'},
+{id:2,title:'Show, Don\'t Tell',rule:'Instead of "She was happy," write "She smiled and skipped down the street."',type:'fix',wrong:'The room was messy',correct:'Toys covered the floor and clothes hung from every chair.',q:'Rewrite to SHOW, not tell:'}
+]},
+{id:5,name:'Narrative Writing',desc:'Tell a story with beginning, middle, and end.',lessons:[
+{id:1,title:'Story Beginning',rule:'Start with WHO, WHERE, and WHEN.',type:'free',prompt:'Write the beginning of a story about a lost puppy.',q:'Include: who is in the story, where it happens, when it happens.'},
+{id:2,title:'Story Middle',rule:'Add a PROBLEM that the character must solve.',type:'free',prompt:'Continue the story: What problem does the character face?',q:'Every good story has a challenge.'},
+{id:3,title:'Story End',rule:'Resolve the problem. How does the story end?',type:'free',prompt:'Write the ending. How is the problem solved?',q:'Give your story a satisfying ending.'}
+]},
+{id:6,name:'Opinion Writing',desc:'Share your opinion and give reasons.',lessons:[
+{id:1,title:'State Your Opinion',rule:'Clearly say what you think. "I believe..." "In my opinion..."',type:'free',prompt:'What is the best season? State your opinion clearly.',q:'Example: In my opinion, summer is the best season.'},
+{id:2,title:'Give Reasons',rule:'Support your opinion with 2-3 reasons.',type:'free',prompt:'Write 2-3 reasons why your favorite season is the best.',q:'Use words like "first," "also," and "finally" to organize your reasons.'}
+]},
+{id:7,name:'Informative Writing',desc:'Teach your reader about a topic.',lessons:[
+{id:1,title:'Research & Organize',rule:'Pick a topic. Find 3 facts. Organize them in order.',type:'free',prompt:'Choose an animal. Write 3 facts about it.',q:'Example: Penguins cannot fly. They live in cold places. They eat fish.'},
+{id:2,title:'Write an Information Paragraph',rule:'Turn your facts into a paragraph with a topic sentence.',type:'free',prompt:'Write a paragraph about your chosen animal using your 3 facts.',q:'Start with a topic sentence. Add your facts. End with a closing sentence.'}
+]},
+{id:8,name:'Persuasive Writing',desc:'Convince your reader to agree with you.',lessons:[
+{id:1,title:'Hook Your Reader',rule:'Start with a strong opening that grabs attention.',type:'free',prompt:'Write a persuasive opening about why students should have less homework.',q:'Example: Imagine having time to play, read, and rest every evening.'},
+{id:2,title:'Build Your Argument',rule:'Give 3 strong reasons. Address the other side.',type:'free',prompt:'Write your full persuasive paragraph with a hook, 3 reasons, and a strong closing.',q:'Convince your reader!'}
+]},
+{id:9,name:'Essay Writing',desc:'5-paragraph essay structure.',lessons:[
+{id:1,title:'Introduction Paragraph',rule:'Hook + background + thesis statement. Your thesis is your main argument.',type:'free',prompt:'Write an introduction paragraph. Topic: Should school uniforms be required?',q:'Include: hook, 1-2 background sentences, thesis statement.'},
+{id:2,title:'Body Paragraphs',rule:'Each body paragraph has ONE main idea + evidence + explanation.',type:'free',prompt:'Write one body paragraph supporting your thesis.',q:'Start with a topic sentence. Add evidence. Explain why it matters.'},
+{id:3,title:'Conclusion',rule:'Restate your thesis. Summarize main points. End with a final thought.',type:'free',prompt:'Write a conclusion paragraph for your essay.',q:'Do not add new ideas. Wrap up what you already said.'}
+]},
+{id:10,name:'Advanced Writing',desc:'Style, voice, and editing.',lessons:[
+{id:1,title:'Sentence Variety',rule:'Mix short and long sentences. Vary your sentence beginnings.',type:'fix',wrong:'I woke up. I ate breakfast. I went to school. I saw my friends.',correct:'After waking up and eating breakfast, I headed to school where I met my friends.',q:'Combine these short sentences into a smoother paragraph:'},
+{id:2,title:'Word Choice',rule:'Choose precise, vivid words. Replace "nice" with "delightful," "kind," or "charming."',type:'free',prompt:'Rewrite this sentence using more vivid words: "The food was good and the place was nice."',q:'Use specific, descriptive language.'},
+{id:3,title:'Editing & Revising',rule:'Great writing is rewriting. Check for: grammar, spelling, clarity, flow.',type:'fix',wrong:'their going too the park too play soccer with there friends',correct:'They are going to the park to play soccer with their friends.',q:'Fix all the errors in this sentence:'}
+]}
+];
+
+let cl=null,cln=null,ps={idx:0,score:0,items:[]},placed=[];
+function renderLevels(){document.getElementById('levelGrid').innerHTML=C.map(l=>`<div class="card" onclick="openLevel(${l.id})"><div class="n">${l.id}</div><div class="t">${l.name}</div><div class="d">${l.desc}</div></div>`).join('');}
+function showLevels(){document.getElementById('v-levels').style.display='';document.getElementById('v-lessons').style.display='none';document.getElementById('v-practice').style.display='none';}
+function openLevel(id){cl=C.find(l=>l.id===id);document.getElementById('v-levels').style.display='none';document.getElementById('v-lessons').style.display='';document.getElementById('lessonContent').innerHTML=`<h2 style="margin:0 0 12px 20px;">${cl.name}</h2><p style="color:#666;margin:0 0 16px 20px;">${cl.desc}</p>${cl.lessons.map((ls,i)=>`<div class="lcard" onclick="openLesson(${i})"><div class="ln">Lesson ${i+1}</div><div class="lt">${ls.title}</div><div class="ld">${ls.rule}</div></div>`).join('')}`;}
+function showLessons(){if(cl)openLevel(cl.id);}
+function openLesson(idx){cln=cl.lessons[idx];ps={idx:0,score:0,items:[cln],mode:cln.type||'builder'};placed=[];document.getElementById('v-lessons').style.display='none';document.getElementById('v-practice').style.display='';renderPractice();}
+function renderPractice(){
+  const it=cln,pct=0;
+  document.getElementById('practiceContent').innerHTML=`<div class="pbox"><h3>${it.title}</h3><div class="rule">${it.rule}</div><div class="ex">${it.q}</div>`;
+  if(it.type==='builder')renderBuilder();
+  else if(it.type==='fix')renderFix();
+  else renderFree();
+  document.getElementById('practiceContent').innerHTML+=`<div class="fb" id="fb"></div><div class="prog"><div class="prog-f" style="width:${pct}%"></div></div><div style="color:#888;font-size:0.8rem;">Score: ${ps.score}</div></div>`;
+}
+function renderBuilder(){
+  const words=[...cln.words].sort(()=>Math.random()-0.5);
+  placed=[];
+  const h=`<div class="sentence-zone" id="sz"></div><div class="word-tray" id="wt">${words.map(w=>`<div class="word-chip" onclick="placeWord(this,'${w}')">${w}</div>`).join('')}</div><button class="btn btn-p" onclick="checkBuilder()">Check</button><button class="btn" style="background:#eee;margin-left:8px;" onclick="resetBuilder()">Reset</button>`;
+  document.getElementById('practiceContent').innerHTML+=h;
+}
+function placeWord(el,w){if(el.classList.contains('used'))return;el.classList.add('used');placed.push(w);const z=document.getElementById('sz');const d=document.createElement('div');d.className='word-chip placed';d.textContent=w;d.onclick=function(){this.remove();placed=placed.filter(x=>x!==w);el.classList.remove('used');};z.appendChild(d);}
+function resetBuilder(){placed=[];document.getElementById('sz').innerHTML='';document.querySelectorAll('#wt .word-chip').forEach(c=>c.classList.remove('used'));}
+function checkBuilder(){
+  const user=placed.join(' '),target=cln.sentence,clean=s=>s.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim();
+  const correct=clean(user)===clean(target);
+  const fb=document.getElementById('fb');fb.textContent=correct?'✅ Perfect!':`❌ Try again. Target: "${target}"`;fb.className='fb show '+(correct?'correct':'wrong');
+  if(correct){ps.score++;saveProgress();setTimeout(()=>showComplete(),800);}
+}
+function renderFix(){
+  const h=`<p style="margin:12px 0;color:#888;">Wrong: <em>${cln.wrong}</em></p><input type="text" class="textarea" id="fixInput" placeholder="Type the corrected sentence..." style="min-height:50px;"><button class="btn btn-p" style="margin-top:12px;" onclick="checkFix()">Submit</button>`;
+  document.getElementById('practiceContent').innerHTML+=h;
+}
+function checkFix(){
+  const user=document.getElementById('fixInput').value.trim(),target=cln.correct,clean=s=>s.toLowerCase().replace(/\s+/g,' ').trim();
+  const correct=clean(user)===clean(target);
+  const fb=document.getElementById('fb');fb.textContent=correct?'✅ Correct!':`❌ Not quite. Correct: "${target}"`;fb.className='fb show '+(correct?'correct':'wrong');
+  if(correct){ps.score++;saveProgress();setTimeout(()=>showComplete(),800);}
+}
+function renderFree(){
+  const h=`<textarea class="textarea" id="freeInput" placeholder="Write your answer here..."></textarea><button class="btn btn-p" style="margin-top:12px;" onclick="checkFree()">I\'m Done!</button>`;
+  document.getElementById('practiceContent').innerHTML+=h;
+}
+function checkFree(){ps.score++;saveProgress();showComplete();}
+function saveProgress(){
+  var p=new URLSearchParams(window.location.search),s=p.get('sid');if(!s||!cl||!cln)return;
+  fetch('/api/mtl/skill/progress',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({student_id:s,skill:'writing',level_id:cl.id,lesson_id:cl.lessons.indexOf(cln),completed:true,score:100,stars:1})}).catch(function(){});
+}
+function showComplete(){
+  document.getElementById('practiceContent').innerHTML=`<div class="pbox comp"><div class="big">🏆</div><h2>Lesson Complete!</h2><p style="color:#666;">Great writing!</p><button class="btn btn-p" onclick="openLesson(${cl.lessons.indexOf(cln)})">Practice Again</button><button class="btn btn-g" onclick="showLessons()" style="margin-left:8px;">More Lessons</button></div>`;
+}
+// TTS
+(function(){function s(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function a(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();s(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.rule,.ex,.pbox h3').forEach(a);},600);var o=new MutationObserver(function(){document.querySelectorAll('.rule:not(:has(.spk-btn)),.ex:not(:has(.spk-btn)),.pbox h3:not(:has(.spk-btn))').forEach(a);});o.observe(document.body,{childList:true,subtree:true});})();
+renderLevels();
+</script>
+</body>
+</html>

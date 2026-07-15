@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move To Learn — Spelling & Phonics</title>
+<link rel="stylesheet" href="public/css/styles.css">
+<style>
+:root { --gold:#d4a843; --blue:#2c3e50; --green:#2d8a4e; --red:#c0392b; --r:12px; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:Inter,system-ui,-apple-system,sans-serif; color:#1a1a1a; }
+
+header { border-bottom:1px solid #eee; padding:12px 0; background:#fff; }
+header .hc { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
+.logo { display:flex; align-items:center; gap:12px; }
+.logo-icon { font-size:0.85rem; font-weight:800; letter-spacing:1px; }
+.logo-text { font-size:0.8rem; color:#888; }
+.back-link { color:var(--blue); text-decoration:none; font-size:0.9rem; font-weight:600; }
+.back-link:hover { text-decoration:underline; }
+
+main { max-width:900px; margin:0 auto; padding:24px 20px 60px; }
+
+.hero { text-align:center; padding:40px 0 20px; }
+.hero h1 { font-size:2rem; margin-bottom:6px; }
+.hero p { color:#666; font-size:1rem; max-width:500px; margin:0 auto; }
+
+.level-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin:24px 0; }
+.level-card { background:#fff; border:2px solid #eee; border-radius:var(--r); padding:20px; cursor:pointer; transition:all .2s; }
+.level-card:hover { border-color:var(--gold); box-shadow:0 2px 12px rgba(0,0,0,0.05); }
+.level-card .num { font-size:2rem; font-weight:800; color:var(--blue); line-height:1; }
+.level-card .name { font-weight:600; margin:4px 0; }
+.level-card .desc { font-size:0.82rem; color:#888; }
+
+.lesson-list { margin:20px 0; }
+.lesson-card { background:#fff; border:1px solid #eee; border-radius:var(--r); padding:20px 24px; margin-bottom:12px; cursor:pointer; transition:all .2s; }
+.lesson-card:hover { border-color:var(--blue); }
+.lesson-card .ln { font-size:0.75rem; color:var(--blue); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.lesson-card .lt { font-weight:600; margin:2px 0; }
+.lesson-card .ld { font-size:0.85rem; color:#666; }
+.lesson-card .words { margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+.lesson-card .word-tag { background:#f0f0f0; padding:2px 10px; border-radius:20px; font-size:0.8rem; }
+
+.section-title { font-size:1.3rem; font-weight:700; margin:32px 0 16px; }
+
+/* Practice area */
+.practice-box { background:#fff; border:1px solid #eee; border-radius:var(--r); padding:32px; max-width:600px; margin:20px auto; text-align:center; }
+.practice-box h3 { font-size:1.2rem; margin-bottom:4px; }
+.practice-box .rule { color:var(--blue); font-weight:600; margin-bottom:16px; }
+.practice-box .hint { color:#888; font-size:0.9rem; margin-bottom:12px; }
+.practice-box .example { color:#666; font-size:0.95rem; margin-bottom:20px; font-style:italic; }
+.practice-input { width:100%; max-width:280px; padding:14px 18px; border:2px solid #ddd; border-radius:10px; font-size:1.2rem; text-align:center; margin:12px auto; display:block; }
+.practice-input:focus { border-color:var(--blue); outline:none; }
+.btn { padding:12px 32px; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; transition:all .2s; }
+.btn-primary { background:var(--blue); color:#fff; }
+.btn-primary:hover { background:#1a252f; }
+.btn-gold { background:var(--gold); color:#fff; }
+.btn-gold:hover { background:#b8942e; }
+.feedback { padding:12px; margin:12px 0; border-radius:8px; font-weight:600; display:none; }
+.feedback.show { display:block; }
+.feedback.correct { background:#e8f5e0; color:var(--green); }
+.feedback.wrong { background:#fdecea; color:var(--red); }
+
+.progress-bar { height:6px; background:#eee; border-radius:3px; margin:16px 0; overflow:hidden; }
+.progress-fill { height:100%; background:var(--green); border-radius:3px; transition:width .3s; }
+.score { font-size:0.85rem; color:#888; margin-bottom:8px; }
+
+.complete-box { text-align:center; padding:40px; }
+.complete-box .big { font-size:3rem; }
+.complete-box h2 { margin:12px 0; }
+
+.return-link { display:inline-block; margin-top:20px; padding:10px 28px; background:var(--gold); color:#fff; border-radius:8px; text-decoration:none; font-weight:600; }
+.return-link:hover { background:#b8942e; }
+
+/* TTS speak button */
+.spk-btn{position:absolute;top:4px;right:4px;background:rgba(255,255,255,0.9);border:1px solid #ddd;border-radius:4px;padding:2px 6px;font-size:0.75rem;cursor:pointer;z-index:1;color:#555;transition:all .15s;}
+.spk-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+@media (max-width:600px) {
+.mode-tab { flex:1; padding:10px 0; background:none; border:none; font-size:0.9rem; font-weight:600; color:#888; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.mode-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+
+@media (max-width:600px) { .level-grid { grid-template-columns:1fr; } .practice-box { padding:20px; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon">IBCB</div>
+            <div class="logo-text">
+                <span class="logo-main">IBCB Investment</span>
+                <span class="logo-sub">Private Equity · Investing AI +</span>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">主頁</a>
+            <a href="about.html" class="nav-link">關於我們</a>
+            <a href="mtl-english.html" class="nav-link active">Move To Learn</a>
+        </nav>
+    </div>
+</header>
+
+<main id="app">
+<section id="view-levels">
+<div class="hero"><h1>🔤 Spelling & Phonics</h1><p>A complete, systematic phonics curriculum. Master spelling from short vowels to advanced patterns.</p></div>
+<div class="level-grid" id="levelGrid"></div>
+</section>
+<section id="view-lessons" style="display:none;">
+<button class="back-link" onclick="showLevels()" style="margin-bottom:16px;">← All Levels</button>
+<div id="lessonContent"></div>
+</section>
+<section id="view-practice" style="display:none;">
+<button class="back-link" onclick="showLessons()" style="margin-bottom:16px;">← Back to Lessons</button>
+<div id="practiceContent"></div>
+</section>
+</main>
+
+<script>
+// ==================== PHONICS CURRICULUM ====================
+const CURRICULUM = [
+{
+    id:1, name:'Short Vowels', desc:'The 5 basic vowel sounds: a, e, i, o, u',
+    lessons:[
+        {id:1, title:'Short A /æ/', rule:'The letter "a" makes the /æ/ sound, like the "a" in "apple". Keep your mouth open and tongue low.', examples:'cat, hat, bat, map, cap, sad, bag, jam, fan, rat',
+            words:['cat','hat','bat','map','cap','sad','bag','jam','fan','rat','dad','mat','pan','tag','van']},
+        {id:2, title:'Short E /ɛ/', rule:'The letter "e" makes the /ɛ/ sound, like the "e" in "bed". Your mouth is slightly open, tongue in the middle.', examples:'bed, red, pen, leg, net, pet, wet, ten, bell, desk',
+            words:['bed','red','pen','leg','net','pet','wet','ten','bell','desk','hen','jet','men','step','vest']},
+        {id:3, title:'Short I /ɪ/', rule:'The letter "i" makes the /ɪ/ sound, like the "i" in "fish". Relax your mouth. It\'s a quick, short sound.', examples:'fish, pig, sit, big, lip, win, mix, pin, dig, hill',
+            words:['fish','pig','sit','big','lip','win','mix','pin','dig','hill','kid','rip','six','tip','zip']},
+        {id:4, title:'Short O /ɒ/', rule:'The letter "o" makes the /ɒ/ sound, like the "o" in "dog". Round your lips slightly.', examples:'dog, hot, box, top, mop, pot, fox, log, dot, rock',
+            words:['dog','hot','box','top','mop','pot','fox','log','dot','rock','cot','hop','jog','pop','rod']},
+        {id:5, title:'Short U /ʌ/', rule:'The letter "u" makes the /ʌ/ sound, like the "u" in "sun". It\'s a relaxed, quick sound from the back of your mouth.', examples:'sun, cup, bus, run, mud, bug, nut, hug, cut, drum',
+            words:['sun','cup','bus','run','mud','bug','nut','hug','cut','drum','fun','gum','jug','pup','tub']},
+        {id:6, title:'Short Vowel Review', rule:'Practice mixing all 5 short vowel sounds. Listen carefully — is it /æ/, /ɛ/, /ɪ/, /ɒ/, or /ʌ/?', examples:'cat, bed, fish, dog, sun — can you hear the difference?',
+            words:['cat','bed','fish','dog','sun','hat','pen','pig','hot','cup','map','wet','sit','box','run']}
+    ]
+},
+{
+    id:2, name:'Consonant Blends', desc:'Two or three consonants together, each keeping their sound',
+    lessons:[
+        {id:1, title:'L-Blends (bl, cl, fl, gl, pl, sl)', rule:'When "l" follows another consonant, blend them together smoothly. Say both sounds, but quickly!', examples:'blue, clock, flag, glass, plane, sleep',
+            words:['blue','clock','flag','glass','plane','sleep','black','club','flat','glad','play','slip','block','clean','fly']},
+        {id:2, title:'R-Blends (br, cr, dr, fr, gr, pr, tr)', rule:'Blend the first consonant with "r". Don\'t pause between them — let them flow together.', examples:'brown, crab, drum, frog, green, tree',
+            words:['brown','crab','drum','frog','green','tree','bring','crop','drop','free','grab','trip','brush','cross','train']},
+        {id:3, title:'S-Blends (sc, sk, sm, sn, sp, st, sw)', rule:'When "s" starts the blend, hiss slightly then move to the next consonant.', examples:'school, skip, small, snow, spot, star, swim',
+            words:['school','skip','small','snow','spot','star','swim','scale','skin','smile','snap','spin','step','swing','scout']},
+        {id:4, title:'3-Letter Blends (spr, str, spl, scr)', rule:'Three consonants together! Start with "s", then blend the next two consonants. Take it slow at first.', examples:'spring, street, splash, screen',
+            words:['spring','street','splash','screen','spray','strong','split','scrub','sprout','strike','splint','script','spread','stretch','splatter']}
+    ]
+},
+{
+    id:3, name:'Digraphs', desc:'Two letters that make ONE new sound',
+    lessons:[
+        {id:1, title:'SH /ʃ/ — "Be quiet!"', rule:'"sh" makes the /ʃ/ sound — like telling someone to be quiet. Push air through rounded lips.', examples:'ship, fish, wish, shop, shell, brush, crash, shake',
+            words:['ship','fish','wish','shop','shell','brush','crash','shake','sheep','dish','shape','fresh','shine','trash','shadow']},
+        {id:2, title:'CH /tʃ/ — "Choo choo!"', rule:'"ch" makes the /tʃ/ sound — like a train! Start with /t/ and slide into /ʃ/.', examples:'chip, chin, chat, chop, chick, lunch, bench, much',
+            words:['chip','chin','chat','chop','chick','lunch','bench','much','cheese','chair','chase','check','chimp','march','punch']},
+        {id:3, title:'TH — Voiced /ð/ and Unvoiced /θ/', rule:'"th" makes TWO sounds! Stick your tongue between your teeth. /θ/ is soft (thin, think). /ð/ buzzes (this, that).', examples:'thin, think /θ/ — this, that /ð/',
+            words:['thin','think','bath','path','teeth','this','that','them','then','with','thank','thick','cloth','mother','father']},
+        {id:4, title:'WH /w/ and PH /f/', rule:'"wh" usually sounds like /w/ (what, when). "ph" sounds like /f/ (phone, photo — it comes from Greek!).', examples:'what, when, whale — phone, photo, graph',
+            words:['what','when','whale','white','wheel','phone','photo','graph','phrase','dolphin','whisker','phantom','phonics','elephant','alphabet']}
+    ]
+},
+{
+    id:4, name:'Silent E / Magic E', desc:'When "e" sits at the end, it makes the vowel say its name',
+    lessons:[
+        {id:1, title:'A-E Pattern /eɪ/', rule:'Silent e makes "a" say its name: /eɪ/. Compare: cap → cape, tap → tape. The "e" reaches back over one consonant to change the vowel!', examples:'cake, make, name, gate, game, plane, snake, brave',
+            words:['cake','make','name','gate','game','plane','snake','brave','shake','plate','grade','shape','whale','blame','frame']},
+        {id:2, title:'I-E Pattern /aɪ/', rule:'Silent e makes "i" say its name: /aɪ/. Compare: pin → pine, bit → bite.', examples:'bike, time, like, five, ride, slide, smile, white',
+            words:['bike','time','like','five','ride','slide','smile','white','drive','prize','shine','spike','twice','while','write']},
+        {id:3, title:'O-E and U-E Patterns', rule:'O-E makes /oʊ/ like "hope". U-E makes /uː/ or /juː/ like "cute" or "flute".', examples:'hope, rope, note, home, stone — cute, flute, mule, tube',
+            words:['hope','rope','note','home','stone','cute','flute','mule','tube','bone','globe','smoke','cube','rule','tune']},
+        {id:4, title:'Silent E Review', rule:'Practice all silent e patterns. A says A, I says I, O says O, U says U — the magic e does the work!', examples:'cake, bike, rope, cube — all four long vowel sounds',
+            words:['cake','bike','rope','cube','snake','smile','stone','flute','plane','drive','globe','mule','brave','prize','tune']}
+    ]
+},
+{
+    id:5, name:'Vowel Teams', desc:'Two vowels together — "when two vowels go walking, the first one does the talking"',
+    lessons:[
+        {id:1, title:'AI & AY /eɪ/', rule:'"ai" and "ay" both say /eɪ/ (long A). "ai" is usually in the middle; "ay" is usually at the end.', examples:'rain, train, paint, wait, snail — day, play, say, stay, gray',
+            words:['rain','train','paint','wait','snail','day','play','say','stay','gray','brain','chain','clay','pray','spray']},
+        {id:2, title:'EE & EA /iː/', rule:'"ee" and "ea" both often say /iː/ (long E). "ee" is reliable; "ea" can also say /ɛ/ (bread) — but we practice the long sound here!', examples:'tree, bee, green, sleep, sheep — read, beach, dream, eat, tea',
+            words:['tree','bee','green','sleep','sheep','read','beach','dream','tea','clean','sweet','speak','stream','please','freeze']},
+        {id:3, title:'OA & OW /oʊ/', rule:'"oa" and "ow" both say /oʊ/ (long O). "oa" is in the middle; "ow" can be at the end.', examples:'boat, coat, road, toast, soap — snow, grow, show, bowl, own',
+            words:['boat','coat','road','toast','soap','snow','grow','show','bowl','float','groan','crow','throw','coach','blow']},
+        {id:4, title:'IE & IGH /aɪ/', rule:'"ie" and "igh" say /aɪ/ (long I). "igh" is common; "ie" is less common for long I.', examples:'pie, tie, lie, cried — night, light, right, high, bright',
+            words:['pie','tie','lie','cried','night','light','right','high','bright','flight','sight','tight','might','fight','delight']}
+    ]
+},
+{
+    id:6, name:'R-Controlled Vowels', desc:'When "r" follows a vowel, it changes the sound — "Bossy R"',
+    lessons:[
+        {id:1, title:'AR /ɑːr/ — "Pirate sound!"', rule:'"ar" says /ɑːr/ like a pirate — "Arrr!" Your mouth opens wide.', examples:'car, star, park, farm, dark, hard, smart, sharp, shark, garden',
+            words:['car','star','park','farm','dark','hard','smart','sharp','shark','garden','bark','card','charm','march','spark']},
+        {id:2, title:'ER, IR, UR /ɜːr/ — All the same sound!', rule:'"er", "ir", and "ur" ALL say /ɜːr/ — the same sound! Think of a growling dog: "grrr".', examples:'her, girl, bird, turn, hurt, nurse, first, fern, purse, curl',
+            words:['her','girl','bird','turn','hurt','nurse','first','fern','purse','curl','dirt','burn','verb','church','surf']},
+        {id:3, title:'OR /ɔːr/ and ORE /ɔːr/', rule:'"or" and "ore" both say /ɔːr/. Add "e" at the end and the sound stays the same!', examples:'fork, corn, horse, storm, north — more, store, shore, score, before',
+            words:['fork','corn','horse','storm','north','more','store','shore','score','before','born','short','explore','ignore','adore']}
+    ]
+},
+{
+    id:7, name:'Diphthongs', desc:'Two vowel sounds gliding together in one syllable',
+    lessons:[
+        {id:1, title:'OI & OY /ɔɪ/', rule:'"oi" and "oy" say /ɔɪ/ — like saying "oy!" when you\'re surprised. "oi" in the middle, "oy" at the end.', examples:'coin, boil, join, point, voice — boy, toy, joy, enjoy, destroy',
+            words:['coin','boil','join','point','voice','boy','toy','joy','enjoy','oil','spoil','noise','loyal','royal','moist']},
+        {id:2, title:'OU & OW /aʊ/', rule:'"ou" and "ow" say /aʊ/ — like "ow!" when you bump your elbow. Both can appear anywhere.', examples:'cloud, house, mouse, round, shout — cow, down, brown, flower, town',
+            words:['cloud','house','mouse','round','shout','cow','down','brown','flower','town','proud','tower','power','found','crown']},
+        {id:3, title:'AU & AW /ɔː/', rule:'"au" and "aw" say /ɔː/ — like "aww, how cute!" Your mouth makes a round shape.', examples:'sauce, pause, cause, launch, autumn — saw, draw, claw, crawl, straw',
+            words:['sauce','pause','cause','launch','autumn','saw','draw','claw','crawl','straw','fault','haunt','yawn','dawn','law']}
+    ]
+},
+{
+    id:8, name:'Common Patterns', desc:'Frequently used letter patterns that appear in many words',
+    lessons:[
+        {id:1, title:'-TION /ʃən/ and -SION /ʒən/', rule:'"-tion" says /ʃən/ (like "shun"). "-sion" can say /ʒən/ or /ʃən/. These are VERY common in longer words!', examples:'station, nation, action, question — vision, television, division, explosion',
+            words:['station','nation','action','question','vision','television','division','motion','section','mention','fraction','invasion','vacation','direction','attention']},
+        {id:2, title:'-IGHT /aɪt/', rule:'"-ight" always says /aɪt/ — the "gh" is silent! Once you know this pattern, you can read many words.', examples:'night, light, right, bright, flight, sight, tight, might, fight, delight',
+            words:['night','light','right','bright','flight','sight','tight','might','fight','delight','fright','knight','slight','tonight','sunlight']},
+        {id:3, title:'-ING, -ED, -ER endings', rule:'These common endings attach to base words. "-ing" shows action happening, "-ed" shows past, "-er" shows "one who does".', examples:'running, played, teacher',
+            words:['running','played','teacher','jumping','walked','reader','singing','helped','baker','swimming','called','worker','talking','wanted','painter']}
+    ]
+},
+{
+    id:9, name:'Prefixes & Suffixes', desc:'Word parts added to the beginning or end that change meaning',
+    lessons:[
+        {id:1, title:'Prefixes: UN-, RE-, PRE-, DIS-', rule:'Prefixes change the meaning of a word. "un-" = not, "re-" = again, "pre-" = before, "dis-" = opposite/not.', examples:'unhappy, rewrite, preview, disagree',
+            words:['unhappy','rewrite','preview','disagree','unfair','return','preschool','dislike','unlock','replay','preheat','distrust','unfold','rebuild','prepare']},
+        {id:2, title:'Suffixes: -FUL, -LESS, -NESS, -LY', rule:'Suffixes change a word\'s part of speech. "-ful" = full of, "-less" = without, "-ness" = state of, "-ly" = in that way.', examples:'helpful, fearless, kindness, quickly',
+            words:['helpful','fearless','kindness','quickly','thankful','endless','darkness','slowly','joyful','homeless','sadness','loudly','careful','painless','softness']}
+    ]
+},
+{
+    id:10, name:'Tricky Words', desc:'Common words with irregular spellings — these just need practice!',
+    lessons:[
+        {id:1, title:'Homophones', rule:'Homophones sound the same but have different spellings and meanings. Context tells you which one!', examples:'there/their/they\'re, to/too/two, your/you\'re, here/hear, see/sea, write/right',
+            words:['there','their','to','too','two','your','here','hear','see','sea','write','right','wear','where','bye','buy','by','new','knew','peace','piece','flower','flour','dear','deer']},
+        {id:2, title:'Silent Letters', rule:'Some letters are silent! Common silent letters: k before n (knife), w before r (write), b after m (lamb), g before n (sign).', examples:'knife, knee, write, wrong, lamb, comb, sign, gnat, hour, honest',
+            words:['knife','knee','write','wrong','lamb','comb','sign','gnat','hour','honest','knock','wrap','thumb','design','ghost']},
+        {id:3, title:'Commonly Misspelled Words', rule:'These words are often misspelled by native speakers too! The best way to learn them is lots of practice.', examples:'because, beautiful, favourite, different, believe, receive, friend, enough, though, through',
+            words:['because','beautiful','favourite','different','believe','receive','friend','enough','though','through','necessary','separate','definitely','accidentally','library','environment','government','Wednesday','restaurant','calendar']}
+    ]
+}
+];
+
+// ==================== APP ====================
+let currentLevel = null;
+let currentLesson = null;
+let practiceState = { words:[], index:0, score:0, total:0, mode:'spell' };
+
+function renderLevels() {
+    const grid = document.getElementById('levelGrid');
+    grid.innerHTML = CURRICULUM.map(l => `
+        <div class="level-card" onclick="openLevel(${l.id})">
+            <div class="num">${l.id}</div>
+            <div class="name">${l.name}</div>
+            <div class="desc">${l.desc}</div>
+        </div>
+    `).join('');
+}
+function showLevels() {
+    document.getElementById('view-levels').style.display = '';
+    document.getElementById('view-lessons').style.display = 'none';
+    document.getElementById('view-practice').style.display = 'none';
+    currentLesson = null;
+}
+function openLevel(id) {
+    currentLevel = CURRICULUM.find(l => l.id === id);
+    document.getElementById('view-levels').style.display = 'none';
+    document.getElementById('view-lessons').style.display = '';
+    document.getElementById('view-practice').style.display = 'none';
+    document.getElementById('lessonContent').innerHTML = `
+        <h2>${currentLevel.name}</h2>
+        <p style="color:#666;margin-bottom:20px;">${currentLevel.desc} — ${currentLevel.lessons.length} lessons</p>
+        <div class="lesson-list">
+            ${currentLevel.lessons.map((ls,i) => `
+                <div class="lesson-card" onclick="openLesson(${i})">
+                    <div class="ln">Lesson ${i+1}</div>
+                    <div class="lt">${ls.title}</div>
+                    <div class="ld">${ls.examples}</div>
+                    <div class="words">${ls.words.slice(0,8).map(w => `<span class="word-tag">${w}</span>`).join('')}</div>
+                </div>
+            `).join('')}
+        </div>`;
+}
+function showLessons() {
+    if (currentLevel) openLevel(currentLevel.id);
+}
+function openLesson(idx) {
+    currentLesson = currentLevel.lessons[idx];
+    document.getElementById('view-lessons').style.display = 'none';
+    document.getElementById('view-practice').style.display = '';
+    startPractice();
+}
+function startPractice() {
+    const ls = currentLesson;
+    practiceState = {
+        words: [...ls.words].sort(() => Math.random() - 0.5),
+        index:0, score:0, total:ls.words.length, mode:'learn'
+    };
+    renderPractice();
+}
+function renderPractice() {
+    const st = practiceState;
+    const ls = currentLesson;
+    const w = st.words[st.index];
+    const pct = st.index > 0 ? Math.round((st.index / st.total) * 100) : 0;
+
+    let html = `<div class="practice-box">
+        <h3>${ls.title}</h3>
+        <div class="rule">${ls.rule}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="score">Word ${st.index+1} of ${st.total} · Score: ${st.score}/${st.index||1}</div>`;
+
+    if (st.mode === 'learn') {
+        html += `<div class="hint">📖 <strong>Learn this word:</strong></div>
+            <div style="font-size:2.5rem;font-weight:700;margin:16px 0;color:var(--blue);">${w}</div>
+            <div class="hint">Say it aloud. Look at each letter. Trace it with your finger.</div>
+            <button class="btn btn-primary" onclick="practiceState.mode='spell';renderPractice();">I'm Ready — Spell It!</button>`;
+    } else {
+        html += `<div class="hint">✏️ <strong>Type the word you just learned:</strong></div>
+            <div class="example">Hint: ${ls.examples}</div>
+            <input type="text" class="practice-input" id="spellInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button class="btn btn-primary" onclick="checkAnswer()">Check</button>
+            <div class="feedback" id="practiceFeedback"></div>`;
+    }
+    html += '</div>';
+    document.getElementById('practiceContent').innerHTML = html;
+
+    if (st.mode === 'spell') {
+        setTimeout(() => {
+            const inp = document.getElementById('spellInput');
+            if (inp) { inp.focus(); inp.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); }); }
+        }, 100);
+    }
+}
+function checkAnswer() {
+    const st = practiceState;
+    const w = st.words[st.index];
+    const input = document.getElementById('spellInput').value.trim();
+    const fb = document.getElementById('practiceFeedback');
+
+    if (input.toLowerCase() === w.toLowerCase()) {
+        st.score++;
+        fb.textContent = '✅ Correct! Well done!';
+        fb.className = 'feedback show correct';
+        document.querySelector('.practice-input').disabled = true;
+        setTimeout(() => {
+            st.index++;
+            st.mode = 'learn';
+            if (st.index < st.total) { renderPractice(); }
+            else { renderComplete(); }
+        }, 800);
+    } else {
+        fb.textContent = `❌ Not quite. The correct spelling is "${w}". Let's try again.`;
+        fb.className = 'feedback show wrong';
+        st.words.push(w); // Add to end for re-practice
+        st.total++;
+        document.querySelector('.practice-input').disabled = true;
+        setTimeout(() => {
+            st.index++;
+            st.mode = 'learn';
+            renderPractice();
+        }, 1500);
+    }
+}
+function renderComplete() {
+    const st = practiceState;
+    const pct = Math.round((st.score / st.total) * 100);
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('return') || '';
+    const sid = params.get('sid') || '';
+
+    // Save skill progress
+    if (sid && currentLevel && currentLesson) {
+        const stars = pct >= 90 ? 3 : (pct >= 70 ? 2 : (pct >= 50 ? 1 : 0));
+        fetch('/api/mtl/skill/progress', {
+            method:'PUT', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({student_id:sid, skill:'spelling', level_id:currentLevel.id, lesson_id:currentLesson.id, completed:true, score:pct, stars:stars})
+        }).catch(()=>{});
+    }
+    const returnGame = params.get('game') || '';
+    const returnLevel = params.get('level') || '';
+
+    document.getElementById('practiceContent').innerHTML = `<div class="practice-box complete-box">
+        <div class="big">${pct >= 80 ? '🏆' : '📚'}</div>
+        <h2>Lesson Complete!</h2>
+        <p style="color:#666;">${st.score} of ${st.index} correct (${pct}%)</p>
+        ${pct < 80 ? '<p style="color:#888;margin-top:8px;">Keep practicing this lesson for mastery.</p>' : ''}
+        <div style="margin-top:24px;">
+            <button class="btn btn-primary" onclick="openLesson(${currentLevel.lessons.indexOf(currentLesson)})" style="margin-right:8px;">Practice Again</button>
+            <button class="btn btn-gold" onclick="showLessons()">More Lessons</button>
+        </div>
+        ${returnTo ? `<a href="${returnTo}" class="return-link">🎯 Return to My Game</a>` : ''}
+    </div>`;
+}
+
+// Init
+renderLevels();
+
+// Direct lesson access via URL params
+(function(){
+    const params = new URLSearchParams(window.location.search);
+    const level = parseInt(params.get('level'));
+    const lesson = parseInt(params.get('lesson'));
+    if (level && CURRICULUM[level-1]) {
+        currentLevel = CURRICULUM[level-1];
+        if (lesson != null && currentLevel.lessons[lesson]) {
+            openLesson(lesson);
+        } else {
+            openLevel(level);
+        }
+    }
+})();
+
+// ─── TTS Read-Aloud ────────────────────────────────────
+(function(){function spk(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function addSB(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();spk(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.passage,.rule,.practice-box h3,.word-display,.ex,.pbox .rule,.mtl-passage,.practice-box .rule').forEach(addSB);},600);var obs2=new MutationObserver(function(){document.querySelectorAll('.passage:not(:has(.spk-btn)),.rule:not(:has(.spk-btn)),.word-display:not(:has(.spk-btn)),.ex:not(:has(.spk-btn)),.practice-box h3:not(:has(.spk-btn)),.pbox .rule:not(:has(.spk-btn))').forEach(addSB);});obs2.observe(document.getElementById('app')||document.body,{childList:true,subtree:true});})();
+</script>
+</body>
+</html>
