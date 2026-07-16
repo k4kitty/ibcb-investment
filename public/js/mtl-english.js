@@ -394,7 +394,7 @@ const MTL_CONTENT = { levels: [] };
                 {sentence:'She runs ___ (fast) than her brother.', opts:['fast','faster','fastest','more fast'], ans:1, blank:'(fast)'},
                 {sentence:'Today is ___ (hot) than yesterday.', opts:['hot','hoter','hottest','hotter'], ans:3, blank:'(hot)'}
             ]},
-            {type:'ordering', title:'Make a Sentence', sentence:'The brave knight saved the village from the dragon', words:['brave','knight','the','saved','The','dragon','from','village']},
+            {type:'ordering', title:'Make a Sentence', sentence:'The brave knight saved the village from the dragon', words:['brave','knight','the','saved','The','dragon','from','village','the']},
             {type:'vocabulary', title:'Prefixes: un- and re-', pairs:[
                 {word:'Unhappy', match:'Not happy'},
                 {word:'Rewrite', match:'Write again'},
@@ -445,7 +445,7 @@ const MTL_CONTENT = { levels: [] };
                 ['N','O','R','T','H','C','A'],
                 ['I','N','D','I','A','L','A']
             ], words:['ASIA','AFRICA','EUROPE','SOUTH','NORTH','INDIA'], size:7},
-            {type:'ordering', title:'Make a Sentence', sentence:'The young prince carefully opened the ancient treasure chest', words:['young','chest','The','carefully','ancient','opened','prince','treasure']}
+            {type:'ordering', title:'Make a Sentence', sentence:'The young prince carefully opened the ancient treasure chest', words:['young','chest','The','carefully','ancient','opened','prince','treasure','the']}
         ]
     });
 })();
