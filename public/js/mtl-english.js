@@ -1262,7 +1262,7 @@ const MTL = {
             const completed = lp.completed || false;
             const gamesCompleted = Object.values(lp.games || {}).filter(g => g.completed).length;
             const locked = !this.isLevelUnlocked(lvl.id);
-            const pct = Math.round((gamesCompleted / 20) * 100);
+            const pct = Math.round((gamesCompleted / lvl.games.length) * 100);
 
             const card = document.createElement('div');
             card.className = 'mtl-level-card' + (locked ? ' locked' : '');
@@ -1273,7 +1273,7 @@ const MTL = {
                 <div class="mtl-level-age">Ages ${lvl.ageRange}</div>
                 <div class="mtl-level-progress"><div class="mtl-level-progress-bar" style="width:${pct}%"></div></div>
                 <div class="mtl-level-stats">
-                    <span>${gamesCompleted}/20 games</span>
+                    <span>${gamesCompleted}/${lvl.games.length} games</span>
                     <span class="mtl-level-trophy${completed?' earned':''}">🏆</span>
                 </div>
             `;
@@ -1319,7 +1319,7 @@ const MTL = {
                 </div>
                 <div class="mtl-level-header-right">
                     <div class="mtl-big-trophy${completed?' earned':''}">🏆</div>
-                    <div class="mtl-progress-text">${gamesCompleted}/20 games completed</div>
+                    <div class="mtl-progress-text">${gamesCompleted}/${level.games.length} games completed</div>
                 </div>
             </div>
         `;
@@ -2060,11 +2060,12 @@ const MTL = {
         // Show trophy popup
         this.showTrophyPopup(trophy);
 
-        // Check if all 20 games completed
+        // Check if all games completed
+        const levelGames = MTL_CONTENT.levels[this.currentLevel - 1].games.length;
         const allCompleted = Object.keys(this.progress[key].games).filter(k => {
             const g = this.progress[key].games[k];
             return g && g.completed;
-        }).length >= 20;
+        }).length >= levelGames;
 
         if (allCompleted) {
             this.progress[key].completed = true;
