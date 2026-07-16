@@ -117,7 +117,7 @@ for(const lv of defs){
   for(let b=0;b<2;b++){const qs=[];for(let j=0;j<10;j++){const a=Math.floor(Math.random()*lv*15)+lv*2;const b2=Math.floor(Math.random()*lv*8)+1;const op=['+','−','×'][j%3];qs.push({q:a+' '+op+' '+b2+' = ?',ans:op==='+'?a+b2:op==='−'?a-b2:a*b2})}gs.push({type:'boss',title:'Level '+lv+' Boss '+(b+1),qs})}
   // Fill to 20
   while(gs.length<20)gs.push({type:'speed',title:'Extra Drill',q:()=>{const a=Math.floor(Math.random()*lv*20)+lv*5;const b=Math.floor(Math.random()*lv*10)+1;return{disp:a+' + '+b+' = ?',ans:a+b}}});
-  L.push({id:lv,name:'Level '+lv,age:lv+2+'-'+(lv+4),desc:'Mathematics Level '+lv,gs:gs.slice(0,20)});
+  L.push({id:lv,name:'Level '+lv,age:lv+2+'-'+(lv+4),desc:'Mathematics Level '+lv,games:gs.slice(0,20)});
 }
 })();
 
