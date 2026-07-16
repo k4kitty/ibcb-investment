@@ -1,5 +1,5 @@
 /* ============================================================
-   Move To Learn English — Game Engine
+   Play and Learn English — Game Engine
    Server-backed progress with save codes
    ============================================================ */
 
@@ -961,9 +961,9 @@ const MTL = {
             <p class="detail">This certifies that</p><div class="name">${name}</div>
             <p class="detail">has successfully completed</p>
             <p class="detail" style="font-size:1.5rem;font-weight:700;">${level.name}</p>
-            <p class="detail">Ages ${level.ageRange} · Move To Learn English</p>
+            <p class="detail">Ages ${level.ageRange} · Play and Learn English</p>
             <p class="date">${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</p>
-            <p style="margin-top:20px;color:#888;font-size:0.8rem;">IBCB Investment · Move To Learn</p></div>
+            <p style="margin-top:20px;color:#888;font-size:0.8rem;">IBCB Investment · Play and Learn</p></div>
             <p style="margin-top:20px;"><button onclick="window.print()" style="padding:10px 24px;font-size:1rem;cursor:pointer;">🖨️ Print Certificate</button></p>
             </body></html>`);
         w.document.close();
