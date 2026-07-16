@@ -312,7 +312,8 @@ function renderPractice() {
 
     if (st.mode === 'learn') {
         html += `<div class="hint">📖 <strong>Learn this word:</strong></div>
-            <div style="font-size:2.5rem;font-weight:700;margin:16px 0;color:var(--blue);">${w}</div>
+            <div style="font-size:2.5rem;font-weight:700;margin:16px 0;color:var(--blue);">${w} <button class="spk-btn" style="position:static;display:inline-block;margin-left:8px;vertical-align:middle;padding:4px 10px;background:#f0f0f0;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:1rem;" onclick="speakWord('${w}');event.stopPropagation();" title="Hear pronunciation">🔊</button></div>
+            <div id="phonicsHint" style="color:#888;font-size:0.9rem;margin-top:-8px;min-height:1.5em;"></div>
             <div class="hint">Say it aloud. Look at each letter. Trace it with your finger.</div>
             <button class="btn btn-primary" onclick="practiceState.mode='spell';renderPractice();">I'm Ready — Spell It!</button>`;
     } else {
@@ -411,8 +412,19 @@ renderLevels();
     }
 })();
 
-// ─── TTS Read-Aloud ────────────────────────────────────
-(function(){function spk(el){if(!window.speechSynthesis)return;var t=el.textContent||el.innerText;if(!t||t.length<3)return;window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.9;window.speechSynthesis.speak(u);}function addSB(el){if(el.querySelector('.spk-btn'))return;var b=document.createElement('button');b.className='spk-btn';b.textContent='🔊';b.title='Read aloud';b.onclick=function(e){e.stopPropagation();spk(el);};el.style.position='relative';el.insertBefore(b,el.firstChild);}setTimeout(function(){document.querySelectorAll('.passage,.rule,.practice-box h3,.word-display,.ex,.pbox .rule,.mtl-passage,.practice-box .rule').forEach(addSB);},600);var obs2=new MutationObserver(function(){document.querySelectorAll('.passage:not(:has(.spk-btn)),.rule:not(:has(.spk-btn)),.word-display:not(:has(.spk-btn)),.ex:not(:has(.spk-btn)),.practice-box h3:not(:has(.spk-btn)),.pbox .rule:not(:has(.spk-btn))').forEach(addSB);});obs2.observe(document.getElementById('app')||document.body,{childList:true,subtree:true});})();
+// ─── Word Pronunciation ─────────────────────────────────
+function speakWord(word) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    // Pronounce each letter for phonics, then the full word
+    const letters = word.split('').join(' · ');
+    const hint = document.getElementById('phonicsHint');
+    if (hint) hint.textContent = '🔤 ' + letters;
+    // Speak the word
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1;
+    window.speechSynthesis.speak(u);
+}
 </script>
 <script>document.addEventListener('DOMContentLoaded',function(){var l=document.querySelector('.logo');if(!l||l.querySelector('a'))return;var a=document.createElement('a');a.href='index.html';a.style.cssText='text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';a.innerHTML=l.innerHTML;l.innerHTML='';l.appendChild(a);});</script>
 </body>
