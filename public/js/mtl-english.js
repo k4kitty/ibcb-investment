@@ -1326,12 +1326,12 @@ const MTL = {
             <div class="mtl-level-header-card">
                 <div class="mtl-level-header-left">
                     <h2>Level ${lvl.id}: ${lvl.name}</h2>
-                    <span class="age">Ages ${lvl.ageRange}</span>
+                    <span class="age">Ages ${lvl.ageRange || lvl.age || '?'}</span>
                     <p class="desc">${lvl.description}</p>
                 </div>
                 <div class="mtl-level-header-right">
                     <div class="mtl-big-trophy${completed?' earned':''}">🏆</div>
-                    <div class="mtl-progress-text">${gamesCompleted}/${level.games.length} games completed</div>
+                    <div class="mtl-progress-text">${gamesCompleted}/${lvl.games.length} games completed</div>
                 </div>
             </div>
         `;
