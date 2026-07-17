@@ -1650,7 +1650,10 @@ app.post('/api/mtl/admin/login', async (req, res) => {
         const match = await bcrypt.compare(password, admin.password);
         if (!match) return res.status(401).json({ error: '帳號或密碼錯誤' });
         req.session.mtlAdmin = { id: admin.id, username: admin.username };
-        res.json({ success: true, username: admin.username });
+        req.session.save(err => {
+            if (err) console.error('Session save error:', err.message);
+            res.json({ success: true, username: admin.username });
+        });
     } catch (err) {
         console.error('MTL admin login:', err.message);
         res.status(500).json({ error: '登入失敗' });

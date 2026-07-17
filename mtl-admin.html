@@ -82,11 +82,11 @@
 <script>
 const API = {
     async post(url, body) {
-        const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) });
         return r.json();
     },
     async get(url) {
-        const r = await fetch(url);
+        const r = await fetch(url, { credentials: 'same-origin' });
         if (r.status === 401) throw new Error('Unauthorized');
         return r.json();
     }
