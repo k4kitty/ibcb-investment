@@ -1627,6 +1627,61 @@ app.put('/api/mtl/mistake/:id/review', async (req, res) => {
     }
 });
 
+// ─── Stripe Payment ────────────────────────────────────
+
+let stripeClient = null;
+function getStripe() {
+    if (!stripeClient && process.env.STRIPE_SECRET_KEY) {
+        stripeClient = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    }
+    return stripeClient;
+}
+
+app.post('/api/mtl/payment/create-session', async (req, res) => {
+    const stripe = getStripe();
+    if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
+    const studentId = sanitizeText(req.body.student_id);
+    const plan = sanitizeText(req.body.plan);
+    if (!studentId || !plan) return res.status(400).json({ error: 'Missing fields' });
+    const prices = { basic: 'price_basic_id', pro: 'price_pro_id', family: 'price_family_id' };
+    try {
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card', 'wechat_pay'],
+            mode: 'subscription',
+            line_items: [{ price: prices[plan] || prices.pro, quantity: 1 }],
+            success_url: (req.headers.origin||'https://ibcb.ibcgroup.com.hk') + '/mtl-english.html?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url: (req.headers.origin||'https://ibcb.ibcgroup.com.hk') + '/mtl-pricing.html',
+            client_reference_id: studentId,
+            metadata: { student_id: studentId, plan: plan }
+        });
+        res.json({ url: session.url });
+    } catch (err) {
+        console.error('Stripe session error:', err.message);
+        res.status(500).json({ error: 'Payment init failed: ' + err.message });
+    }
+});
+
+app.post('/api/mtl/payment/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    const stripe = getStripe();
+    if (!stripe) return res.status(500).json({ error: 'Stripe not configured' });
+    const sig = req.headers['stripe-signature'];
+    try {
+        const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET || '');
+        if (event.type === 'checkout.session.completed') {
+            const session = event.data.object;
+            const studentId = session.metadata.student_id;
+            const plan = session.metadata.plan;
+            await dbRun('UPDATE mtl_students SET plan=?, plan_expires_at=? WHERE id=?',
+                [plan, new Date(Date.now() + 30*24*60*60*1000).toISOString(), studentId]);
+            console.log('Payment completed:', studentId, plan);
+        }
+        res.json({ received: true });
+    } catch (err) {
+        console.error('Webhook error:', err.message);
+        res.status(400).json({ error: err.message });
+    }
+});
+
 // ─── MTL Admin Auth ────────────────────────────────────
 
 app.post('/api/mtl/admin/login', async (req, res) => {

@@ -127,8 +127,25 @@ body{font-family:Inter,system-ui,sans-serif;color:#1a1a1a;background:#fafafa}
 </footer>
 
 <script>
-function subscribe(plan){
-    alert('Stripe payment coming soon! Plan: '+plan+'\n\nFor now, all features are free during beta.');
+async function subscribe(plan){
+    const sid = localStorage.getItem('mtl_math_session') || localStorage.getItem('mtl_english_session');
+    let studentId = '';
+    try { const s = JSON.parse(sid); studentId = s.studentId || ''; } catch(e) {}
+    if (!studentId) {
+        alert('Please create a student profile first (start any game once), then come back to subscribe.');
+        return;
+    }
+    try {
+        const r = await fetch('/api/mtl/payment/create-session', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ student_id: studentId, plan: plan })
+        });
+        const d = await r.json();
+        if (d.url) window.location.href = d.url;
+        else alert('Payment not available yet. All features are free during beta.');
+    } catch(e) {
+        alert('Payment not available yet. All features are free during beta.');
+    }
 }
 </script>
 </body>
