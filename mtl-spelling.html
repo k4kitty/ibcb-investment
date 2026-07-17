@@ -308,7 +308,11 @@ function renderPractice() {
         <h3>${ls.title}</h3>
         <div class="rule">${ls.rule}</div>
         <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <div class="score">Word ${st.index+1} of ${st.total} · Score: ${st.score}/${st.index||1}</div>`;
+        <div class="score">Word ${st.index+1} of ${st.total} · Score: ${st.score}/${st.index||1}</div>
+        <div class="vowel-sounds" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:8px 0;">
+            <span style="font-size:0.7rem;color:#888;align-self:center;">🔊 Vowels:</span>
+            ${Object.keys(VOWEL_SOUNDS).map(v => `<button style="padding:4px 8px;border:1px solid #ddd;border-radius:4px;background:#fff;cursor:pointer;font-size:0.8rem;" onclick="speakVowel('${v}');event.stopPropagation();" title="${VOWEL_SOUNDS[v].desc}">${v} 🔊</button>`).join('')}
+        </div>`;
 
     if (st.mode === 'learn') {
         html += `<div class="hint">📖 <strong>Learn this word:</strong></div>
@@ -420,11 +424,51 @@ function speakWord(word) {
     const letters = word.split('').join(' · ');
     const hint = document.getElementById('phonicsHint');
     if (hint) hint.textContent = '🔤 ' + letters;
-    // Speak the word
+    // Speak the word — use female voice
     const u = new SpeechSynthesisUtterance(word);
-    u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1;
+    u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1.1;
+    // Pick a female voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const female = voices.find(v => v.lang.startsWith('en') && v.name.includes('Female')) ||
+                   voices.find(v => v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Susan') || v.name.includes('Zira'))) ||
+                   voices.find(v => v.lang.startsWith('en'));
+    if (female) u.voice = female;
     window.speechSynthesis.speak(u);
 }
+
+// Vowel sounds
+const VOWEL_SOUNDS = {
+    'a': { word: 'apple', desc: 'short a, like in "cat"' },
+    'e': { word: 'egg', desc: 'short e, like in "bed"' },
+    'i': { word: 'igloo', desc: 'short i, like in "pig"' },
+    'o': { word: 'octopus', desc: 'short o, like in "dog"' },
+    'u': { word: 'umbrella', desc: 'short u, like in "cup"' },
+    'ā': { word: 'cake', desc: 'long a, like in "cake"' },
+    'ē': { word: 'tree', desc: 'long e, like in "bee"' },
+    'ī': { word: 'kite', desc: 'long i, like in "bike"' },
+    'ō': { word: 'rope', desc: 'long o, like in "home"' },
+    'ū': { word: 'cube', desc: 'long u, like in "tune"' },
+};
+
+function speakVowel(v) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const info = VOWEL_SOUNDS[v];
+    const u = new SpeechSynthesisUtterance(info.word);
+    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.1;
+    const voices = window.speechSynthesis.getVoices();
+    const female = voices.find(v2 => v2.lang.startsWith('en') && v2.name.includes('Female')) ||
+                   voices.find(v2 => v2.lang.startsWith('en') && (v2.name.includes('Samantha') || v2.name.includes('Karen') || v2.name.includes('Zira'))) ||
+                   voices.find(v2 => v2.lang.startsWith('en'));
+    if (female) u.voice = female;
+    window.speechSynthesis.speak(u);
+    // Show hint
+    const hint = document.getElementById('phonicsHint');
+    if (hint) hint.textContent = '🔊 ' + info.desc;
+}
+
+// Load voices early
+if (window.speechSynthesis) window.speechSynthesis.getVoices();
 </script>
 <script>document.addEventListener('DOMContentLoaded',function(){var l=document.querySelector('.logo');if(!l||l.querySelector('a'))return;var a=document.createElement('a');a.href='index.html';a.style.cssText='text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';a.innerHTML=l.innerHTML;l.innerHTML='';l.appendChild(a);});</script>
 </body>
