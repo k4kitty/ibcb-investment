@@ -834,6 +834,7 @@ const MTL = {
     studentId: null,
     studentName: '',
     saveCode: '',
+    plan: 'free',
 
     init() {
         this.loadA11ySettings();
@@ -1262,15 +1263,17 @@ const MTL = {
             const completed = lp.completed || false;
             const gamesCompleted = Object.values(lp.games || {}).filter(g => g.completed).length;
             const locked = !this.isLevelUnlocked(lvl.id);
+            const planLocked = this.isPlanLocked(lvl.id);
             const pct = Math.round((gamesCompleted / lvl.games.length) * 100);
 
             const card = document.createElement('div');
-            card.className = 'mtl-level-card' + (locked ? ' locked' : '');
+            card.className = 'mtl-level-card' + (locked ? ' locked' : '') + (planLocked ? ' plan-locked' : '');
             card.innerHTML = `
-                <div class="mtl-level-lock-icon">🔒</div>
+                <div class="mtl-level-lock-icon">${planLocked ? '⭐' : '🔒'}</div>
                 <div class="mtl-level-number">${lvl.id}</div>
                 <div class="mtl-level-name">${lvl.name}</div>
                 <div class="mtl-level-age">Ages ${lvl.ageRange}</div>
+                ${planLocked ? '<div class="mtl-plan-badge"><a href="mtl-pricing.html" style="color:#d4a843;text-decoration:underline;">🔓 Upgrade to Pro</a></div>' : ''}
                 <div class="mtl-level-progress"><div class="mtl-level-progress-bar" style="width:${pct}%"></div></div>
                 <div class="mtl-level-stats">
                     <span>${gamesCompleted}/${lvl.games.length} games</span>
@@ -1297,8 +1300,14 @@ const MTL = {
 
     isLevelUnlocked(levelId) {
         if (levelId === 1) return true;
+        // Plan gating: Free users can only access Levels 1-3
+        if ((this.plan || 'free') === 'free' && levelId > 3) return false;
         const prev = this.progress['level_' + (levelId - 1)] || {};
         return !!prev.completed;
+    },
+
+    isPlanLocked(levelId) {
+        return (this.plan || 'free') === 'free' && levelId > 3;
     },
 
     // ─── Level Detail ──────────────────────────────────────

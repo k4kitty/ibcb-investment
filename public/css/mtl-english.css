@@ -906,3 +906,11 @@
 .mtl-high-contrast .mtl-game-header h2 { color: #ff0 !important; }
 .mtl-high-contrast .mtl-level-number { color: #ff0 !important; }
 .mtl-high-contrast .mtl-student-bar { background: #111 !important; border-color: #444 !important; }
+
+/* Plan gating badge */
+.mtl-plan-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 4px 0;
+    padding: 4px 0;
+}

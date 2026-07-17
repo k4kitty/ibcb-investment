@@ -1440,7 +1440,7 @@ app.post('/api/mtl/student', publicLimiter, async (req, res) => {
 // Lookup student by save code
 app.get('/api/mtl/student/:code', async (req, res) => {
     try {
-        const student = await dbGet('SELECT id, name, save_code, created_at, last_active FROM mtl_students WHERE save_code = ?',
+        const student = await dbGet('SELECT id, name, save_code, plan, created_at, last_active FROM mtl_students WHERE save_code = ?',
             [sanitizeText(req.params.code)]);
         if (!student) return res.status(404).json({ error: '找不到此儲存碼' });
         // Update last_active
