@@ -1627,6 +1627,17 @@ app.put('/api/mtl/mistake/:id/review', async (req, res) => {
     }
 });
 
+// ─── Plan Management ────────────────────────────────────
+app.put('/api/mtl/student/plan', async (req, res) => {
+    const studentId = sanitizeText(req.body.student_id);
+    const plan = sanitizeText(req.body.plan);
+    if (!studentId || !plan) return res.status(400).json({ error: 'Missing fields' });
+    try {
+        await dbRun('UPDATE mtl_students SET plan=? WHERE id=?', [plan, studentId]);
+        res.json({ success: true });
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 // ─── MTL Admin Auth ────────────────────────────────────
 
 app.post('/api/mtl/admin/login', async (req, res) => {
