@@ -123,13 +123,13 @@ for(const lv of defs){
 
 const M={
 progress:{},cl:null,cgi:null,gs:{},starsEarned:0,sid:null,sname:'',scode:'',plan:'free',
-init(){const s=loadS();if(s.studentId){this.sid=s.studentId;this.sname=s.studentName||'';this.scode=s.saveCode||'';this.loadFromServer()}else{this.showLogin()}},
+init(){const s=loadS();if(s.studentId){this.sid=s.studentId;this.sname=s.studentName||'';this.scode=s.saveCode||'';this.plan=s.plan||'free';this.loadFromServer()}else{this.showLogin()}},
 async loadFromServer(){try{const d=await API.loadProgress(this.sid);this.progress=d.progress||{}}catch(e){this.progress={}}this.renderDashboard();this.showV('mtl-dashboard')},
 showV(id){document.querySelectorAll('.mtl-view').forEach(v=>v.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active')},
 showLogin(){this.showV('mtl-login')},
 switchTab(t){document.getElementById('loginNew').style.display=t==='new'?'':'none';document.getElementById('loginExist').style.display=t==='existing'?'':'none';document.getElementById('tabNew').style.borderBottomColor=t==='new'?'var(--gold)':'transparent';document.getElementById('tabNew').style.color=t==='new'?'var(--gold)':'var(--muted)';document.getElementById('tabExist').style.borderBottomColor=t==='existing'?'var(--gold)':'transparent';document.getElementById('tabExist').style.color=t==='existing'?'var(--gold)':'var(--muted)'},
-async createStudent(){const n=document.getElementById('newStudentName').value.trim();if(!n)return;try{const d=await API.createStudent(n);this.sid=d.id;this.sname=d.name;this.scode=d.save_code;this.progress={};saveS({studentId:d.id,studentName:d.name,saveCode:d.save_code});this.renderDashboard();this.showV('mtl-dashboard')}catch(e){alert('Failed: '+e.message)}},
-async loginByCode(){const c=document.getElementById('saveCodeInput').value.trim().toUpperCase();if(!c)return;try{const d=await API.lookupStudent(c);const s=d.student;this.sid=s.id;this.sname=s.name;this.scode=s.save_code;saveS({studentId:s.id,studentName:s.name,saveCode:s.save_code});await this.loadFromServer()}catch(e){alert('Code not found. Check and try again.')}},
+async createStudent(){const n=document.getElementById('newStudentName').value.trim();if(!n)return;try{const d=await API.createStudent(n);this.sid=d.id;this.sname=d.name;this.scode=d.save_code;this.plan='free';this.progress={};saveS({studentId:d.id,studentName:d.name,saveCode:d.save_code,plan:'free'});this.renderDashboard();this.showV('mtl-dashboard')}catch(e){alert('Failed: '+e.message)}},
+async loginByCode(){const c=document.getElementById('saveCodeInput').value.trim().toUpperCase();if(!c)return;try{const d=await API.lookupStudent(c);const s=d.student;this.sid=s.id;this.sname=s.name;this.scode=s.save_code;this.plan=s.plan||'free';saveS({studentId:s.id,studentName:s.name,saveCode:s.save_code,plan:s.plan||'free'});await this.loadFromServer()}catch(e){alert('Code not found. Check and try again.')}},
 logout(){this.sid=null;this.sname='';this.scode='';this.progress={};localStorage.removeItem(SK);this.showLogin()},
 eh(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML},
 showDashboard(){this.cl=null;this.cgi=null;this.renderDashboard();this.showV('mtl-dashboard');window.scrollTo(0,0)},

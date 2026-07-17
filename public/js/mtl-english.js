@@ -843,6 +843,7 @@ const MTL = {
             this.studentId = session.studentId;
             this.studentName = session.studentName || '';
             this.saveCode = session.saveCode || '';
+            this.plan = session.plan || 'free';
             this.loadFromServer();
         } else {
             this.showLogin();
@@ -888,7 +889,8 @@ const MTL = {
             this.studentId = s.id;
             this.studentName = s.name;
             this.saveCode = s.save_code;
-            saveSession({ studentId: s.id, studentName: s.name, saveCode: s.save_code });
+            this.plan = s.plan || 'free';
+            saveSession({ studentId: s.id, studentName: s.name, saveCode: s.save_code, plan: s.plan || 'free' });
             await this.loadFromServer();
         } catch (e) {
             alert('登入失敗：' + e.message);
