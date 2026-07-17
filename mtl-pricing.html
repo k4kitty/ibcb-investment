@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play and Learn — Pricing</title>
+<link rel="stylesheet" href="public/css/styles.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;color:#1a1a1a;background:#fafafa}
+.pricing-hero{text-align:center;padding:60px 20px 40px}
+.pricing-hero h1{font-size:2.2rem;margin-bottom:8px}
+.pricing-hero p{color:#888;max-width:500px;margin:0 auto;font-size:1rem;line-height:1.5}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:960px;margin:0 auto 60px;padding:0 20px}
+.plan{background:#fff;border:2px solid #eee;border-radius:16px;padding:36px 28px;text-align:center;transition:all .2s;position:relative}
+.plan:hover{border-color:#d4a843;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.plan.pro{border-color:#d4a843;box-shadow:0 0 0 2px rgba(212,168,67,0.2)}
+.plan .badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#d4a843;color:#fff;padding:4px 16px;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.plan h2{font-size:1.3rem;margin-bottom:4px}
+.plan .price{font-size:2.8rem;font-weight:800;margin:16px 0 4px;color:#2c3e50}
+.plan .price span{font-size:1rem;font-weight:400;color:#888}
+.plan .desc{color:#888;margin-bottom:24px;font-size:0.9rem}
+.plan ul{list-style:none;text-align:left;margin-bottom:28px}
+.plan ul li{padding:6px 0;font-size:0.9rem;color:#555}
+.plan ul li::before{content:'✅ ';margin-right:6px}
+.plan ul li.no::before{content:'❌ '}
+.btn{display:block;width:100%;padding:14px 0;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;transition:all .2s}
+.btn-gold{background:#d4a843;color:#fff}.btn-gold:hover{background:#c49b2e}
+.btn-outline{border:2px solid #d4a843;color:#d4a843;background:#fff}.btn-outline:hover{background:#fef9e7}
+.compare{max-width:700px;margin:0 auto 60px;padding:0 20px}
+.compare h2{text-align:center;margin-bottom:24px}
+.compare table{width:100%;border-collapse:collapse}
+.compare td,.compare th{padding:10px 14px;border-bottom:1px solid #eee;font-size:0.9rem}
+.compare th{text-align:left;color:#888;font-weight:600}
+.compare .yes{color:#27ae60}.compare .no{color:#ccc}
+@media(max-width:600px){.plans{grid-template-columns:1fr}.pricing-hero h1{font-size:1.6rem}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="header-content">
+<div class="logo"><div class="logo-icon">IBCB</div><div class="logo-text"><span class="logo-main">IBCB Investment</span><span class="logo-sub">Private Equity · Investing AI +</span></div></div>
+<nav class="main-nav">
+<a href="index.html" class="nav-link">主頁</a>
+<a href="about.html" class="nav-link">關於我們</a>
+<a href="mtl-english.html" class="nav-link">Play and Learn</a>
+<a href="register.html" class="nav-link btn-register">加入會員</a>
+</nav>
+</div>
+</header>
+
+<main>
+<div class="pricing-hero">
+<h1>Choose Your Plan</h1>
+<p>Start free. Upgrade anytime. All plans include save-code progress, teacher dashboard, and full curriculum.</p>
+</div>
+
+<div class="plans">
+<div class="plan">
+<h2>Free</h2>
+<div class="price">HK$0<span>/mo</span></div>
+<p class="desc">Perfect for trying out.</p>
+<ul>
+<li>Levels 1–3 (full access)</li>
+<li>20 games per level</li>
+<li>Save-code progress</li>
+<li class="no">Levels 4–12</li>
+<li class="no">AI-generated content</li>
+<li class="no">Mistake review</li>
+</ul>
+<a href="mtl-english.html" class="btn btn-outline">Start Free</a>
+</div>
+
+<div class="plan pro">
+<div class="badge">Popular</div>
+<h2>Pro</h2>
+<div class="price">HK$38<span>/mo</span></div>
+<p class="desc">Full access for one child.</p>
+<ul>
+<li>All 12 levels unlocked</li>
+<li>240 games (English)</li>
+<li>240 games (Math)</li>
+<li>5 Skill sub-pages</li>
+<li>AI-generated content</li>
+<li>Mistake review</li>
+<li>Printable certificates</li>
+</ul>
+<a href="#" class="btn btn-gold" onclick="subscribe('pro')">Subscribe Pro</a>
+</div>
+
+<div class="plan">
+<h2>Family</h2>
+<div class="price">HK$68<span>/mo</span></div>
+<p class="desc">Up to 4 children.</p>
+<ul>
+<li>Everything in Pro</li>
+<li>Up to 4 student profiles</li>
+<li>Parent dashboard</li>
+<li>Cross-device sync</li>
+<li>Priority support</li>
+</ul>
+<a href="#" class="btn btn-gold" onclick="subscribe('family')">Subscribe Family</a>
+</div>
+</div>
+
+<div class="compare">
+<h2>Feature Comparison</h2>
+<table>
+<tr><th></th><th>Free</th><th>Pro</th><th>Family</th></tr>
+<tr><td>English levels</td><td>1–3</td><td class="yes">1–12</td><td class="yes">1–12</td></tr>
+<tr><td>Math levels</td><td>1–3</td><td class="yes">1–12</td><td class="yes">1–12</td></tr>
+<tr><td>Skill sub-pages</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+<tr><td>Students</td><td>1</td><td>1</td><td class="yes">Up to 4</td></tr>
+<tr><td>AI content</td><td class="no">—</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+<tr><td>Certificates</td><td class="no">—</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+<tr><td>Parent dashboard</td><td class="no">—</td><td class="no">—</td><td class="yes">Yes</td></tr>
+<tr><td>Support</td><td>Email</td><td>Email</td><td class="yes">Priority</td></tr>
+</table>
+</div>
+</main>
+
+<footer class="site-footer">
+<div class="footer-content">
+<div class="footer-brand"><div class="footer-logo">IBCB Investment</div><p>Private Equity · Investing AI +</p></div>
+<div class="footer-info"><p>Play and Learn · AI Educational Technology</p><p>&copy; 2026 IBCB Investment. All rights reserved.</p><p>Email: admin@ibcgroup.com.hk</p></div>
+</div>
+</footer>
+
+<script>
+function subscribe(plan){
+    alert('Stripe payment coming soon! Plan: '+plan+'\n\nFor now, all features are free during beta.');
+}
+</script>
+</body>
+</html>
