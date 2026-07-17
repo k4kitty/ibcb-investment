@@ -6,21 +6,13 @@
 <link rel="stylesheet" href="public/css/styles.css">
 <link rel="stylesheet" href="public/css/mtl-english.css">
 <style>
-.mtl-hero{background:linear-gradient(135deg,#e3f2fd,#e8f5e9,#fef9e7)}
-.mtl-hero .hero-eyebrow{color:#e67e22}
-.mtl-level-card{border-left-color:#3498db}
-.mtl-level-number{color:#3498db}
-.mtl-game-card.completed{border-left-color:#27ae60}
-.mtl-check-btn{background:#3498db}
-.mtl-next-btn{background:#27ae60}
-.mtl-next-game-btn{background:#e67e22}
-
+/* Math-specific elements — all base styling from mtl-english.css */
 .mtl-speed-timer{font-size:3rem;font-weight:800;color:#e67e22;text-align:center;margin:16px 0}
 .mtl-speed-streak{font-size:1.3rem;color:#27ae60;text-align:center;margin:8px 0}
 .mtl-speed-q{font-size:2rem;text-align:center;margin:20px 0;font-weight:700}
 .mtl-eq-target{font-size:2.2rem;font-weight:800;color:#27ae60;text-align:center;margin:16px 0}
 .mtl-eq-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
-.mtl-eq-chip{padding:10px 16px;background:#fff;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:600;font-size:1.1rem;transition:all .15s;user-select:none}
+.mtl-eq-chip{padding:10px 16px;background:#fff;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:600;font-size:1.1rem;user-select:none}
 .mtl-eq-chip:hover{border-color:#3498db}
 .mtl-eq-chip.used{opacity:.25;pointer-events:none}
 .mtl-eq-zone{min-height:48px;border:2px dashed #ccc;border-radius:10px;padding:10px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
@@ -28,15 +20,10 @@
 .mtl-clock-svg{display:block;margin:0 auto}
 .mtl-boss-progress{color:#888;font-size:.85rem;margin-bottom:8px;text-align:center}
 .mtl-match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
-.mtl-match-item{padding:12px 16px;border:2px solid #eee;border-radius:8px;cursor:pointer;transition:all .15s;background:#fff}
+.mtl-match-item{padding:12px 16px;border:2px solid #eee;border-radius:8px;cursor:pointer;background:#fff}
 .mtl-match-item:hover{border-color:#3498db}
 .mtl-match-item.sel{border-color:#3498db;background:#e3f2fd}
 .mtl-match-item.correct{border-color:#27ae60;background:#e8f5e0}
-.mtl-passage{position:relative;background:#fafafa;border:1px solid #eee;border-radius:12px;padding:24px 28px;margin-bottom:20px;font-size:1.05rem;line-height:1.8}
-.mtl-input{width:100%;max-width:300px;padding:12px 16px;border:2px solid #ddd;border-radius:10px;font-size:1.1rem;text-align:center;margin:12px auto;display:block}
-.mtl-input:focus{border-color:#3498db;outline:none}
-.mtl-hint{color:#888;font-size:.9rem;margin-bottom:12px;text-align:center}
-
 @media(max-width:640px){.mtl-match-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -110,7 +97,7 @@
 </div>
 </footer>
 
-<script src="public/js/mtl-math.js?v=3"></script>
+<script src="public/js/mtl-math.js?v=4"></script>
 <script>document.addEventListener('DOMContentLoaded',function(){var l=document.querySelector('.logo');if(!l||l.querySelector('a'))return;var a=document.createElement('a');a.href='index.html';a.style.cssText='text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';a.innerHTML=l.innerHTML;l.innerHTML='';l.appendChild(a);});</script>
 </body>
 </html>
