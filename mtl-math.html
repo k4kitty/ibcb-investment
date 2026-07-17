@@ -6,56 +6,39 @@
 <link rel="stylesheet" href="public/css/styles.css">
 <link rel="stylesheet" href="public/css/mtl-english.css">
 <style>
-/* Math-specific color overrides */
-:root{--mtl-blue:#3498db;--mtl-green:#27ae60;--mtl-gold:#e67e22;--mtl-red:#e74c3c;--mtl-purple:#8e44ad}
 .mtl-hero{background:linear-gradient(135deg,#e3f2fd,#e8f5e9,#fef9e7)}
-.mtl-hero .hero-eyebrow{color:var(--mtl-gold)}
-.mtl-hero h1{color:#2c3e50}
-.mtl-level-card{border-left:4px solid var(--mtl-blue)}
-.mtl-level-card:hover:not(.locked){border-color:var(--mtl-blue)}
-.mtl-level-number{color:var(--mtl-blue)}
-.mtl-level-card.locked .mtl-level-number{color:#ccc}
-.mtl-game-card{border-left:4px solid #eee}
-.mtl-game-card:hover:not(.locked-game){border-color:var(--mtl-blue)}
-.mtl-game-card.completed{border-left-color:var(--mtl-green)}
-.mtl-option:hover:not(.correct):not(.wrong){border-color:var(--mtl-blue)}
-.mtl-check-btn{background:var(--mtl-blue)}
-.mtl-next-btn{background:var(--mtl-green)}
-.mtl-next-game-btn{background:var(--mtl-gold)}
-.mtl-passage{background:#f0f4f8}
+.mtl-hero .hero-eyebrow{color:#e67e22}
+.mtl-level-card{border-left-color:#3498db}
+.mtl-level-number{color:#3498db}
+.mtl-game-card.completed{border-left-color:#27ae60}
+.mtl-check-btn{background:#3498db}
+.mtl-next-btn{background:#27ae60}
+.mtl-next-game-btn{background:#e67e22}
 
-/* Math-specific styles */
-.mtl-input{border:2px solid #ddd;font-size:1.2rem}
-.mtl-input:focus{border-color:var(--mtl-blue)}
-.speed-timer{font-size:3rem;font-weight:800;color:var(--mtl-orange,#e67e22);text-align:center;margin:16px 0}
-.speed-streak{font-size:1.3rem;color:var(--mtl-green);text-align:center;margin:8px 0}
-.speed-q{font-size:2rem;text-align:center;margin:20px 0;font-weight:700}
-.eq-target{font-size:2.2rem;font-weight:800;color:var(--mtl-green);text-align:center;margin:16px 0}
-.eq-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
-.eq-chip{padding:10px 16px;background:#fff;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:600;font-size:1.1rem;transition:all .15s;user-select:none}
-.eq-chip:hover{border-color:var(--mtl-blue)}
-.eq-chip.used{opacity:.25;pointer-events:none}
-.eq-zone{min-height:48px;border:2px dashed #ccc;border-radius:10px;padding:10px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
-.eq-zone .eq-chip.used{background:var(--mtl-green);color:#fff;border-color:var(--mtl-green);opacity:1}
-.clock-svg{display:block;margin:0 auto}
+.mtl-speed-timer{font-size:3rem;font-weight:800;color:#e67e22;text-align:center;margin:16px 0}
+.mtl-speed-streak{font-size:1.3rem;color:#27ae60;text-align:center;margin:8px 0}
+.mtl-speed-q{font-size:2rem;text-align:center;margin:20px 0;font-weight:700}
+.mtl-eq-target{font-size:2.2rem;font-weight:800;color:#27ae60;text-align:center;margin:16px 0}
+.mtl-eq-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+.mtl-eq-chip{padding:10px 16px;background:#fff;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:600;font-size:1.1rem;transition:all .15s;user-select:none}
+.mtl-eq-chip:hover{border-color:#3498db}
+.mtl-eq-chip.used{opacity:.25;pointer-events:none}
+.mtl-eq-zone{min-height:48px;border:2px dashed #ccc;border-radius:10px;padding:10px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.mtl-eq-zone .mtl-eq-chip{background:#27ae60;color:#fff;border-color:#27ae60;opacity:1}
+.mtl-clock-svg{display:block;margin:0 auto}
 .mtl-boss-progress{color:#888;font-size:.85rem;margin-bottom:8px;text-align:center}
-.gcard .gbadge{display:inline-block;font-size:.65rem;padding:2px 8px;border-radius:20px;margin-bottom:6px;font-weight:600;color:#fff}
-.b-word{background:var(--mtl-blue)}.b-speed{background:var(--mtl-orange,#e67e22)}.b-eq{background:var(--mtl-green)}.b-match{background:var(--mtl-purple)}.b-olym{background:var(--mtl-gold);color:#000}.b-boss{background:var(--mtl-red)}.b-clock{background:#e84393}
-.gcard .gstat{font-size:.75rem;color:#888;margin-top:4px}
-.lvl-header-card{background:#fff;border:1px solid #eee;border-radius:var(--mtl-radius,12px);padding:20px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.lvl-age{color:#888;font-size:.9rem}
-.lvl-desc{color:#888;margin-top:4px}
-.lvl-right{text-align:center}
-.lvl-big-trophy{font-size:2.5rem;opacity:.2;transition:all .5s}
-.lvl-big-trophy.earned{opacity:1}
-
 .mtl-match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
 .mtl-match-item{padding:12px 16px;border:2px solid #eee;border-radius:8px;cursor:pointer;transition:all .15s;background:#fff}
-.mtl-match-item:hover{border-color:var(--mtl-blue)}
-.mtl-match-item.sel{border-color:var(--mtl-blue);background:#e3f2fd}
-.mtl-match-item.correct{border-color:var(--mtl-green);background:#e8f5e0}
-
-footer{text-align:center;padding:20px;color:#888;font-size:.75rem;border-top:1px solid #eee;margin-top:40px}
+.mtl-match-item:hover{border-color:#3498db}
+.mtl-match-item.sel{border-color:#3498db;background:#e3f2fd}
+.mtl-match-item.correct{border-color:#27ae60;background:#e8f5e0}
+.mtl-passage{position:relative;background:#fafafa;border:1px solid #eee;border-radius:12px;padding:24px 28px;margin-bottom:20px;font-size:1.05rem;line-height:1.8}
+.mtl-input{width:100%;max-width:300px;padding:12px 16px;border:2px solid #ddd;border-radius:10px;font-size:1.1rem;text-align:center;margin:12px auto;display:block}
+.mtl-input:focus{border-color:#3498db;outline:none}
+.mtl-hint{color:#888;font-size:.9rem;margin-bottom:12px;text-align:center}
+.mtl-badge{display:inline-block;font-size:.62rem;padding:2px 8px;border-radius:20px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;color:#fff}
+.bg-word{background:#3498db}.bg-speed{background:#e67e22}.bg-eq{background:#27ae60}.bg-match{background:#8e44ad}.bg-olym{background:#e67e22;color:#000}.bg-boss{background:#e74c3c}.bg-clock{background:#e84393}
+.mtl-game-stat{font-size:.73rem;color:#888;margin-top:2px}
 
 @media(max-width:640px){.mtl-match-grid{grid-template-columns:1fr 1fr}}
 </style>
@@ -65,14 +48,7 @@ footer{text-align:center;padding:20px;color:#888;font-size:.75rem;border-top:1px
 <header class="site-header">
 <div class="header-content">
 <div class="logo"><div class="logo-icon">IBCB</div><div class="logo-text"><span class="logo-main">IBCB Investment</span><span class="logo-sub">Private Equity · Investing AI +</span></div></div>
-<nav class="main-nav">
-<a href="index.html" class="nav-link">主頁</a>
-<a href="about.html" class="nav-link">關於我們</a>
-<a href="events.html" class="nav-link">活動報名</a>
-<a href="news.html" class="nav-link">最新消息</a>
-<a href="contact.html" class="nav-link">Contact Us</a>
-<a href="register.html" class="nav-link btn-register">加入會員</a>
-</nav>
+<nav class="main-nav"><a href="index.html" class="nav-link">主頁</a><a href="about.html" class="nav-link">關於我們</a><a href="events.html" class="nav-link">活動報名</a><a href="news.html" class="nav-link">最新消息</a><a href="contact.html" class="nav-link">Contact Us</a><a href="register.html" class="nav-link btn-register">加入會員</a></nav>
 </div>
 <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
 </header>
@@ -80,35 +56,64 @@ footer{text-align:center;padding:20px;color:#888;font-size:.75rem;border-top:1px
 <main id="mtl-app">
 
 <section id="mtl-login" class="mtl-view active">
-<div class="mtl-hero"><div class="container"><p class="hero-eyebrow">Play and Learn · AI Educational Technology</p><h1>Play and Learn Math</h1><p class="hero-lead">12 levels. HK DSE + Singapore MOE aligned. Ages 6–18.</p></div></div>
+<div class="mtl-hero"><div class="container"><p class="hero-eyebrow">Play and Learn · AI Educational Technology</p><h1>Play and Learn Math</h1></div></div>
 <div class="container"><div class="mtl-login-box">
 <h2>Welcome, Young Mathematician!</h2>
-<p style="color:#888;margin-bottom:16px;">Create a profile or enter your Save Code.</p>
+<p>Create a new student profile or enter your Save Code to continue.</p>
 <div class="mtl-login-tabs">
 <button class="mtl-tab active" onclick="M.switchTab('new')" id="tabNew">New Student</button>
-<button class="mtl-tab" onclick="M.switchTab('existing')" id="tabExist">I Have a Code</button>
+<button class="mtl-tab" onclick="M.switchTab('existing')" id="tabExist">I Have a Save Code</button>
 </div>
-<div class="mtl-login-form" id="loginNew"><input type="text" id="newName" placeholder="Your name" maxlength="80"><button class="btn btn-g" onclick="M.createStudent()" style="max-width:none;">Start Learning →</button></div>
-<div class="mtl-login-form" id="loginExist" style="display:none"><input type="text" id="saveCode" placeholder="Enter 6-char code" maxlength="6" style="text-transform:uppercase;text-align:center;font-size:1.2rem;letter-spacing:4px"><button class="btn btn-g" onclick="M.loginByCode()" style="max-width:none;">Load Progress</button></div>
+<div id="loginNew" class="mtl-login-form">
+<input type="text" id="newStudentName" placeholder="Enter student name" maxlength="80">
+<button class="mtl-check-btn" onclick="M.createStudent(document.getElementById('newStudentName').value.trim())">Create Profile & Start Learning</button>
+</div>
+<div id="loginExist" class="mtl-login-form" style="display:none;">
+<input type="text" id="saveCodeInput" placeholder="Enter your 6-character Save Code" maxlength="6" style="text-transform:uppercase;text-align:center;font-size:1.2rem;letter-spacing:4px;">
+<button class="mtl-check-btn" onclick="M.loginByCode(document.getElementById('saveCodeInput').value.trim().toUpperCase())">Load My Progress</button>
+</div>
 </div></div>
 </section>
 
-<section id="mtl-dash" class="mtl-view">
-<div class="mtl-hero"><div class="container"><p class="hero-eyebrow">Play and Learn · AI Educational Technology</p><h1>Play and Learn Math</h1><p class="hero-lead">Complete all 20 missions per level to unlock the next.</p></div></div>
+<section id="mtl-dashboard" class="mtl-view">
+<div class="mtl-hero"><div class="container"><p class="hero-eyebrow">Play and Learn · AI Educational Technology</p><h1>Play and Learn Math</h1><p class="hero-lead">Complete all 20 missions per level to unlock the next. HK DSE + Singapore MOE aligned for ages 6–18.</p></div></div>
 <div class="container">
-<div class="mtl-student-bar" id="studentBar"></div>
-<div class="mtl-stats" id="mtlStats"><div class="mtl-stat"><div class="mtl-stat-n" id="statLevels">0</div><div class="mtl-stat-l">Levels Done</div></div><div class="mtl-stat"><div class="mtl-stat-n" id="statTrophies">0</div><div class="mtl-stat-l">Trophies</div></div><div class="mtl-stat"><div class="mtl-stat-n" id="statGames">0</div><div class="mtl-stat-l">Missions Done</div></div><div class="mtl-stat"><div class="mtl-stat-n" id="statStars">0</div><div class="mtl-stat-l">⭐ Stars</div></div></div>
-<div class="mtl-level-grid" id="levelGrid"></div>
+<div id="mtlStudentBar" class="mtl-student-bar"></div>
+<div class="mtl-stats" id="mtlStats">
+<div class="stat-card"><div class="stat-number" id="statLevelsCompleted">0</div><div class="stat-label">Levels Completed</div></div>
+<div class="stat-card"><div class="stat-number" id="statTrophies">0</div><div class="stat-label">Trophies Earned</div></div>
+<div class="stat-card"><div class="stat-number" id="statGamesCompleted">0</div><div class="stat-label">Missions Completed</div></div>
+<div class="stat-card"><div class="stat-number" id="statTotalStars">0</div><div class="stat-label">⭐ Stars Collected</div></div>
+</div>
+<div class="mtl-levels-grid" id="mtlLevelsGrid"></div>
 </div>
 </section>
 
-<section id="mtl-level" class="mtl-view"><div class="container"><button class="mtl-back-btn" onclick="M.showDashboard()">← Mission Control</button><div id="levelHdr"></div><div class="mtl-game-grid" id="gamesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;padding-bottom:40px"></div></div></section>
+<section id="mtl-level-detail" class="mtl-view">
+<div class="container">
+<button class="mtl-back-btn" onclick="M.showDashboard()">← Back to All Levels</button>
+<div id="mtlLevelHeader"></div>
+<div class="mtl-games-grid" id="mtlGamesGrid"></div>
+</div>
+</section>
 
-<section id="mtl-game" class="mtl-view"><div class="container"><button class="mtl-back-btn" onclick="M.backToLevel()">← Back</button><div class="mtl-game-container" id="gameArea"></div></div></section>
+<section id="mtl-game-play" class="mtl-view">
+<div class="container">
+<button class="mtl-back-btn" onclick="M.backToLevel()">← Back to Level</button>
+<div id="mtlGameArea"></div>
+</div>
+</section>
 
 </main>
 
-<footer>Play and Learn Math · IBCB Investment · Play and Learn · AI Educational Technology</footer>
-<script src="public/js/mtl-math.js?v=2"></script>
+<footer class="site-footer">
+<div class="footer-content">
+<div class="footer-brand"><div class="footer-logo">IBCB Investment</div><p>Private Equity · Investing AI +</p></div>
+<div class="footer-info"><p>Play and Learn · AI Educational Technology</p><p>&copy; <span id="copyrightYear">2026</span> IBCB Investment. All rights reserved.</p><p>Email: admin@ibcgroup.com.hk</p></div>
+</div>
+</footer>
+
+<script src="public/js/mtl-math.js?v=3"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){var l=document.querySelector('.logo');if(!l||l.querySelector('a'))return;var a=document.createElement('a');a.href='index.html';a.style.cssText='text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';a.innerHTML=l.innerHTML;l.innerHTML='';l.appendChild(a);});</script>
 </body>
 </html>
