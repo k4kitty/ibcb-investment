@@ -253,6 +253,10 @@ async function initDB() {
             try { await dbRun(stmt); } catch (e) { console.error('MTL schema warn:', e.message.substring(0, 80)); }
         }
 
+        // Migration: add plan column to existing mtl_students tables
+        try { await dbRun('ALTER TABLE mtl_students ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT \'free\''); } catch(e) {}
+        try { await dbRun('ALTER TABLE mtl_students ADD COLUMN IF NOT EXISTS plan_expires_at TEXT'); } catch(e) {}
+
         // Seed MTL admin
         const mtlAdmin = await dbGet('SELECT COUNT(*) as c FROM mtl_admins');
         if (!mtlAdmin || mtlAdmin.c == 0) {
