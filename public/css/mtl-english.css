@@ -246,6 +246,13 @@
 .badge-matching { background: #d5f5e3; color: #27ae60; }
 .badge-fillblank { background: #d6eaf8; color: #2980b9; }
 .badge-ordering { background: #fadbd8; color: #c0392b; }
+.badge-word { background: #d6eaf8; color: #2980b9; }
+.badge-speed { background: #fdebd0; color: #d35400; }
+.badge-eq { background: #d5f5e3; color: #27ae60; }
+.badge-match { background: #f5eef8; color: #8e44ad; }
+.badge-olym { background: #fef9e7; color: #d4a843; }
+.badge-boss { background: #fadbd8; color: #c0392b; }
+.badge-clock { background: #fce4ec; color: #e84393; }
 
 .mtl-game-title {
     font-size: 1rem;
