@@ -909,7 +909,8 @@ const MTL = {
     // ─── Student Info Bar ─────────────────────────────────
     renderStudentBar() {
         if (!this.studentId) return '';
-        return '<div class="mtl-student-bar"><span>👤 ' + this.escapeH(this.studentName) +
+        const proBadge = (this.plan && this.plan !== 'free') ? '<span style="background:#d4a843;color:#fff;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;margin-left:8px;">PRO</span>' : '';
+        return '<div class="mtl-student-bar"><span>👤 ' + this.escapeH(this.studentName) + proBadge +
             '</span><span class="mtl-savecode">🔑 Save Code: <strong>' + this.escapeH(this.saveCode) + '</strong></span>' +
             '<button class="mtl-logout-btn" onclick="MTL.logout()">切換學生</button></div>';
     },
