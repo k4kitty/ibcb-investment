@@ -1995,43 +1995,28 @@ const MTL = {
     },
 
     showNextBtn(success) {
-        const area = document.getElementById('mtlGameArea');
-        const container = area.querySelector('.mtl-game-container');
-
-        // Remove any existing buttons first
-        const old = container.querySelector('.mtl-action-btns');
-        if (old) old.remove();
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'mtl-action-btns';
-
-        const mainBtn = document.createElement('button');
-        mainBtn.className = success ? 'mtl-next-btn' : 'mtl-check-btn';
-        mainBtn.textContent = success ? 'Complete Game →' : 'Try Again';
-        mainBtn.id = 'nextOrRetry';
-        mainBtn.addEventListener('click', () => {
-            if (success) this.finishGame();
-            else this.retryGame();
-        });
-        wrapper.appendChild(mainBtn);
-
-        // Add "Next Game" button if successful and there is a next game
-        if (success && this.currentLevel && this.currentGameIndex != null) {
+        if (!success) {
+            const area = document.getElementById('mtlGameArea');
+            const container = area.querySelector('.mtl-game-container');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'mtl-action-btns';
+            const btn = document.createElement('button');
+            btn.className = 'mtl-check-btn';
+            btn.textContent = 'Try Again';
+            btn.addEventListener('click', () => this.retryGame());
+            wrapper.appendChild(btn);
+            container.appendChild(wrapper);
+            return;
+        }
+        // Auto-save and advance
+        this.finishGame();
+        if (this.currentLevel && this.currentGameIndex != null) {
             const level = MTL_CONTENT.levels[this.currentLevel - 1];
             const nextIdx = this.currentGameIndex + 1;
             if (level && nextIdx < level.games.length) {
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'mtl-next-game-btn';
-                nextBtn.textContent = 'Next Game →';
-                nextBtn.addEventListener('click', async () => {
-                    await this.finishGame();
-                    this.startGame(nextIdx);
-                });
-                wrapper.appendChild(nextBtn);
+                setTimeout(() => this.startGame(nextIdx), 600);
             }
         }
-
-        container.appendChild(wrapper);
     },
 
     async finishGame() {

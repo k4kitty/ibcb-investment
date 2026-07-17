@@ -254,6 +254,20 @@
 .badge-boss { background: #fadbd8; color: #c0392b; }
 .badge-clock { background: #fce4ec; color: #e84393; }
 
+/* Answer input — centered */
+.mtl-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    text-align: center;
+    margin: 12px auto;
+    display: block;
+}
+.mtl-input:focus { border-color: var(--mtl-blue); outline: none; }
+
 .mtl-game-title {
     font-size: 1rem;
     font-weight: 600;
