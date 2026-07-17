@@ -101,7 +101,8 @@ if (isPG) {
         // MTL English — student profiles & progress
         `CREATE TABLE IF NOT EXISTS mtl_students (
             id TEXT PRIMARY KEY, name TEXT NOT NULL, save_code TEXT UNIQUE NOT NULL,
-            teacher_id TEXT, created_at TEXT, last_active TEXT
+            plan TEXT DEFAULT 'free', plan_expires_at TEXT,
+            created_at TEXT, last_active TEXT
         )`,
         `CREATE TABLE IF NOT EXISTS mtl_progress (
             student_id TEXT NOT NULL, level_id INTEGER NOT NULL, game_index INTEGER NOT NULL,
@@ -225,7 +226,8 @@ async function initDB() {
         const mtlSchema = [
             `CREATE TABLE IF NOT EXISTS mtl_students (
                 id TEXT PRIMARY KEY, name TEXT NOT NULL, save_code TEXT UNIQUE NOT NULL,
-                teacher_id TEXT, created_at TEXT, last_active TEXT
+                plan TEXT DEFAULT 'free', plan_expires_at TEXT,
+                created_at TEXT, last_active TEXT
             )`,
             `CREATE TABLE IF NOT EXISTS mtl_progress (
                 student_id TEXT NOT NULL, level_id INTEGER NOT NULL, game_index INTEGER NOT NULL,
