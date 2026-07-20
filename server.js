@@ -549,6 +549,7 @@ app.post('/api/events/manage', requireAuth, csrfCheck, async (req, res) => {
     const content = sanitizeText(req.body.content, MAX_MESSAGE_LEN);
     const location = sanitizeText(req.body.location);
     const event_date = sanitizeText(req.body.event_date);
+    const event_end_date = sanitizeText(req.body.event_end_date) || null;
     const event_time = sanitizeText(req.body.event_time);
     const status = sanitizeText(req.body.status, 20) || 'active';
     const max_attendees = parseInt(req.body.max_attendees) || 0;
@@ -561,8 +562,8 @@ app.post('/api/events/manage', requireAuth, csrfCheck, async (req, res) => {
         const id = 'ev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
         const now = new Date().toISOString();
         await dbRun(
-            'INSERT INTO events (id, title, description, content, location, event_date, event_time, status, max_attendees, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [id, title, description, content, location, event_date, event_time, status, max_attendees, now, now]
+            'INSERT INTO events (id, title, description, content, location, event_date, event_end_date, event_time, status, max_attendees, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [id, title, description, content, location, event_date, event_end_date, event_time, status, max_attendees, now, now]
         );
         cacheClear('dashboard');
         res.json({ success: true, id, title });
@@ -859,6 +860,7 @@ app.post('/api/events/manage', requireAuth, csrfCheck, async (req, res) => {
     const content = sanitizeText(req.body.content, MAX_MESSAGE_LEN);
     const location = sanitizeText(req.body.location);
     const event_date = sanitizeText(req.body.event_date);
+    const event_end_date = sanitizeText(req.body.event_end_date) || null;
     const event_time = sanitizeText(req.body.event_time);
     const status = sanitizeText(req.body.status, 20) || 'active';
     const max_attendees = parseInt(req.body.max_attendees) || 0;
@@ -871,8 +873,8 @@ app.post('/api/events/manage', requireAuth, csrfCheck, async (req, res) => {
         const id = 'ev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
         const now = new Date().toISOString();
         await dbRun(
-            'INSERT INTO events (id, title, description, content, location, event_date, event_time, status, max_attendees, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [id, title, description, content, location, event_date, event_time, status, max_attendees, now, now]
+            'INSERT INTO events (id, title, description, content, location, event_date, event_end_date, event_time, status, max_attendees, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [id, title, description, content, location, event_date, event_end_date, event_time, status, max_attendees, now, now]
         );
         cacheClear('dashboard');
         res.json({ success: true, id, title });

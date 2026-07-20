@@ -370,7 +370,7 @@
                 card.innerHTML =
                     '<div class="event-card-header">' +
                         '<h3>' + escapeHtml(evt.title) + '</h3>' +
-                        '<div class="event-card-date">' + formatEventDate(evt.event_date) + (evt.event_time ? ' &middot; ' + escapeHtml(evt.event_time) : '') + '</div>' +
+                        '<div class="event-card-date">' + formatEventDate(evt.event_date) + (evt.event_end_date ? ' ~ ' + formatEventDate(evt.event_end_date) : '') + (evt.event_time ? ' · ' + escapeHtml(evt.event_time) : '') + '</div>' +
                     '</div>' +
                     '<div class="event-card-body">' +
                         '<div class="event-meta">' +
@@ -437,6 +437,7 @@
         .then(function(evt) {
             document.getElementById('detailTitle').textContent = evt.title || '';
             var meta = formatEventDate(evt.event_date);
+            if (evt.event_end_date) meta += ' ~ ' + formatEventDate(evt.event_end_date);
             if (evt.event_time) meta += ' · ' + escapeHtml(evt.event_time);
             if (evt.location) meta += ' · ' + escapeHtml(evt.location);
             document.getElementById('detailMeta').textContent = meta;

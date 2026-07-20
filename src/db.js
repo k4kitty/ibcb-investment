@@ -65,7 +65,7 @@ if (isPG) {
         )`,
         `CREATE TABLE IF NOT EXISTS events (
             id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT, content TEXT,
-            location TEXT, event_date TEXT NOT NULL, event_time TEXT,
+            location TEXT, event_date TEXT NOT NULL, event_end_date TEXT, event_time TEXT,
             status TEXT DEFAULT 'active', max_attendees INTEGER DEFAULT 0,
             created_at TEXT, updated_at TEXT
         )`,
@@ -256,6 +256,8 @@ async function initDB() {
         // Migration: add plan column to existing mtl_students tables
         try { await dbRun('ALTER TABLE mtl_students ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT \'free\''); } catch(e) {}
         try { await dbRun('ALTER TABLE mtl_students ADD COLUMN IF NOT EXISTS plan_expires_at TEXT'); } catch(e) {}
+        // Migration: add event_end_date
+        try { await dbRun('ALTER TABLE events ADD COLUMN IF NOT EXISTS event_end_date TEXT'); } catch(e) {}
 
         // Seed MTL admin
         const mtlAdmin = await dbGet('SELECT COUNT(*) as c FROM mtl_admins');

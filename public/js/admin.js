@@ -261,7 +261,7 @@ function loadEventsManage() {
                 var statusLabel = ev.status === 'active' ? '\u9032\u884c\u4e2d' : '\u5df2\u7d50\u675f';
                 var row = '<tr>';
                 row += '<td>' + escapeHtml(ev.title) + '</td>';
-                row += '<td>' + escapeHtml(ev.event_date) + '</td>';
+                row += '<td>' + escapeHtml(ev.event_date) + (ev.event_end_date ? ' ~ ' + escapeHtml(ev.event_end_date) : '') + '</td>';
                 row += '<td>' + escapeHtml(ev.event_time || '-') + '</td>';
                 row += '<td>' + escapeHtml(ev.location || '-') + '</td>';
                 row += '<td>' + statusLabel + '</td>';
@@ -283,6 +283,7 @@ function saveEvent() {
     var body = {
         title: $('#ev_title').value.trim(),
         event_date: $('#ev_date').value,
+        event_end_date: $('#ev_end_date').value,
         event_time: $('#ev_time').value.trim(),
         location: $('#ev_location').value.trim(),
         description: $('#ev_description').value.trim(),
@@ -335,6 +336,7 @@ function editEventManage(id) {
         $('#ev_id').value = ev.id;
         $('#ev_title').value = ev.title || '';
         $('#ev_date').value = ev.event_date || '';
+        $('#ev_end_date').value = ev.event_end_date || '';
         $('#ev_time').value = ev.event_time || '';
         $('#ev_location').value = ev.location || '';
         $('#ev_description').value = ev.description || '';
