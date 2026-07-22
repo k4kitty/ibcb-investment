@@ -7,9 +7,13 @@
 <link rel="stylesheet" href="public/css/mtl-english.css">
 <style>
 /* Math-specific elements — all base styling from mtl-english.css */
-.mtl-speed-timer{font-size:3rem;font-weight:800;color:#e67e22;text-align:center;margin:16px 0}
-.mtl-speed-streak{font-size:1.3rem;color:#27ae60;text-align:center;margin:8px 0}
-.mtl-speed-q{font-size:2rem;text-align:center;margin:20px 0;font-weight:700}
+.mtl-speed-timer{font-size:4rem;font-weight:900;color:#e67e22;text-align:center;margin:0;font-family:'Courier New',monospace;line-height:1;transition:color .3s}
+.mtl-speed-timer.urgent{color:#e74c3c;animation:pulse .5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.mtl-speed-streak{font-size:1.2rem;color:#27ae60;text-align:center;margin:4px 0;font-weight:700}
+.mtl-speed-streak .combo{font-size:2rem;display:block;animation:bounce .3s ease-out}
+@keyframes bounce{0%{transform:scale(1.5)}100%{transform:scale(1)}}
+.mtl-speed-q{font-size:2.2rem;text-align:center;margin:16px 0;font-weight:800;color:#2c3e50}
 .mtl-eq-target{font-size:2.2rem;font-weight:800;color:#27ae60;text-align:center;margin:16px 0}
 .mtl-eq-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
 .mtl-eq-chip{padding:10px 16px;background:#fff;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:600;font-size:1.1rem;user-select:none}
