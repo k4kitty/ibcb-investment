@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play and Learn Biology · IBCB Investment</title>
+<link rel="stylesheet" href="public/css/styles.css">
+<link rel="stylesheet" href="public/css/mtl-english.css">
+<style>
+/* Biology-specific color overrides */
+.mtl-hero{background:linear-gradient(135deg,#e8f5e9,#e3f2fd,#f3e5f5)}
+.mtl-hero .hero-eyebrow{color:#2e7d32}
+.mtl-level-number{color:#2e7d32}
+.mtl-level-card{border-left-color:#2e7d32}
+.mtl-game-card.completed{border-left-color:#388e3c}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="header-content">
+<div class="logo"><div class="logo-icon">IBCB</div><div class="logo-text"><span class="logo-main">IBCB Investment</span><span class="logo-sub">PE · Quantitative Strategies · Investing AI+</span></div></div>
+<nav class="main-nav">
+<a href="index.html" class="nav-link">主頁</a><a href="about.html" class="nav-link">關於我們</a><a href="events.html" class="nav-link">活動報名</a><a href="news.html" class="nav-link">最新消息</a><a href="contact.html" class="nav-link">Contact Us</a>
+<a href="mtl-pricing.html" class="nav-link">Pricing</a><a href="register.html" class="nav-link btn-register">加入會員</a>
+</nav>
+</div>
+<button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+</header>
+
+<main id="mtl-app">
+
+<section id="mtl-login" class="mtl-view active">
+<div class="mtl-hero"><div class="container"><p class="hero-eyebrow">Play and Learn · AI Educational Technology</p><h1>Play and Learn Biology</h1></div></div>
+<div class="container"><div class="mtl-login-box">
+<h2>Welcome, Young Biologist!</h2>
+<p>Create a new student profile or enter your Save Code to continue.</p>
+<div class="mtl-login-tabs">
+<button class="mtl-tab active" onclick="B.switchTab('new')" id="tabNew">New Student</button>
+<button class="mtl-tab" onclick="B.switchTab('existing')" id="tabExist">I Have a Save Code</button>
+</div>
+<div id="loginNew" class="mtl-login-form">
+<input type="text" id="newStudentName" placeholder="Enter student name" maxlength="80">
+<button class="mtl-check-btn" onclick="B.createStudent(document.getElementById('newStudentName').value.trim())">Create Profile & Start Learning</button>
+</div>
+<div id="loginExist" class="mtl-login-form" style="display:none;">
+<input type="text" id="saveCodeInput" placeholder="Enter your 6-character Save Code" maxlength="6" style="text-transform:uppercase;text-align:center;font-size:1.2rem;letter-spacing:4px;">
+<button class="mtl-check-btn" onclick="B.loginByCode(document.getElementById('saveCodeInput').value.trim().toUpperCase())">Load My Progress</button>
+</div>
+</div></div>
+</section>
+
+<section id="mtl-dashboard" class="mtl-view">
+<div class="mtl-hero"><div class="container"><p class="hero-eyebrow">Play and Learn · AI Educational Technology</p><h1>Play and Learn Biology</h1><p class="hero-lead">From cells to ecosystems. Complete all 20 missions per level to unlock the next. Ages 6–18.</p></div></div>
+<div class="container">
+<div id="mtlStudentBar" class="mtl-student-bar"></div>
+<div class="mtl-stats" id="mtlStats">
+<div class="stat-card"><div class="stat-number" id="statLevelsCompleted">0</div><div class="stat-label">Levels Completed</div></div>
+<div class="stat-card"><div class="stat-number" id="statTrophies">0</div><div class="stat-label">Trophies Earned</div></div>
+<div class="stat-card"><div class="stat-number" id="statGamesCompleted">0</div><div class="stat-label">Missions Completed</div></div>
+<div class="stat-card"><div class="stat-number" id="statTotalStars">0</div><div class="stat-label">⭐ Stars Collected</div></div>
+</div>
+<div class="mtl-levels-grid" id="mtlLevelsGrid"></div>
+</div>
+</section>
+
+<section id="mtl-level-detail" class="mtl-view">
+<div class="container">
+<button class="mtl-back-btn" onclick="B.showDashboard()">← Back to All Levels</button>
+<div id="mtlLevelHeader"></div>
+<div class="mtl-games-grid" id="mtlGamesGrid"></div>
+</div>
+</section>
+
+<section id="mtl-game-play" class="mtl-view">
+<div class="container">
+<button class="mtl-back-btn" onclick="B.backToLevel()">← Back to Level</button>
+<div id="mtlGameArea"></div>
+</div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+<div class="footer-content">
+<div class="footer-brand"><div class="footer-logo">IBCB Investment</div><p>PE · Quantitative Strategies · Investing AI+</p></div>
+<div class="footer-info"><p>Play and Learn · AI Educational Technology</p><p>&copy; <span id="copyrightYear">2025</span> IBCB Investment. All rights reserved.</p><p>Email: admin@ibcgroup.com.hk</p></div>
+</div>
+</footer>
+
+<script src="public/js/mtl-biology.js?v=1"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){var l=document.querySelector('.logo');if(!l||l.querySelector('a'))return;var a=document.createElement('a');a.href='index.html';a.style.cssText='text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;';a.innerHTML=l.innerHTML;l.innerHTML='';l.appendChild(a);});</script>
+</body>
+</html>
