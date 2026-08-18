@@ -202,6 +202,27 @@ app.get('/api/admin/status', async (req, res) => {
     }
 });
 
+// Change password (authenticated admin rotates their own password)
+app.post('/api/admin/change-password', requireAuth, csrfCheck, async (req, res) => {
+    const current = String(req.body.currentPassword || '');
+    const next = String(req.body.newPassword || '');
+    if (!current || !next) return res.status(400).json({ error: '請輸入目前密碼和新密碼' });
+    if (next.length < 8) return res.status(400).json({ error: '新密碼至少 8 位' });
+    try {
+        const row = await dbGet('SELECT * FROM admins WHERE id = ?', [req.session.admin.id]);
+        if (!row) return res.status(401).json({ error: 'Unauthorized' });
+        let valid;
+        if (row.password.startsWith('$2')) valid = await bcrypt.compare(current, row.password);
+        else valid = (current === row.password);
+        if (!valid) return res.status(401).json({ error: '目前密碼錯誤' });
+        const hash = await bcrypt.hash(next, 10);
+        await dbRun('UPDATE admins SET password = ? WHERE id = ?', [hash, row.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: '伺服器錯誤' });
+    }
+});
+
 // ================== DASHBOARD STATS ==================
 
 app.get('/api/admin/dashboard', requireAuth, async (req, res) => {
@@ -1668,6 +1689,25 @@ app.get('/api/mtl/admin/check', (req, res) => {
         res.json({ success: true, username: req.session.mtlAdmin.username });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+app.post('/api/mtl/admin/change-password', requireMtlAuth, async (req, res) => {
+    const current = String(req.body.currentPassword || '');
+    const next = String(req.body.newPassword || '');
+    if (!current || !next) return res.status(400).json({ error: '請輸入目前密碼和新密碼' });
+    if (next.length < 8) return res.status(400).json({ error: '新密碼至少 8 位' });
+    if (!req.session.mtlAdmin) return res.status(401).json({ error: 'Unauthorized' });
+    try {
+        const row = await dbGet('SELECT * FROM mtl_admins WHERE id = ?', [req.session.mtlAdmin.id]);
+        if (!row) return res.status(401).json({ error: 'Unauthorized' });
+        const match = await bcrypt.compare(current, row.password);
+        if (!match) return res.status(401).json({ error: '目前密碼錯誤' });
+        const hash = await bcrypt.hash(next, 10);
+        await dbRun('UPDATE mtl_admins SET password = ? WHERE id = ?', [hash, row.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: '伺服器錯誤' });
     }
 });
 

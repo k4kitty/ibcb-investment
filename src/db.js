@@ -211,14 +211,17 @@ async function initDB() {
                 }
             }
         }
-        // Seed admin if not exists
+        // Seed admin if not exists — password from ADMIN_PASSWORD env, else a
+        // random one logged once. NO hardcoded default (the old 'IBCB123!'
+        // default was public and is a live security hole).
         const bcrypt = require('bcryptjs');
         const admin = await dbGet('SELECT COUNT(*) as c FROM admins');
         if (!admin || admin.c == 0) {
             const id = 'a_' + Date.now();
-            const hash = await bcrypt.hash('IBCB123!', 10);
+            const pw = process.env.ADMIN_PASSWORD || require('crypto').randomBytes(12).toString('base64url');
+            const hash = await bcrypt.hash(pw, 10);
             await dbRun('INSERT INTO admins (id, username, password) VALUES (?, ?, ?)', [id, 'admin', hash]);
-            console.log('Admin seeded.');
+            console.log(`Admin seeded. Username: admin / Password: ${pw}  (CHANGE THIS IMMEDIATELY)`);
         }
         console.log('Database initialized.');
 
@@ -259,13 +262,15 @@ async function initDB() {
         // Migration: add event_end_date
         try { await dbRun('ALTER TABLE events ADD COLUMN IF NOT EXISTS event_end_date TEXT'); } catch(e) {}
 
-        // Seed MTL admin
+        // Seed MTL admin — password from MTL_ADMIN_PASSWORD env, else random.
+        // NO hardcoded default (old 'MTL2025!' was public).
         const mtlAdmin = await dbGet('SELECT COUNT(*) as c FROM mtl_admins');
         if (!mtlAdmin || mtlAdmin.c == 0) {
             const id = 'ma_' + Date.now();
-            const hash = await bcrypt.hash('MTL2025!', 10);
+            const pw = process.env.MTL_ADMIN_PASSWORD || require('crypto').randomBytes(12).toString('base64url');
+            const hash = await bcrypt.hash(pw, 10);
             await dbRun('INSERT INTO mtl_admins (id, username, password) VALUES (?, ?, ?)', [id, 'mtladmin', hash]);
-            console.log('MTL Admin seeded (mtladmin / MTL2025!).');
+            console.log(`MTL Admin seeded. Username: mtladmin / Password: ${pw}  (CHANGE THIS IMMEDIATELY)`);
         }
     } catch (e) {
         console.error('initDB skipped (DB not available yet):', e.message.substring(0, 80));
